@@ -37,11 +37,11 @@ public class SensorManager implements SensorEventListener {
             mEventBus.post("Failure! No accelerometer.");
         }
 
-        SensorHandshake gravityHandshake = SensorHandshake.createConnectHandshake("test:id:gravity", SensorType.GRAVITY, SensorLocation.RIGHT_ARM);
+        SensorHandshake gravityHandshake = SensorHandshake.createConnectHandshake("phone:gravity", SensorType.GRAVITY, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         mSensorGravitySession = gravityHandshake.getSensorSession();
         mEventBus.post(gravityHandshake);
 
-        SensorHandshake accelerometerHandshake = SensorHandshake.createConnectHandshake("test:id:accelerometer", SensorType.ACCELEROMETER, SensorLocation.LEFT_ARM);
+        SensorHandshake accelerometerHandshake = SensorHandshake.createConnectHandshake("phone:accelerometer", SensorType.ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_BACK_POCKET);
         mSensorAccelerometerSession = accelerometerHandshake.getSensorSession();
         mEventBus.post(accelerometerHandshake);
     }

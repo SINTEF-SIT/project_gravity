@@ -6,7 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.algorithm.utils.EventTypes;
@@ -19,7 +18,6 @@ public class MainActivity extends ActionBarActivity {
 
     private EventBus mEventBus;
 
-    private TextView mUpdates;
     private LinearLayout mChart;
 
     @Override
@@ -31,7 +29,6 @@ public class MainActivity extends ActionBarActivity {
         mEventBus.registerSticky(this);
 
         setContentView(R.layout.activity_main);
-        mUpdates = (TextView) findViewById(R.id.text);
         mChart = (LinearLayout) findViewById(R.id.chart);
 
         new Chart(this, mChart);
@@ -40,7 +37,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onEvent(String message) {
-        // mUpdates.setText(message + "\n" + mUpdates.getText());
         // Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

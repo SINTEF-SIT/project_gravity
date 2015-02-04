@@ -13,8 +13,8 @@ public class SensorHandshake {
         mType = type;
     }
 
-    public static SensorHandshake createConnectHandshake(String constantUniqueIdForDeviceSessionLocationAndType, SensorType sensorType, SensorLocation sensorLocation) {
-        SensorSession sensorSession = new SensorSession(constantUniqueIdForDeviceSessionLocationAndType, sensorType, sensorLocation);
+    public static SensorHandshake createConnectHandshake(String constantUniqueIdForDeviceSessionLocationAndType, SensorType sensorType, SensorDevice sensorDevice, SensorLocation sensorLocation) {
+        SensorSession sensorSession = new SensorSession(constantUniqueIdForDeviceSessionLocationAndType, sensorType, sensorDevice, sensorLocation);
         return new SensorHandshake(sensorSession, Type.CONNECT);
     }
 

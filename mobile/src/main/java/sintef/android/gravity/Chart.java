@@ -38,9 +38,6 @@ public class Chart implements View.OnClickListener {
     private static final int TEN_SEC = 10000;
     private static final int TWO_SEC = 2000;
 
-    private View mViewZoomIn;
-    private View mViewZoomOut;
-    private View mViewZoomReset;
     private GraphicalView mChartView;
     private XYMultipleSeriesRenderer mRenderer;
     private XYMultipleSeriesDataset mDataset;
@@ -105,12 +102,9 @@ public class Chart implements View.OnClickListener {
         mChartView.addZoomListener(mZoomListener, true, false);
         chartView.addView(mChartView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        mViewZoomIn = mActivity.findViewById(R.id.zoom_in);
-        mViewZoomOut = mActivity.findViewById(R.id.zoom_out);
-        mViewZoomReset = mActivity.findViewById(R.id.zoom_reset);
-        mViewZoomIn.setOnClickListener(this);
-        mViewZoomOut.setOnClickListener(this);
-        mViewZoomReset.setOnClickListener(this);
+        mActivity.findViewById(R.id.zoom_in).setOnClickListener(this);
+        mActivity.findViewById(R.id.zoom_out).setOnClickListener(this);
+        mActivity.findViewById(R.id.zoom_reset).setOnClickListener(this);
     }
 
     public void onEvent(SensorData data) {

@@ -2,18 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14dp"/>
 
     <LinearLayout
         android:id="@+id/chart"
@@ -28,23 +18,23 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <ImageButton
+        <Button
             android:id="@+id/zoom_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_zoom" />
+            android:text="ZOOM IN"/>
 
-        <ImageButton
+        <Button
             android:id="@+id/zoom_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_zoom" />
+            android:text="ZOOM RESET" />
 
-        <ImageButton
+        <Button
             android:id="@+id/zoom_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_zoom" />
+            android:text="ZOOM OUT" />
     </LinearLayout>
 
 </LinearLayout>

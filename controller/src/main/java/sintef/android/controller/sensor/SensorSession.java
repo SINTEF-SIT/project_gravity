@@ -7,17 +7,20 @@ public class SensorSession {
 
     private final String mConstantUniqueIdForDeviceLocationAndType;
     private final SensorType mSensorType;
+    private final SensorDevice mSensorDevice;
     private final SensorLocation mSensorLocation;
 
-    protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType, SensorType sensorType, SensorLocation sensorLocation) {
+    protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType, SensorType sensorType, SensorDevice sensorDevice, SensorLocation sensorLocation) {
         mConstantUniqueIdForDeviceLocationAndType = constantUniqueIdForDeviceSessionLocationAndType;
         mSensorType = sensorType;
+        mSensorDevice = sensorDevice;
         mSensorLocation = sensorLocation;
     }
 
     protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType) {
         mConstantUniqueIdForDeviceLocationAndType = constantUniqueIdForDeviceSessionLocationAndType;
         mSensorType = null;
+        mSensorDevice = null;
         mSensorLocation = null;
     }
 
@@ -27,6 +30,10 @@ public class SensorSession {
 
     public SensorType getSensorType() {
         return mSensorType;
+    }
+
+    public SensorDevice getSensorDevice() {
+        return mSensorDevice;
     }
 
     public SensorLocation getSensorLocation() {
