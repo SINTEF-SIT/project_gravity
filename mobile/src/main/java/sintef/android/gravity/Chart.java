@@ -3,14 +3,12 @@ package sintef.android.gravity;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
-import org.achartengine.chart.PointStyle;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
@@ -18,10 +16,12 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import org.achartengine.tools.ZoomEvent;
 import org.achartengine.tools.ZoomListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
+
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.sensor.SensorData;
 
 /**
  * Created by samyboy89 on 29/01/15.
@@ -31,45 +31,24 @@ public class Chart implements View.OnClickListener {
     private final Activity mActivity;
 
     private static Random RAND = new Random();
-    private static final String TIME = "H:mm:ss";
-    private static final String[] ITEMS = { "A", "B", "C", "D", "E", "F" };
-    private final int[] COLORS = { randomColor(), randomColor(), randomColor(), randomColor(), randomColor(), randomColor() };
+    private static final float RATIO = 0.618033988749895f;
 
-    private static final int[] THRESHOLD_VALUES = { 30, 60, 80 };
-    private static final int[] THRESHOLD_COLORS = { Color.RED, Color.YELLOW, Color.GREEN };
-    private static final String[] THRESHOLD_LABELS = { "Bad", "Good", "Excellent" };
+    private static final String TIME = "H:mm:ss";
 
     private static final int TEN_SEC = 10000;
     private static final int TWO_SEC = 2000;
-    private static final float RATIO = 0.618033988749895f;
 
     private View mViewZoomIn;
     private View mViewZoomOut;
     private View mViewZoomReset;
     private GraphicalView mChartView;
-    private XYSeriesRenderer[] mThresholdRenderers;
     private XYMultipleSeriesRenderer mRenderer;
     private XYMultipleSeriesDataset mDataset;
     private HashMap<String, TimeSeries> mSeries;
-    private TimeSeries[] mThresholds;
-    private ArrayList<String> mItems;
     private double mYAxisMin = Double.MAX_VALUE;
     private double mYAxisMax = Double.MIN_VALUE;
     private double mZoomLevel = 1;
-    private double mLastItemChange;
-    private int mItemIndex;
-    private int mYAxisPadding = 5;
-
-
-    private final CountDownTimer mTimer = new CountDownTimer(15 * 60 * 1000, 2000) {
-        @Override
-        public void onTick(final long millisUntilFinished) {
-            addValue();
-        }
-
-        @Override
-        public void onFinish() {}
-    };
+    private int mYAxisPadding = 10;
 
     private final ZoomListener mZoomListener = new ZoomListener() {
         @Override
@@ -92,8 +71,8 @@ public class Chart implements View.OnClickListener {
 
     public Chart(Activity activity, ViewGroup chartView) {
         mActivity = activity;
+        EventBus.getDefault().registerSticky(this);
 
-        mItems = new ArrayList<>();
         mSeries = new HashMap<>();
         mDataset = new XYMultipleSeriesDataset();
         mRenderer = new XYMultipleSeriesRenderer();
@@ -116,9 +95,6 @@ public class Chart implements View.OnClickListener {
         mRenderer.setAntialiasing(true);
         mRenderer.setInScroll(true);
 
-        mLastItemChange = new Date().getTime();
-        mItemIndex = Math.abs(RAND.nextInt(ITEMS.length));
-
         // onCreateView
         if (Configuration.ORIENTATION_PORTRAIT == mActivity.getResources().getConfiguration().orientation) {
             mYAxisPadding = 9;
@@ -129,101 +105,28 @@ public class Chart implements View.OnClickListener {
         mChartView.addZoomListener(mZoomListener, true, false);
         chartView.addView(mChartView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        // onActivityCreated
         mViewZoomIn = mActivity.findViewById(R.id.zoom_in);
         mViewZoomOut = mActivity.findViewById(R.id.zoom_out);
         mViewZoomReset = mActivity.findViewById(R.id.zoom_reset);
         mViewZoomIn.setOnClickListener(this);
         mViewZoomOut.setOnClickListener(this);
         mViewZoomReset.setOnClickListener(this);
-
-        mThresholds = new TimeSeries[3];
-        mThresholdRenderers = new XYSeriesRenderer[3];
-
-        for (int i = 0; i < THRESHOLD_COLORS.length; i++) {
-            mThresholdRenderers[i] = new XYSeriesRenderer();
-            mThresholdRenderers[i].setColor(THRESHOLD_COLORS[i]);
-            mThresholdRenderers[i].setLineWidth(3);
-
-            mThresholds[i] = new TimeSeries(THRESHOLD_LABELS[i]);
-            final long now = new Date().getTime();
-            mThresholds[i].add(new Date(now - 1000 * 60 * 10), THRESHOLD_VALUES[i]);
-            mThresholds[i].add(new Date(now + 1000 * 60 * 10), THRESHOLD_VALUES[i]);
-
-            mDataset.addSeries(mThresholds[i]);
-            mRenderer.addSeriesRenderer(mThresholdRenderers[i]);
-        }
-
-        mTimer.start();
     }
 
-
-    /*
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (null != mTimer) {
-            mTimer.cancel();
+    public void onEvent(SensorData data) {
+        if (mSeries.containsKey(data.getSensorSession().getId())) {
+            TimeSeries series = mSeries.get(data.getSensorSession().getId());
+            series.add(data.getTimeCaptured(), (float) data.getSensorData());
+        } else {
+            TimeSeries series = new TimeSeries(data.getSensorSession().getId());
+            series.add(data.getTimeCaptured(), (float) data.getSensorData());
+            mSeries.put(data.getSensorSession().getId(), series);
+            mDataset.addSeries(series);
+            mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
         }
-    }*/
+        scrollGraph(data.getTimeCaptured());
 
-    private double randomValue() {
-        final int value = Math.abs(RAND.nextInt(32));
-        final double percent = (value * 100) / 31.0;
-        return ((int) (percent * 10)) / 10.0;
-    }
-
-    private void addValue() {
-        final double value = randomValue();
-        if (mYAxisMin > value) mYAxisMin = value;
-        if (mYAxisMax < value) mYAxisMax = value;
-
-        final Date now = new Date();
-        final long time = now.getTime();
-
-        if (time - mLastItemChange > 10000) {
-            mLastItemChange = time;
-            mItemIndex = Math.abs(RAND.nextInt(ITEMS.length));
-        }
-
-        final String item = ITEMS[mItemIndex];
-        final int color = COLORS[mItemIndex];
-        final int lastItemIndex = mItems.lastIndexOf(item);
-        mItems.add(item);
-
-        if (lastItemIndex > -1) {
-            boolean otherItemBetween = false;
-            for (int i = lastItemIndex + 1; i < mItems.size(); i++) {
-                if (!item.equals(mItems.get(i))) {
-                    otherItemBetween = true;
-                    break;
-                }
-            }
-            if (otherItemBetween) {
-                addSeries(null, now, value, item, color);
-            }
-            else {
-                mSeries.get(item).add(now, value);
-            }
-        }
-        else {
-            addSeries(item, now, value, item, color);
-        }
-
-        scrollGraph(time);
         mChartView.repaint();
-    }
-
-    private void addSeries(final String title, final Date time, final double value, final String item, final int color) {
-        for (int i = 0; i < THRESHOLD_COLORS.length; i++) {
-            mThresholds[i].add(new Date(time.getTime() + 1000 * 60 * 5), THRESHOLD_VALUES[i]);
-        }
-
-        final TimeSeries series = new TimeSeries(title);
-        series.add(time, value);
-        mSeries.put(item, series);
-        mDataset.addSeries(series);
-        mRenderer.addSeriesRenderer(getSeriesRenderer(color));
     }
 
     private void scrollGraph(final long time) {
@@ -234,14 +137,14 @@ public class Chart implements View.OnClickListener {
 
     private XYSeriesRenderer getSeriesRenderer(final int color) {
         final XYSeriesRenderer r = new XYSeriesRenderer();
-        r.setDisplayChartValues(true);
-        r.setChartValuesTextSize(30);
-        r.setPointStyle(PointStyle.CIRCLE);
+        r.setDisplayChartValues(false);
+        r.setPointStrokeWidth(0);
         r.setColor(color);
-        r.setFillPoints(true);
+        r.setFillPoints(false);
         r.setLineWidth(4);
         return r;
     }
+
 
     private static int randomColor() {
         final float hue = (RAND.nextInt(360) + RATIO);

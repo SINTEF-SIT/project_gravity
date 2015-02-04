@@ -1,0 +1,14 @@
+package sintef.android.controller.sensor;
+
+/**
+ * Created by samyboy89 on 03/02/15.
+ */
+public enum SensorLocation {
+    LEFT_ARM, RIGHT_ARM,
+    LEFT_PANT_POCKET, RIGHT_PANT_POCKET,
+    LEFT_PANT_BACK_POCKET, RIGHT_PANT_BACK_POCKET,
+    LEFT_JACKET_POCKET, RIGHT_JACKET_POCKET,
+    HEAD, NECK, STOMACH, PURSE, BACK,
+    LEFT_FOOT, RIGHT_FOOT,
+    LEFT_SHOULDER, RIGHT_SHOULDER
+}

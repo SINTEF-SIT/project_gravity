@@ -9,8 +9,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/algorithm" />
+            <option value="$PROJECT_DIR$/controller" />
             <option value="$PROJECT_DIR$/mobile" />
-            <option value="$PROJECT_DIR$/model" />
             <option value="$PROJECT_DIR$/wear" />
           </set>
         </option>

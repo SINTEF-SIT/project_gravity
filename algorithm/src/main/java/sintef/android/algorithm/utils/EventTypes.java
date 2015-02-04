@@ -5,5 +5,4 @@ package sintef.android.algorithm.utils;
  */
 public enum EventTypes {
     ONRESUME, ONPAUSE;
-
 }
