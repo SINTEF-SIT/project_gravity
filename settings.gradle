@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':algorithm', ':controller'
+include ':mobile', ':wear', ':controller'

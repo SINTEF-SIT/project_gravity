@@ -1,15 +1,17 @@
 package sintef.android.controller.sensor;
 
+import sintef.android.controller.sensor.data.SensorDataObject;
+
 /**
  * Created by samyboy89 on 03/02/15.
  */
-public class SensorData {
+public class SensorData implements Comparable<SensorData> {
 
     private final SensorSession mSensorSession;
-    private final Object mSensorData;
+    private final SensorDataObject mSensorData;
     private final long mTimeCaptured;
 
-    public SensorData(SensorSession sensorSession, Object sensorData, long timeCaptured) {
+    public SensorData(SensorSession sensorSession, SensorDataObject sensorData, long timeCaptured) {
         mSensorSession = sensorSession;
         mSensorData = sensorData;
         mTimeCaptured = timeCaptured;
@@ -19,7 +21,7 @@ public class SensorData {
         return mSensorSession;
     }
 
-    public Object getSensorData() {
+    public SensorDataObject getSensorData() {
         return mSensorData;
     }
 
@@ -27,4 +29,8 @@ public class SensorData {
         return mTimeCaptured;
     }
 
+    @Override
+    public int compareTo(SensorData sensorData) {
+        return (int) (mTimeCaptured - sensorData.getTimeCaptured());
+    }
 }

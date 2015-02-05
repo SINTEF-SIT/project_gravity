@@ -6,11 +6,11 @@ package sintef.android.controller.sensor;
 public class SensorSession {
 
     private final String mConstantUniqueIdForDeviceLocationAndType;
-    private final SensorType mSensorType;
+    private final int mSensorType;
     private final SensorDevice mSensorDevice;
     private final SensorLocation mSensorLocation;
 
-    protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType, SensorType sensorType, SensorDevice sensorDevice, SensorLocation sensorLocation) {
+    protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType, int sensorType, SensorDevice sensorDevice, SensorLocation sensorLocation) {
         mConstantUniqueIdForDeviceLocationAndType = constantUniqueIdForDeviceSessionLocationAndType;
         mSensorType = sensorType;
         mSensorDevice = sensorDevice;
@@ -19,7 +19,7 @@ public class SensorSession {
 
     protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType) {
         mConstantUniqueIdForDeviceLocationAndType = constantUniqueIdForDeviceSessionLocationAndType;
-        mSensorType = null;
+        mSensorType = -1;
         mSensorDevice = null;
         mSensorLocation = null;
     }
@@ -28,7 +28,7 @@ public class SensorSession {
         return mConstantUniqueIdForDeviceLocationAndType;
     }
 
-    public SensorType getSensorType() {
+    public int getSensorType() {
         return mSensorType;
     }
 

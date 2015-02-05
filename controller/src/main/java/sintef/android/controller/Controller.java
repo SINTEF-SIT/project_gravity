@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.algorithm.AlgorithmMain;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorHandshake;
 import sintef.android.controller.sensor.SensorManager;
@@ -17,8 +18,8 @@ import sintef.android.controller.sensor.SensorSession;
  */
 public class Controller {
 
-    private static EventBus sEventBus;
     private static Controller sController;
+    private static EventBus sEventBus;
     private Context mContext;
 
     private static HashMap<SensorSession, List<SensorData>> mAllSensorData = new HashMap<>();
@@ -32,7 +33,21 @@ public class Controller {
         sEventBus = EventBus.getDefault();
         sEventBus.registerSticky(this);
 
+        AlgorithmMain.initializeAlgorithmMaster(context);
         new SensorManager(context);
+
+        /** SENDING PACKETS TO ALGORITHM
+         *
+         * new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                SensorAlgorithmPack pack = new SensorAlgorithmPack();
+                mAllSensorData = SensorAlgorithmPack.processNewSensorData(pack, System.currentTimeMillis() - 1000, mAllSensorData);
+                sEventBus.post(pack);
+                // printHash(mAllSensorData);
+            }
+        }, 500, 1000);*/
+
     }
 
     public static Controller getController() {
@@ -52,19 +67,22 @@ public class Controller {
         }
     }
 
+
     public void onEvent(SensorData data) {
+        if (true) return; /*** DELETE ***/
+
         if (data.getSensorSession() == null) return;
         if (mAllSensorData.containsKey(data.getSensorSession())) {
-            List<SensorData> sensorData = mAllSensorData.get(data.getSensorSession());
-            sensorData.add(data);
-
-            sEventBus.post("ACC: " + ((float) data.getSensorData()));
-
-            notifySensorSessionUpdated(data.getSensorSession(), sensorData);
+            mAllSensorData.get(data.getSensorSession()).add(data);
         }
     }
 
-    public void notifySensorSessionUpdated(SensorSession sensorSession, List<SensorData> sensorData) {
-
+    private void printHash(HashMap<SensorSession, List<SensorData>> sensor) {
+        for (SensorSession sensorSession : sensor.keySet()) {
+            System.out.println(sensorSession.getId());
+            for (SensorData data : sensor.get(sensorSession)) {
+                System.out.println("(Data) Value: " + data.getSensorData().getValues()[0] + " Time: " + data.getTimeCaptured());
+            }
+        }
     }
 }

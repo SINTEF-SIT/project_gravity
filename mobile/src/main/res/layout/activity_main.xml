@@ -5,6 +5,12 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="@android:color/holo_red_dark"/>
+
     <LinearLayout
         android:id="@+id/chart"
         android:layout_width="match_parent"
@@ -16,25 +22,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@android:color/black">
 
         <Button
             android:id="@+id/zoom_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOOM IN"/>
+            android:text="ZOOM IN"
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/zoom_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOOM RESET" />
+            android:text="ZOOM RESET"
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/zoom_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOOM OUT" />
+            android:text="ZOOM OUT"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 
 </LinearLayout>

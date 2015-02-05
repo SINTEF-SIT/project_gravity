@@ -3,13 +3,14 @@ package sintef.android.gravity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.algorithm.utils.EventTypes;
 import sintef.android.controller.Controller;
+import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.SensorData;
 
 public class MainActivity extends ActionBarActivity {
@@ -29,11 +30,16 @@ public class MainActivity extends ActionBarActivity {
         mEventBus.registerSticky(this);
 
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         mChart = (LinearLayout) findViewById(R.id.chart);
 
         new Chart(this, mChart);
 
         startService(new Intent(this, MainService.class));
+
     }
 
     public void onEvent(String message) {

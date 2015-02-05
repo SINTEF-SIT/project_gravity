@@ -107,13 +107,65 @@ public class Chart implements View.OnClickListener {
         mActivity.findViewById(R.id.zoom_reset).setOnClickListener(this);
     }
 
+    /*
+    public void onEvent(SensorAlgorithmPack pack) {
+        HashMap<SensorSession, List<SensorData>> sensorData = pack.getSensorData();
+        for (SensorSession session : sensorData.keySet()) {
+            for (SensorData data : sensorData.get(session)) {
+                if (mSeries.containsKey(session.getId())) {
+                    TimeSeries series = mSeries.get(session.getId());
+                    series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
+                } else {
+                    TimeSeries series = new TimeSeries(session.getId());
+                    mSeries.put(session.getId(), series);
+                    mDataset.addSeries(series);
+                    mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
+                }
+            }
+        }
+        // scrollGraph(data.getTimeCaptured());
+
+        mChartView.repaint();
+    }
+    */
+
+    /*
+    public void onEvent(SensorAlgorithmPack pack) {
+        HashMap<SensorSession, List<SensorData>> sensorData = pack.getSensorData();
+        for (SensorSession session : sensorData.keySet()) {
+            TimeSeries series;
+            boolean insert = false;
+
+            if (mSeries.containsKey(session.getId())) {
+                series = mSeries.get(session.getId());
+            } else {
+                insert = true;
+                series = new TimeSeries(session.getId());
+            }
+
+            for (SensorData data : sensorData.get(session)) {
+                series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
+            }
+
+            if (insert) {
+                mSeries.put(session.getId(), series);
+                mDataset.addSeries(series);
+                mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
+            }
+        }
+        // scrollGraph(data.getTimeCaptured());
+
+        mChartView.repaint();
+    }*/
+
+
     public void onEvent(SensorData data) {
         if (mSeries.containsKey(data.getSensorSession().getId())) {
             TimeSeries series = mSeries.get(data.getSensorSession().getId());
-            series.add(data.getTimeCaptured(), (float) data.getSensorData());
+            series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
         } else {
             TimeSeries series = new TimeSeries(data.getSensorSession().getId());
-            series.add(data.getTimeCaptured(), (float) data.getSensorData());
+            series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
             mSeries.put(data.getSensorSession().getId(), series);
             mDataset.addSeries(series);
             mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
@@ -122,6 +174,8 @@ public class Chart implements View.OnClickListener {
 
         mChartView.repaint();
     }
+
+
 
     private void scrollGraph(final long time) {
         final double[] limits = new double[] { time - TEN_SEC * mZoomLevel, time + TWO_SEC * mZoomLevel, mYAxisMin - mYAxisPadding,
