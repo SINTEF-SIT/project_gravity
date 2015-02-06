@@ -12,4 +12,6 @@ public class Constants {
     public static final String TAG_MOBILE = "GRAVITY/MOBILE";
     public static final String DATA_MAP_PATH = "/sensor/";
     public static final int CLIENT_CONNECTION_TIMEOUT = 15000;
+    public static final int SENSOR_PULL_FREQ = 50; // in Hz
+    public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
 }
