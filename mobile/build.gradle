@@ -22,5 +22,6 @@ android {
 dependencies {
     compile project(':controller')
     wearApp project(':wear')
+    compile 'org.achartengine:achartengine:1.2.0'
     compile 'com.google.android.gms:play-services:6.5.87'
 }
