@@ -34,7 +34,7 @@ public class Controller {
         sEventBus.registerSticky(this);
 
         AlgorithmMain.initializeAlgorithmMaster(context);
-        new SensorManager(context);
+        SensorManager.getInstance(context);
 
         /** SENDING PACKETS TO ALGORITHM
          *

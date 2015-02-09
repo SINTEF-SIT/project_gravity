@@ -3,6 +3,7 @@ package sintef.android.gravity;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -34,6 +35,8 @@ public class Chart implements View.OnClickListener {
     private static final float RATIO = 0.618033988749895f;
 
     private static final String TIME = "H:mm:ss";
+
+    private static final String TAG = "Chart";
 
     private static final int TEN_SEC = 10000;
     private static final int TWO_SEC = 2000;
@@ -158,8 +161,8 @@ public class Chart implements View.OnClickListener {
         mChartView.repaint();
     }*/
 
-
     public void onEvent(SensorData data) {
+        Log.d(TAG, data.toString());
         if (mSeries.containsKey(data.getSensorSession().getId())) {
             TimeSeries series = mSeries.get(data.getSensorSession().getId());
             series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
@@ -170,8 +173,8 @@ public class Chart implements View.OnClickListener {
             mDataset.addSeries(series);
             mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
         }
-        scrollGraph(data.getTimeCaptured());
-
+//        scrollGraph(data.getTimeCaptured()); // weird timestamps from wear...
+        scrollGraph(System.currentTimeMillis());
         mChartView.repaint();
     }
 

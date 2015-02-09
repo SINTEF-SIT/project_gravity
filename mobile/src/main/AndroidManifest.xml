@@ -19,6 +19,12 @@
         </activity>
 
         <service android:enabled="true" android:name=".MainService" />
+        <service android:name=".RemoteSensorService">
+            <intent-filter>
+                <action
+                    android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

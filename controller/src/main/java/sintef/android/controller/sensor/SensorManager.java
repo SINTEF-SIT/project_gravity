@@ -27,16 +27,34 @@ public class SensorManager implements SensorEventListener {
 
     private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
 
-    public SensorManager(Context context) {
+    private RemoteSensorManager mRemoteSensorManager;
+
+    private static SensorManager instance;
+
+    public static synchronized SensorManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new SensorManager(context.getApplicationContext());
+        }
+
+        return instance;
+    }
+
+    private SensorManager(Context context) {
         mEventBus = EventBus.getDefault();
         mEventBus.registerSticky(this);
 
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mRemoteSensorManager = RemoteSensorManager.getInstance(context);
 
-        addSensorToSystem("phone:gravity", Sensor.TYPE_GRAVITY, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
-        addSensorToSystem("phone:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
-        addSensorToSystem("phone:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
-        addSensorToSystem("phone:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+//        addSensorToSystem("phone:gravity", Sensor.TYPE_GRAVITY, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+//        addSensorToSystem("phone:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+//        addSensorToSystem("phone:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+//        addSensorToSystem("phone:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+        addSensorToSystem("watch:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.WATCH, SensorLocation.LEFT_ARM);
+    }
+
+    public HashMap<Integer, SensorSession> getSensorGroup() {
+        return mSensorGroup;
     }
 
     private void addSensorToSystem(String id, int type, SensorDevice device, SensorLocation location) {
@@ -49,11 +67,15 @@ public class SensorManager implements SensorEventListener {
         switch (eventType) {
             case ONRESUME:
                 for (int type : mSensorGroup.keySet()) {
-                    mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), android.hardware.SensorManager.SENSOR_DELAY_NORMAL);
+                    if (mSensorGroup.get(type).getSensorDevice() == SensorDevice.PHONE) {
+                        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), android.hardware.SensorManager.SENSOR_DELAY_NORMAL); // use batching here
+                    }
                 }
+                mRemoteSensorManager.startMeasurement();
                 break;
             case ONPAUSE:
                 mSensorManager.unregisterListener(this);
+                mRemoteSensorManager.stopMeasurement();
                 break;
         }
     }

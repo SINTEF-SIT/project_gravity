@@ -1,9 +1,11 @@
 package sintef.android.gravity;
 
 import android.content.Intent;
+import android.hardware.Sensor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -11,7 +13,11 @@ import android.widget.LinearLayout;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
+import sintef.android.gravity.events.NewSensorEvent;
+import sintef.android.gravity.events.SensorRangeEvent;
+import sintef.android.gravity.events.SensorUpdatedEvent;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -20,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
     private EventBus mEventBus;
 
     private LinearLayout mChart;
+    private RemoteSensorManager mRemoteSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +46,20 @@ public class MainActivity extends ActionBarActivity {
         new Chart(this, mChart);
 
         startService(new Intent(this, MainService.class));
+        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
 
+    }
+
+    public void onEvent(NewSensorEvent event) {
+        Log.d(TAG, "NewSensorEvent " + event);
+    }
+
+    public void onEvent(SensorUpdatedEvent event) {
+        Log.d(TAG, "SensorUpdateEvent " + event.getDataPoint());
+    }
+
+    public void onEvent(SensorRangeEvent event) {
+        Log.d(TAG, "SensorRangeEvent " + event);
     }
 
     public void onEvent(String message) {
@@ -56,12 +76,15 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         mEventBus.post(EventTypes.ONRESUME);
+        mRemoteSensorManager.filterBySensorId(Sensor.TYPE_ACCELEROMETER);
+//        mRemoteSensorManager.startMeasurement();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mEventBus.post(EventTypes.ONPAUSE);
+//        mRemoteSensorManager.stopMeasurement();
     }
 
     @Override

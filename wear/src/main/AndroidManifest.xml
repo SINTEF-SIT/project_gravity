@@ -19,7 +19,8 @@
             </intent-filter>
         </service>
 
-        <service android:name=".SensorService" />
+        <service android:name=".SensorService"
+            android:exported="true"/>
     </application>
 
 </manifest>
