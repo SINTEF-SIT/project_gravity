@@ -33,7 +33,7 @@ public class AlgorithmWatch
 
         double directionAcceleration = 0;
         double totAcceleration = 0;
-        double result;
+        //double result;
 
         for (int i = 0; i < sensorData.size(); i++)
         {
@@ -52,9 +52,9 @@ public class AlgorithmWatch
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
         }
-        result = Math.sqrt(totAcceleration);
+        //result = Math.sqrt(totAcceleration);
 
-        return result;
+        return Math.sqrt(totAcceleration);
     }
 
 
