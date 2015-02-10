@@ -84,15 +84,18 @@ public class AlgorithmWatch
     public boolean patternRecognition (List <SensorData> sensors)
     {
         //TODO: make this even better
-        double accelerationData = fallIndex(sensors);
+        //might not need the , 20 here, depends on how we set up the use of thus algorithm
+        double accelerationData = fallIndex(sensors, 20);
         double afterFallData;
         //for the fall
-        double thresholdMa = 0;
+        //just a guess for the moment, update it when we see what it should be
+        double thresholdMa = 4;
         //for not moving after the fall
-        double thresholdMi = 0;
+        //just a guess for the moment, update it when we see what it should be
+        double thresholdMi = 0.5;
         if (accelerationData > thresholdMa)
         {
-            afterFallData = fallIndex(sensors, 10);
+            afterFallData = fallIndex(sensors, 5);
             if (afterFallData < thresholdMi)
             {
                 return true;
