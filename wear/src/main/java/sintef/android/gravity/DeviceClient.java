@@ -67,11 +67,11 @@ public class DeviceClient {
         long timeAgo = t - lastTimestamp;
 
         if (lastTimestamp != 0) {
-            if (filterId == sensorType && timeAgo < 100) {
+            if (filterId != Constants.ALL_SENSORS_FILTER && filterId == sensorType && timeAgo < 100) {
                 return;
             }
 
-            if (filterId != sensorType && timeAgo < 3000) {
+            if (filterId != Constants.ALL_SENSORS_FILTER && filterId != sensorType && timeAgo < 3000) {
                 return;
             }
         }
