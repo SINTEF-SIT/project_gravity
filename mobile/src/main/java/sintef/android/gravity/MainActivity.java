@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
     private EventBus mEventBus;
 
     private LinearLayout mChart;
-    private RemoteSensorManager mRemoteSensorManager;
+//    private RemoteSensorManager mRemoteSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
         new Chart(this, mChart);
 
         startService(new Intent(this, MainService.class));
-        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
+//        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
 
     }
 

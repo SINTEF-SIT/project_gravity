@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.GyroscopeData;
@@ -46,7 +47,7 @@ public class SensorManager implements SensorEventListener {
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         mRemoteSensorManager = RemoteSensorManager.getInstance(context);
-        mRemoteSensorManager.filterBySensorId(Sensor.TYPE_ACCELEROMETER);
+        mRemoteSensorManager.filterBySensorId(Constants.ALL_SENSORS_FILTER);
 
 
 //        addSensorToSystem("phone:gravity", Sensor.TYPE_GRAVITY, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
@@ -54,6 +55,7 @@ public class SensorManager implements SensorEventListener {
 //        addSensorToSystem("phone:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
 //        addSensorToSystem("phone:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("watch:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.WATCH, SensorLocation.LEFT_ARM);
+        addSensorToSystem("watch:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.WATCH, SensorLocation.LEFT_ARM);
     }
 
     public HashMap<Integer, SensorSession> getSensorGroup() {

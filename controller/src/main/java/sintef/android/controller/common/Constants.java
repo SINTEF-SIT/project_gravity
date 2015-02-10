@@ -14,4 +14,5 @@ public class Constants {
     public static final int CLIENT_CONNECTION_TIMEOUT = 15000;
     public static final int SENSOR_PULL_FREQ = 50; // in Hz
     public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
+    public static final int ALL_SENSORS_FILTER = 99;
 }

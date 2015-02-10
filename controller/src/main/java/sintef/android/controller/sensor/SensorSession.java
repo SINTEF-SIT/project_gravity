@@ -5,27 +5,27 @@ package sintef.android.controller.sensor;
  */
 public class SensorSession {
 
-    private final String mConstantUniqueIdForDeviceLocationAndType;
+    private final String mId;
     private final int mSensorType;
     private final SensorDevice mSensorDevice;
     private final SensorLocation mSensorLocation;
 
-    protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType, int sensorType, SensorDevice sensorDevice, SensorLocation sensorLocation) {
-        mConstantUniqueIdForDeviceLocationAndType = constantUniqueIdForDeviceSessionLocationAndType;
+    protected SensorSession(String id, int sensorType, SensorDevice sensorDevice, SensorLocation sensorLocation) {
+        mId = id;
         mSensorType = sensorType;
         mSensorDevice = sensorDevice;
         mSensorLocation = sensorLocation;
     }
 
-    protected SensorSession(String constantUniqueIdForDeviceSessionLocationAndType) {
-        mConstantUniqueIdForDeviceLocationAndType = constantUniqueIdForDeviceSessionLocationAndType;
+    protected SensorSession(String id) {
+        mId = id;
         mSensorType = -1;
         mSensorDevice = null;
         mSensorLocation = null;
     }
 
     public String getId() {
-        return mConstantUniqueIdForDeviceLocationAndType;
+        return mId;
     }
 
     public int getSensorType() {
@@ -42,7 +42,7 @@ public class SensorSession {
 
     @Override
     public int hashCode() {
-        return mConstantUniqueIdForDeviceLocationAndType.hashCode();
+        return mId.hashCode();
     }
 
     @Override
@@ -53,6 +53,6 @@ public class SensorSession {
             return true;
 
         SensorSession rhs = (SensorSession) obj;
-        return mConstantUniqueIdForDeviceLocationAndType.equals(rhs.mConstantUniqueIdForDeviceLocationAndType);
+        return mId.equals(rhs.mId);
     }
 }

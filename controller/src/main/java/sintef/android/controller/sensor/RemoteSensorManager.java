@@ -7,6 +7,8 @@ import android.util.SparseArray;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 /*
 import sintef.android.gravity.data.Sensor;
@@ -107,10 +109,19 @@ public class RemoteSensorManager {
     */
 
     public synchronized void addSensorData(int sensorType, int accuracy, long timestamp, float[] values) {
-        SensorDataObject sensorDataObject = null;
+        SensorDataObject sensorDataObject;
         switch(sensorType) {
             case Sensor.TYPE_ACCELEROMETER:
                 sensorDataObject = new AccelerometerData(values);
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                sensorDataObject = new GyroscopeData(values);
+                break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                sensorDataObject = new RotationVectorData(values);
+                break;
+            default:
+                sensorDataObject = null;
                 break;
         }
 
