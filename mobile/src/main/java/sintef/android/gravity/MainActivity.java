@@ -15,9 +15,6 @@ import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
-import sintef.android.gravity.events.NewSensorEvent;
-import sintef.android.gravity.events.SensorRangeEvent;
-import sintef.android.gravity.events.SensorUpdatedEvent;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -50,18 +47,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void onEvent(NewSensorEvent event) {
-        Log.d(TAG, "NewSensorEvent " + event);
-    }
-
-    public void onEvent(SensorUpdatedEvent event) {
-        Log.d(TAG, "SensorUpdateEvent " + event.getDataPoint());
-    }
-
-    public void onEvent(SensorRangeEvent event) {
-        Log.d(TAG, "SensorRangeEvent " + event);
-    }
-
     public void onEvent(String message) {
         // Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -76,15 +61,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         mEventBus.post(EventTypes.ONRESUME);
-        mRemoteSensorManager.filterBySensorId(Sensor.TYPE_ACCELEROMETER);
-//        mRemoteSensorManager.startMeasurement();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mEventBus.post(EventTypes.ONPAUSE);
-//        mRemoteSensorManager.stopMeasurement();
     }
 
     @Override

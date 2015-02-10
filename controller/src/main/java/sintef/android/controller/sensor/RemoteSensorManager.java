@@ -115,8 +115,8 @@ public class RemoteSensorManager {
         }
 
         if (sensorDataObject != null) {
-            Log.d(TAG, "should appear in graph now");
-            mEventBus.post(new SensorData(SensorManager.getInstance(context).getSensorGroup().get(sensorType), sensorDataObject, timestamp));
+//            Log.d(TAG, "should appear in graph now");
+            mEventBus.post(new SensorData(SensorManager.getInstance(context).getSensorGroup().get(sensorType), sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
 
         }
 

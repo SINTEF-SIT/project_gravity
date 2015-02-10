@@ -44,7 +44,10 @@ public class SensorManager implements SensorEventListener {
         mEventBus.registerSticky(this);
 
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+
         mRemoteSensorManager = RemoteSensorManager.getInstance(context);
+        mRemoteSensorManager.filterBySensorId(Sensor.TYPE_ACCELEROMETER);
+
 
 //        addSensorToSystem("phone:gravity", Sensor.TYPE_GRAVITY, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
 //        addSensorToSystem("phone:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);

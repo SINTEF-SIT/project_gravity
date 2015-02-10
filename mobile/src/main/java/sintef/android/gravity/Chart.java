@@ -162,7 +162,7 @@ public class Chart implements View.OnClickListener {
     }*/
 
     public void onEvent(SensorData data) {
-        Log.d(TAG, data.toString());
+//        Log.d(TAG, data.toString());
         if (mSeries.containsKey(data.getSensorSession().getId())) {
             TimeSeries series = mSeries.get(data.getSensorSession().getId());
             series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
@@ -173,8 +173,8 @@ public class Chart implements View.OnClickListener {
             mDataset.addSeries(series);
             mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
         }
-//        scrollGraph(data.getTimeCaptured()); // weird timestamps from wear...
-        scrollGraph(System.currentTimeMillis());
+        scrollGraph(data.getTimeCaptured()); // weird timestamps from wear...
+//        scrollGraph(System.currentTimeMillis());
         mChartView.repaint();
     }
 

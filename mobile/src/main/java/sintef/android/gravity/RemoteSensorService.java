@@ -1,5 +1,6 @@
 package sintef.android.gravity;
 
+import android.hardware.Sensor;
 import android.net.Uri;
 import android.util.Log;
 
@@ -19,13 +20,14 @@ import java.util.Arrays;
 public class RemoteSensorService extends WearableListenerService {
     private static final String TAG = "GRAVITY/SensorReceiverService";
 
-    private RemoteSensorManager sensorManager;
+    private RemoteSensorManager mRemoteSensorManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        sensorManager = RemoteSensorManager.getInstance(this);
+        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
+
     }
 
     @Override
@@ -71,6 +73,6 @@ public class RemoteSensorService extends WearableListenerService {
 
         Log.d(TAG, "Received sensor data " + sensorType + " = " + Arrays.toString(values));
 
-        sensorManager.addSensorData(sensorType, accuracy, timestamp, values);
+        mRemoteSensorManager.addSensorData(sensorType, accuracy, timestamp, values);
     }
 }
