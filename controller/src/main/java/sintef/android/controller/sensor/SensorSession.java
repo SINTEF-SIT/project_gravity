@@ -1,5 +1,8 @@
 package sintef.android.controller.sensor;
 
+import android.nfc.Tag;
+import android.util.Log;
+
 import sintef.android.controller.common.Constants;
 
 /**
@@ -67,9 +70,10 @@ public class SensorSession {
 
     public static SensorSession getSessionFromString(String parsedSession) {
         String splitSession[] = parsedSession.split(Constants.SENSOR_SESSION_SPLIT_KEY);
+        Log.d("LOL", parsedSession);
         return new SensorSession(splitSession[0],
                 Integer.parseInt(splitSession[1]),
-                SensorDevice.valueOf(splitSession[2]),
-                SensorLocation.valueOf(splitSession[3]));
+                SensorDevice.valueOf(splitSession[2].toUpperCase()), // should probably change enum instead
+                SensorLocation.valueOf(splitSession[3].toUpperCase()));
     }
 }

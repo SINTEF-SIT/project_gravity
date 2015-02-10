@@ -87,7 +87,10 @@ public class DeviceClient {
     }
 
     private void sendSensorDataInBackground(String session, int sensorType, int accuracy, long timestamp, float[] values) {
-        if (sensorType == filterId) {
+        if (filterId == Constants.ALL_SENSORS_FILTER) {
+            Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
+        }
+        else if (sensorType == filterId) {
             Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
         } else {
             Log.d(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
