@@ -1,11 +1,7 @@
 package sintef.android.gravity;
 
-import android.hardware.Sensor;
 import android.net.Uri;
 import android.util.Log;
-
-import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.RemoteSensorManager;
 
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -17,8 +13,12 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.Arrays;
 
+import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.RemoteSensorManager;
+import sintef.android.controller.sensor.SensorSession;
+
 public class RemoteSensorService extends WearableListenerService {
-    private static final String TAG = "GRAVITY/SensorReceiverService";
+    private static final String TAG = "GRAVITY/SRS";
 
     private RemoteSensorManager mRemoteSensorManager;
 
@@ -58,7 +58,7 @@ public class RemoteSensorService extends WearableListenerService {
                 if (path.startsWith(Constants.DATA_MAP_PATH)) {
 //                    Log.d(TAG, "unpacking data");
                     unpackSensorData(
-                            Integer.parseInt(uri.getLastPathSegment()),
+                            /*Integer.parseInt(uri.getLastPathSegment()),*/
                             DataMapItem.fromDataItem(dataItem).getDataMap()
                     );
                 }
@@ -66,13 +66,14 @@ public class RemoteSensorService extends WearableListenerService {
         }
     }
 
-    private void unpackSensorData(int sensorType, DataMap dataMap) {
+    private void unpackSensorData(DataMap dataMap) {
+        SensorSession session = SensorSession.getSessionFromString(dataMap.getString(Constants.SESSION));
         int accuracy = dataMap.getInt(Constants.ACCURACY);
         long timestamp = dataMap.getLong(Constants.TIMESTAMP);
         float[] values = dataMap.getFloatArray(Constants.VALUES);
 
-        Log.d(TAG, "Received sensor data " + sensorType + " = " + Arrays.toString(values));
+        Log.d(TAG, "Received sensor data " + session.getSensorType() + " = " + Arrays.toString(values));
 
-        mRemoteSensorManager.addSensorData(sensorType, accuracy, timestamp, values);
+        mRemoteSensorManager.addSensorData(session, accuracy, timestamp, values);
     }
 }

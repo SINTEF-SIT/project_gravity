@@ -13,18 +13,19 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.util.Log;
+
+import java.util.HashMap;
 
 import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.SensorDevice;
+import sintef.android.controller.sensor.SensorLocation;
+import sintef.android.controller.sensor.SensorSession;
 
 public class SensorService extends Service implements SensorEventListener {
     private static final String TAG = Constants.TAG_WEAR;
 
-    private final static int SENS_ACCELEROMETER = Sensor.TYPE_ACCELEROMETER;
-    private final static int SENS_GYROSCOPE = Sensor.TYPE_GYROSCOPE;
-    private final static int SENS_ROTATION_VECTOR = Sensor.TYPE_ROTATION_VECTOR;
-
-    SensorManager mSensorManager;
+    private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
+    private SensorManager mSensorManager;
     private DeviceClient client;
 
     @Override
@@ -58,31 +59,15 @@ public class SensorService extends Service implements SensorEventListener {
     protected void startMeasurement() {
         mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
 
-        Sensor accelerometerSensor = mSensorManager.getDefaultSensor(SENS_ACCELEROMETER);
-        Sensor gyroscopeSensor = mSensorManager.getDefaultSensor(SENS_GYROSCOPE);
-        Sensor rotationVectorSensor = mSensorManager.getDefaultSensor(SENS_ROTATION_VECTOR);
+        addSensorToSystem("watch:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
+        addSensorToSystem("watch:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
+        addSensorToSystem("watch:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
+    }
 
-        // Register the listener
-        if (mSensorManager != null) {
-            if (accelerometerSensor != null) {
-                mSensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            } else {
-                Log.w(TAG, "No Accelerometer found");
-            }
-
-            if (gyroscopeSensor != null) {
-                mSensorManager.registerListener(this, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            } else {
-                Log.w(TAG, "No Gyroscope Sensor found");
-            }
-
-            if (rotationVectorSensor != null) {
-                mSensorManager.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            } else {
-                Log.d(TAG, "No Rotation Vector Sensor found");
-            }
-
-        }
+    private void addSensorToSystem(String id, int type, SensorDevice device, SensorLocation location) {
+        SensorSession sensorSession = new SensorSession(id, type, device, location);
+        mSensorGroup.put(type, sensorSession);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private void stopMeasurement() {
@@ -92,7 +77,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        client.sendSensorData(event.sensor.getType(), event.accuracy, event.timestamp, event.values);
+        client.sendSensorData(mSensorGroup.get(event.sensor.getType()).getStringFromSession(), event.sensor.getType(), event.accuracy, event.timestamp, event.values);
     }
 
 

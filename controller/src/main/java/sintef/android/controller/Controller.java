@@ -9,7 +9,6 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
 import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorHandshake;
 import sintef.android.controller.sensor.SensorManager;
 import sintef.android.controller.sensor.SensorSession;
 
@@ -54,27 +53,15 @@ public class Controller {
         return sController;
     }
 
-    public void onEvent(SensorHandshake handshake) {
-        switch (handshake.getType()) {
-            case CONNECT:
-                if (mAllSensorData.containsKey(handshake.getSensorSession())) return;
-                mAllSensorData.put(handshake.getSensorSession(), new ArrayList<SensorData>());
-                break;
-            case DISCONNECT:
-                if (!mAllSensorData.containsKey(handshake.getSensorSession())) return;
-                mAllSensorData.remove(handshake.getSensorSession());
-                break;
-        }
-    }
-
-
     public void onEvent(SensorData data) {
         if (true) return; /*** DELETE ***/
 
         if (data.getSensorSession() == null) return;
-        if (mAllSensorData.containsKey(data.getSensorSession())) {
-            mAllSensorData.get(data.getSensorSession()).add(data);
+        if (!mAllSensorData.containsKey(data.getSensorSession())) {
+            mAllSensorData.put(data.getSensorSession(), new ArrayList<SensorData>());
         }
+
+        mAllSensorData.get(data.getSensorSession()).add(data);
     }
 
     private void printHash(HashMap<SensorSession, List<SensorData>> sensor) {
