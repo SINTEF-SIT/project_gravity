@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -99,7 +100,9 @@ public class SensorManager implements SensorEventListener {
                 break;
         }
         if (sensorDataObject != null)  {
-            long timestamp = TimeUnit.NANOSECONDS.toMillis(event.timestamp);
+            // sensor event timestamps are time since system boot...wtf indeed
+//            long timestamp = TimeUnit.NANOSECONDS.toMillis(event.timestamp);
+            long timestamp = (new Date()).getTime() + (event.timestamp - System.nanoTime()) / 1000000L;
             mEventBus.post(new SensorData(mSensorGroup.get(event.sensor.getType()), sensorDataObject, timestamp));
         }
     }
