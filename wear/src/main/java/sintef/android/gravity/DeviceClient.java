@@ -60,18 +60,18 @@ public class DeviceClient {
         this.filterId = filterId;
     }
 
-    public void sendSensorData(final int sensorType, final int accuracy, final long timestamp, final float[] values) {
+    public void sendSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
         long t = System.currentTimeMillis();
 
         long lastTimestamp = lastSensorData.get(sensorType);
         long timeAgo = t - lastTimestamp;
 
         if (lastTimestamp != 0) {
-            if (filterId == sensorType && timeAgo < 100) {
+            if (filterId != Constants.ALL_SENSORS_FILTER && filterId == sensorType && timeAgo < 100) {
                 return;
             }
 
-            if (filterId != sensorType && timeAgo < 3000) {
+            if (filterId != Constants.ALL_SENSORS_FILTER && filterId != sensorType && timeAgo < 3000) {
                 return;
             }
         }
@@ -81,13 +81,16 @@ public class DeviceClient {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                sendSensorDataInBackground(sensorType, accuracy, timestamp, values);
+                sendSensorDataInBackground(session, sensorType, accuracy, timestamp, values);
             }
         });
     }
 
-    private void sendSensorDataInBackground(int sensorType, int accuracy, long timestamp, float[] values) {
-        if (sensorType == filterId) {
+    private void sendSensorDataInBackground(String session, int sensorType, int accuracy, long timestamp, float[] values) {
+        if (filterId == Constants.ALL_SENSORS_FILTER) {
+            Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
+        }
+        else if (sensorType == filterId) {
             Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
         } else {
             Log.d(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
@@ -95,6 +98,7 @@ public class DeviceClient {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create(Constants.DATA_MAP_PATH + sensorType);
 
+        dataMap.getDataMap().putString(Constants.SESSION, session);
         dataMap.getDataMap().putInt(Constants.ACCURACY, accuracy);
         dataMap.getDataMap().putLong(Constants.TIMESTAMP, timestamp);
         dataMap.getDataMap().putFloatArray(Constants.VALUES, values);

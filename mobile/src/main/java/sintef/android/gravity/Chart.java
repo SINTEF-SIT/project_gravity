@@ -173,8 +173,8 @@ public class Chart implements View.OnClickListener {
             mDataset.addSeries(series);
             mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
         }
-        scrollGraph(data.getTimeCaptured()); // weird timestamps from wear...
-//        scrollGraph(System.currentTimeMillis());
+//        scrollGraph(data.getTimeCaptured()); // timestamps of data differ (bt comm), results in jittery graph
+        scrollGraph(System.currentTimeMillis());
         mChartView.repaint();
     }
 

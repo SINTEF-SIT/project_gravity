@@ -5,20 +5,6 @@ import android.hardware.Sensor;
 import android.util.Log;
 import android.util.SparseArray;
 
-import de.greenrobot.event.EventBus;
-import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.GyroscopeData;
-import sintef.android.controller.sensor.data.RotationVectorData;
-import sintef.android.controller.sensor.data.SensorDataObject;
-/*
-import sintef.android.gravity.data.Sensor;
-import sintef.android.gravity.data.SensorDataPoint;
-import sintef.android.gravity.data.SensorNames;
-import sintef.android.gravity.events.NewSensorEvent;
-import sintef.android.gravity.events.SensorUpdatedEvent;
-*/
-import sintef.android.controller.common.ClientPaths;
-import sintef.android.controller.common.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -35,12 +21,28 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.common.ClientPaths;
+import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.RotationVectorData;
+import sintef.android.controller.sensor.data.SensorDataObject;
+
+/*
+import sintef.android.gravity.data.Sensor;
+import sintef.android.gravity.data.SensorDataPoint;
+import sintef.android.gravity.data.SensorNames;
+import sintef.android.gravity.events.NewSensorEvent;
+import sintef.android.gravity.events.SensorUpdatedEvent;
+*/
+
 /**
  * Created by iver on 09.02.15.
  */
 
 public class RemoteSensorManager {
-    private static final String TAG = "GRAVITY/RemoteSensorManager";
+    private static final String TAG = "GRAVITY/RSM";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
 
     private static RemoteSensorManager instance;
@@ -108,9 +110,9 @@ public class RemoteSensorManager {
     }
     */
 
-    public synchronized void addSensorData(int sensorType, int accuracy, long timestamp, float[] values) {
+    public synchronized void addSensorData(SensorSession sensorSession, int accuracy, long timestamp, float[] values) {
         SensorDataObject sensorDataObject;
-        switch(sensorType) {
+        switch(sensorSession.getSensorType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 sensorDataObject = new AccelerometerData(values);
                 break;
@@ -127,7 +129,7 @@ public class RemoteSensorManager {
 
         if (sensorDataObject != null) {
 //            Log.d(TAG, "should appear in graph now");
-            mEventBus.post(new SensorData(SensorManager.getInstance(context).getSensorGroup().get(sensorType), sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
+            mEventBus.post(new SensorData(sensorSession, sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
 
         }
 

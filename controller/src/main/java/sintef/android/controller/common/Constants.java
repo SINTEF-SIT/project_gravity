@@ -4,6 +4,7 @@ package sintef.android.controller.common;
  * Created by iver on 06.02.15.
  */
 public class Constants {
+    public static final String SESSION = "session";
     public static final String ACCURACY = "accuracy";
     public static final String TIMESTAMP = "timestamp";
     public static final String VALUES = "values";
@@ -15,4 +16,5 @@ public class Constants {
     public static final int SENSOR_PULL_FREQ = 50; // in Hz
     public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
     public static final int ALL_SENSORS_FILTER = 99;
+    public static final String SENSOR_SESSION_SPLIT_KEY = ";";
 }
