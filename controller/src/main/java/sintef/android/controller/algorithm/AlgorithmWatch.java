@@ -19,11 +19,12 @@ public class AlgorithmWatch
     }*/
 
     //Calculate the acceleration.
-    private double fallIndex (List<SensorData> sensors)
+    //Switch back to List <SensorData> after testing
+    private static double fallIndex(List<SensorData> sensors)
     {
         List <Double> x = (List<Double>) sensors.get(0);
-        List <Double> y = (List<Double>) sensors.get(0);
-        List <Double> z = (List<Double>) sensors.get(0);
+        List <Double> y = (List<Double>) sensors.get(1);
+        List <Double> z = (List<Double>) sensors.get(2);
 
         List <List> sensorData = new ArrayList<List>();
         sensorData.add(x);
@@ -65,9 +66,13 @@ public class AlgorithmWatch
 
         for (int i = 0; i < sensorData.size(); i++)
         {
-            for (int j = sensorData.get(i).size()-numberOfCalculations; j < sensorData.get(i).size(); j++)
-            {
-                directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
+            for (int j = sensorData.get(i).size()-numberOfCalculations; j < sensorData.get(i).size(); j++) {
+                if (j > 0)
+                {
+
+                    directionAcceleration += Math.pow((Double) sensorData.get(i).get(j) - (Double) sensorData.get(i).get(j - 1), 2);
+
+                }
             }
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
@@ -84,7 +89,7 @@ public class AlgorithmWatch
     public boolean patternRecognition (List <SensorData> sensors)
     {
         //TODO: make this even better
-        //might not need the , 20 here, depends on how we set up the use of thus algorithm
+        //might not need the ", 20" here, depends on how we set up the use of this algorithm
         double accelerationData = fallIndex(sensors, 20);
         double afterFallData;
         //for the fall
@@ -95,6 +100,7 @@ public class AlgorithmWatch
         double thresholdMi = 0.5;
         if (accelerationData > thresholdMa)
         {
+            //might be unnecessary, have to test a little bit before we can be sure.
             afterFallData = fallIndex(sensors, 5);
             if (afterFallData < thresholdMi)
             {
