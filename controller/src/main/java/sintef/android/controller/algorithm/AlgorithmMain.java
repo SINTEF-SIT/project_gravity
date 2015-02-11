@@ -12,17 +12,19 @@ public class AlgorithmMain {
     private static AlgorithmMain sAlgorithmMain;
     private Context mContext;
 
-    public static void initializeAlgorithmMaster(Context context) {
+    public static void initializeAlgorithmMaster(Context context)
+    {
         sAlgorithmMain = new AlgorithmMain(context);
     }
 
-    private AlgorithmMain(Context context) {
+    private AlgorithmMain(Context context)
+    {
         mContext = context;
         EventBus.getDefault().registerSticky(this);
-
     }
 
-    public void onEvent(SensorAlgorithmPack pack) {
+    public void onEvent(SensorAlgorithmPack pack)
+    {
 
     }
 
