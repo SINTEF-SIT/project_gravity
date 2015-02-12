@@ -3,7 +3,6 @@ package sintef.android.gravity;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -19,10 +18,13 @@ import org.achartengine.tools.ZoomListener;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.algorithm.SensorAlgorithmPack;
 import sintef.android.controller.sensor.SensorData;
+import sintef.android.controller.sensor.SensorSession;
 
 /**
  * Created by samyboy89 on 29/01/15.
@@ -110,14 +112,20 @@ public class Chart implements View.OnClickListener {
         mActivity.findViewById(R.id.zoom_reset).setOnClickListener(this);
     }
 
-    /*
+
     public void onEvent(SensorAlgorithmPack pack) {
         HashMap<SensorSession, List<SensorData>> sensorData = pack.getSensorData();
         for (SensorSession session : sensorData.keySet()) {
             for (SensorData data : sensorData.get(session)) {
                 if (mSeries.containsKey(session.getId())) {
                     TimeSeries series = mSeries.get(session.getId());
-                    series.add(data.getTimeCaptured(), data.getSensorData().getValues()[0]);
+                    Double x = Double.longBitsToDouble(data.getTimeCaptured());
+                    Double y = (double) data.getSensorData().getValues()[0];
+//                    if (!series.getXYMap().containsKey(x)) {
+//                        series.add(x, y);
+//                    }
+
+                    series.add(x, y);
                 } else {
                     TimeSeries series = new TimeSeries(session.getId());
                     mSeries.put(session.getId(), series);
@@ -130,7 +138,6 @@ public class Chart implements View.OnClickListener {
 
         mChartView.repaint();
     }
-    */
 
     /*
     public void onEvent(SensorAlgorithmPack pack) {
@@ -161,6 +168,7 @@ public class Chart implements View.OnClickListener {
         mChartView.repaint();
     }*/
 
+    /*
     public void onEvent(SensorData data) {
 //        Log.d(TAG, data.toString());
         if (mSeries.containsKey(data.getSensorSession().getId())) {
@@ -176,7 +184,7 @@ public class Chart implements View.OnClickListener {
 //        scrollGraph(data.getTimeCaptured()); // timestamps of data differ (bt comm), results in jittery graph
         scrollGraph(System.currentTimeMillis());
         mChartView.repaint();
-    }
+    }*/
 
 
 

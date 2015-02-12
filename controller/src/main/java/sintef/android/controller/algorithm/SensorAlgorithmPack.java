@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sintef.android.controller.DeepClone;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 
@@ -17,7 +16,8 @@ public class SensorAlgorithmPack {
 
     private HashMap<SensorSession, List<SensorData>> mSensorData = new HashMap<>();
 
-    public static HashMap<SensorSession, List<SensorData>> processNewSensorData(SensorAlgorithmPack pack, long from, HashMap<SensorSession, List<SensorData>> sensorData) {
+    public static SensorAlgorithmPack processNewSensorData(long from, HashMap<SensorSession, List<SensorData>> sensorData) {
+        SensorAlgorithmPack pack = new SensorAlgorithmPack();
         for (Map.Entry<SensorSession, List<SensorData>> entry : sensorData.entrySet()) {
             SensorSession sensorSession = entry.getKey();
             List<SensorData> datas = new ArrayList<>();
@@ -30,7 +30,7 @@ public class SensorAlgorithmPack {
             pack.mSensorData.put(sensorSession, datas);
         }
 
-        return DeepClone.deepClone(pack.mSensorData);
+        return pack;
     }
 
     public HashMap<SensorSession, List<SensorData>> getSensorData() {
