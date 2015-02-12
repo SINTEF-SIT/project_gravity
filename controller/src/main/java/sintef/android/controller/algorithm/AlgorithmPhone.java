@@ -9,9 +9,9 @@ import sintef.android.controller.sensor.SensorData;
  */
 public class AlgorithmPhone
 {
-    private double totAccThreshold, verticalAccThreshold, accComparisonThreshold;
+    private double totAccThreshold, verticalAccThreshold, accComparisonThreshold, angleThreshold;
 
-    public boolean calculateAccelerations(double x, double tetaX, double y, double tetaY, double z, double tetaZ)
+    public boolean calculateAccelerations(double x, double tetaX, double y, double tetaY, double z, double tetaZ, double priorAngle, double postAngle)
     {
         double totalAcceleration = accelerationTotal(x, y, z);
         double verticalAcceleration = verticalAcceleration(x, tetaX, y, tetaY, z, tetaZ);
@@ -20,16 +20,19 @@ public class AlgorithmPhone
         {
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= accComparisonThreshold)
             {
-                if ()
+                return true;
             }
         }
         return false;
     }
 
 
-    private double angleOfPhone(priorAngle, postAngle)
+    public boolean angleOfPhone(double priorAngle, double postAngle)
     {
-        return 1;
+        if (postAngle - priorAngle >= angleThreshold){
+            return true;
+        }
+        return false;
     }
 
     private double verticalComparedToTotal(double vertical, double total)
