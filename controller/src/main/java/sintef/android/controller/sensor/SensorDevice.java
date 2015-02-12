@@ -17,4 +17,13 @@ public enum SensorDevice {
     public String getValue() {
         return data;
     }
+
+    public static SensorDevice fromString(String lookup) {
+        if (lookup != null) {
+            for (SensorDevice device : SensorDevice.values()) {
+                if (lookup.equalsIgnoreCase(device.data)) return device;
+            }
+        }
+            throw new IllegalArgumentException("No such device: " + lookup);
+    }
 }

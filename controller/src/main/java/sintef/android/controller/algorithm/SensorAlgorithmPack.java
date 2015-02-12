@@ -3,6 +3,7 @@ package sintef.android.controller.algorithm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,18 +17,16 @@ public class SensorAlgorithmPack {
 
     private HashMap<SensorSession, List<SensorData>> mSensorData = new HashMap<>();
 
-    public static SensorAlgorithmPack processNewSensorData(long from, HashMap<SensorSession, List<SensorData>> sensorData) {
+    public static SensorAlgorithmPack processNewSensorData(Map<SensorSession, List<SensorData>> first, Map<SensorSession, List<SensorData>> last) {
         SensorAlgorithmPack pack = new SensorAlgorithmPack();
-        for (Map.Entry<SensorSession, List<SensorData>> entry : sensorData.entrySet()) {
-            SensorSession sensorSession = entry.getKey();
-            List<SensorData> datas = new ArrayList<>();
-            for (SensorData data : entry.getValue()) {
-                if (data.getTimeCaptured() > from) {
-                    datas.add(data);
-                }
+        pack.getSensorData().putAll(first);
+
+        if (last == null) return pack;
+
+        for (Map.Entry<SensorSession, List<SensorData>> entry : last.entrySet()) {
+            if (pack.getSensorData().containsKey(entry.getKey())) {
+                pack.getSensorData().get(entry.getKey()).addAll(entry.getValue());
             }
-            Collections.sort(datas);
-            pack.mSensorData.put(sensorSession, datas);
         }
 
         return pack;

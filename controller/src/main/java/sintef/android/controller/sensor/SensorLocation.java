@@ -33,4 +33,13 @@ public enum SensorLocation {
     public String getValue() {
         return data;
     }
+
+    public static SensorLocation fromString(String lookup) {
+        if (lookup != null) {
+            for (SensorLocation location : SensorLocation.values()) {
+                if (lookup.equalsIgnoreCase(location.data)) return location;
+            }
+        }
+        throw new IllegalArgumentException("No such location: " + lookup);
+    }
 }

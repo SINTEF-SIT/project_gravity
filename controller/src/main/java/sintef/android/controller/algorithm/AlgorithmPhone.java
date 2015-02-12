@@ -20,14 +20,14 @@ public class AlgorithmPhone
         {
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= accComparisonThreshold)
             {
-                if ()
+                if (true) {}
             }
         }
         return false;
     }
 
 
-    private double angleOfPhone(priorAngle, postAngle)
+    private double angleOfPhone(double priorAngle, double postAngle)
     {
         return 1;
     }

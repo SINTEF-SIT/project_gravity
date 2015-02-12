@@ -5,8 +5,10 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
@@ -25,7 +27,8 @@ public class Controller {
     private static EventBus sEventBus;
     private Context mContext;
 
-    private static HashMap<SensorSession, List<SensorData>> mAllSensorData = new HashMap<>();
+//    private static Map<SensorSession, List<SensorData>> mAllSensorData = new ConcurrentHashMap<>();
+    private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<>();
 
     public static void initializeController(Context context) {
         sController = new Controller(context);
@@ -44,8 +47,24 @@ public class Controller {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                SensorAlgorithmPack pack = SensorAlgorithmPack.processNewSensorData(System.currentTimeMillis() - Constants.ALGORITHM_SEND_AMOUNT, mAllSensorData);
-                mAllSensorData = DeepClone.deepClone(pack.getSensorData());
+
+                SensorAlgorithmPack pack;
+                allData.add(0, new HashMap<SensorSession, List<SensorData>>());
+                List<Map<SensorSession, List<SensorData>>> cat = new ArrayList<Map<SensorSession, List<SensorData>>>();
+                if (allData.size() > 2) {
+//                    cat.addAll((java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(2));
+//                    cat.addAll((java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(1));
+
+                    pack = SensorAlgorithmPack.processNewSensorData(allData.get(2), allData.get(1));
+                } else if (allData.size() > 1) {
+                    pack = SensorAlgorithmPack.processNewSensorData(allData.get(1), null);
+                } else {
+                    return;
+                }
+
+
+
+//                mAllSensorData = DeepClone.deepClone(pack.getSensorData());
                 sEventBus.post(pack);
                 // printHash(mAllSensorData);
             }
@@ -58,14 +77,17 @@ public class Controller {
     }
 
     public void onEvent(SensorData data) {
-        // if (true) return; /*** DELETE ***/
+//        if (true) return; /*** DELETE ***/
+
+        if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
+        Map<SensorSession, List<SensorData>> sensorData = allData.get(0);
 
         if (data.getSensorSession() == null) return;
-        if (!mAllSensorData.containsKey(data.getSensorSession())) {
-            mAllSensorData.put(data.getSensorSession(), new ArrayList<SensorData>());
+        if (!sensorData.containsKey(data.getSensorSession())) {
+            sensorData.put(data.getSensorSession(), new ArrayList<SensorData>());
         }
 
-        mAllSensorData.get(data.getSensorSession()).add(data);
+        sensorData.get(data.getSensorSession()).add(data);
     }
 
     private void printHash(HashMap<SensorSession, List<SensorData>> sensor) {
