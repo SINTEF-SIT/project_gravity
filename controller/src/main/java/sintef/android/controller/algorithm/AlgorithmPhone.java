@@ -9,12 +9,12 @@ import sintef.android.controller.sensor.SensorData;
  */
 public class AlgorithmPhone
 {
-    private double totAccThreshold, verticalAccThreshold, accComparisonThreshold, angleThreshold;
+    private static double totAccThreshold, verticalAccThreshold, accComparisonThreshold, angleThreshold;
 
-    public boolean calculateAccelerations(double x, double tetaX, double y, double tetaY, double z, double tetaZ, double priorAngle, double postAngle)
+    public static boolean calculateAccelerations(double x, double y, double tetaY, double z, double tetaZ)
     {
         double totalAcceleration = accelerationTotal(x, y, z);
-        double verticalAcceleration = verticalAcceleration(x, tetaX, y, tetaY, z, tetaZ);
+        double verticalAcceleration = verticalAcceleration(x, y, tetaY, z, tetaZ);
 
         if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
         {
@@ -27,7 +27,7 @@ public class AlgorithmPhone
     }
 
 
-    public boolean angleOfPhone(double priorAngle, double postAngle)
+    public static boolean angleOfPhone(double priorAngle, double postAngle)
     {
         if (postAngle - priorAngle >= angleThreshold){
             return true;
@@ -35,20 +35,20 @@ public class AlgorithmPhone
         return false;
     }
 
-    private double verticalComparedToTotal(double vertical, double total)
+    private static double verticalComparedToTotal(double vertical, double total)
     {
-        return 1;
+        return total/vertical;
     }
 
     //Calculates total acceleration at one point
-    private double accelerationTotal(double x, double y, double z)
+    private static double accelerationTotal(double x, double y, double z)
     {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
     }
 
     //calculates vertical acceleration at one point
-    private double verticalAcceleration(double x, double tetaX, double y, double tetaY, double z, double tetaZ)
+    private static double verticalAcceleration(double x, double y, double tetaY, double z, double tetaZ)
     {
-        return x*Math.sin(tetaX) + z*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ);
+        return x*Math.sin(tetaZ) + z*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ);
     }
 }
