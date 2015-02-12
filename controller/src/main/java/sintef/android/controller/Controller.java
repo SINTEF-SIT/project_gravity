@@ -5,9 +5,13 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
+import sintef.android.controller.algorithm.SensorAlgorithmPack;
+import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorManager;
 import sintef.android.controller.sensor.SensorSession;
@@ -35,17 +39,17 @@ public class Controller {
         AlgorithmMain.initializeAlgorithmMaster(context);
         SensorManager.getInstance(context);
 
-        /** SENDING PACKETS TO ALGORITHM
-         *
-         * new Timer().scheduleAtFixedRate(new TimerTask() {
+        /** SENDING PACKETS TO ALGORITHM */
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                SensorAlgorithmPack pack = new SensorAlgorithmPack();
-                mAllSensorData = SensorAlgorithmPack.processNewSensorData(pack, System.currentTimeMillis() - 1000, mAllSensorData);
+                SensorAlgorithmPack pack = SensorAlgorithmPack.processNewSensorData(System.currentTimeMillis() - Constants.ALGORITHM_SEND_AMOUNT, mAllSensorData);
+                mAllSensorData = DeepClone.deepClone(pack.getSensorData());
                 sEventBus.post(pack);
                 // printHash(mAllSensorData);
             }
-        }, 500, 1000);*/
+        }, 0, Constants.ALGORITHM_SEND_FREQUENCY);
 
     }
 
@@ -54,7 +58,7 @@ public class Controller {
     }
 
     public void onEvent(SensorData data) {
-        if (true) return; /*** DELETE ***/
+        // if (true) return; /*** DELETE ***/
 
         if (data.getSensorSession() == null) return;
         if (!mAllSensorData.containsKey(data.getSensorSession())) {
