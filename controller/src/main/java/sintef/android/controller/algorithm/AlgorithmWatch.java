@@ -94,7 +94,6 @@ public class AlgorithmWatch
 
     //might change the name/remove this if necessary, might want to change the parameter
     //Recognize fall pattern, and decide if there is a fall or not
-    //
     public static boolean patternRecognition(List<AccelerometerData> sensors)
     {
         //TODO: make this even better
