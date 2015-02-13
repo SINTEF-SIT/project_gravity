@@ -6,13 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
-import sintef.android.controller.algorithm.SensorAlgorithmPack;
-import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorManager;
 import sintef.android.controller.sensor.SensorSession;
@@ -43,6 +39,7 @@ public class Controller {
 
         /** SENDING PACKETS TO ALGORITHM */
 
+        /*
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -68,6 +65,7 @@ public class Controller {
                 // printHash(mAllSensorData);
             }
         }, 0, Constants.ALGORITHM_SEND_FREQUENCY);
+        */
 
     }
 
@@ -76,7 +74,7 @@ public class Controller {
     }
 
     public void onEvent(SensorData data) {
-//        if (true) return; /*** DELETE ***/
+        if (true) return; /*** DELETE ***/
 
         if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
         Map<SensorSession, List<SensorData>> sensorData = allData.get(0);

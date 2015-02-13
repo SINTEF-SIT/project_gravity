@@ -18,13 +18,10 @@ import org.achartengine.tools.ZoomListener;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.algorithm.SensorAlgorithmPack;
 import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorSession;
 
 /**
  * Created by samyboy89 on 29/01/15.
@@ -112,8 +109,7 @@ public class Chart implements View.OnClickListener {
         mActivity.findViewById(R.id.zoom_reset).setOnClickListener(this);
     }
 
-
-
+    /*
     public void onEvent(SensorAlgorithmPack pack) {
         HashMap<SensorSession, List<SensorData>> sensorData = pack.getSensorData();
         for (SensorSession session : sensorData.keySet()) {
@@ -136,7 +132,7 @@ public class Chart implements View.OnClickListener {
         // scrollGraph(data.getTimeCaptured());
 
         mChartView.repaint();
-    }
+    }*/
 
 
     /*
@@ -168,7 +164,7 @@ public class Chart implements View.OnClickListener {
         mChartView.repaint();
     }*/
 
-    /*
+
     public void onEvent(SensorData data) {
 //        Log.d(TAG, data.toString());
         if (mSeries.containsKey(data.getSensorSession().getId())) {
@@ -184,7 +180,7 @@ public class Chart implements View.OnClickListener {
 //        scrollGraph(data.getTimeCaptured()); // timestamps of data differ (bt comm), results in jittery graph
         scrollGraph(System.currentTimeMillis());
         mChartView.repaint();
-    }*/
+    }
 
 
 
