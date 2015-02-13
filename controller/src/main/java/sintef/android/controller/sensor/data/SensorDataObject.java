@@ -3,7 +3,7 @@ package sintef.android.controller.sensor.data;
 /**
  * Created by samyboy89 on 05/02/15.
  */
-public abstract class SensorDataObject {
+public class SensorDataObject {
 
     protected final float mValues[];
 

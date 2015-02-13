@@ -15,6 +15,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
@@ -23,5 +27,4 @@ dependencies {
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.android.support:support-v4:21.0.+'
     compile 'com.google.android.gms:play-services:6.5.87'
-
 }

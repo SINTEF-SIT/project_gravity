@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
@@ -28,7 +27,7 @@ public class Controller {
     private Context mContext;
 
 //    private static Map<SensorSession, List<SensorData>> mAllSensorData = new ConcurrentHashMap<>();
-    private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<>();
+    private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<Map<SensorSession, List<SensorData>>>();
 
     public static void initializeController(Context context) {
         sController = new Controller(context);

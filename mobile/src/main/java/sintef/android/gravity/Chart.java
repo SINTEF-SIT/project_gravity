@@ -113,31 +113,31 @@ public class Chart implements View.OnClickListener {
     }
 
 
+
     public void onEvent(SensorAlgorithmPack pack) {
         HashMap<SensorSession, List<SensorData>> sensorData = pack.getSensorData();
         for (SensorSession session : sensorData.keySet()) {
+            TimeSeries series;
+            if (mSeries.containsKey(session.getId())) {
+                series = mSeries.get(session.getId());
+            } else {
+                series = new TimeSeries(session.getId());
+                mSeries.put(session.getId(), series);
+                mDataset.addSeries(series);
+                mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
+            }
+
             for (SensorData data : sensorData.get(session)) {
-                if (mSeries.containsKey(session.getId())) {
-                    TimeSeries series = mSeries.get(session.getId());
                     Double x = Double.longBitsToDouble(data.getTimeCaptured());
                     Double y = (double) data.getSensorData().getValues()[0];
-//                    if (!series.getXYMap().containsKey(x)) {
-//                        series.add(x, y);
-//                    }
-
                     series.add(x, y);
-                } else {
-                    TimeSeries series = new TimeSeries(session.getId());
-                    mSeries.put(session.getId(), series);
-                    mDataset.addSeries(series);
-                    mRenderer.addSeriesRenderer(getSeriesRenderer(randomColor()));
-                }
             }
         }
         // scrollGraph(data.getTimeCaptured());
 
         mChartView.repaint();
     }
+
 
     /*
     public void onEvent(SensorAlgorithmPack pack) {
