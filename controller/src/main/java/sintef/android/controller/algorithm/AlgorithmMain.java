@@ -32,27 +32,26 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    //TODO: find a better name
-    private boolean theAllmightyAlgorithm(List<AccelerometerData> accData, List<GyroscopeData> rotData)
+    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<GyroscopeData> rotData)
     {
         boolean hasWatch = false;
         for (int i=0; i < accData.size(); i++){
             if (AlgorithmPhone.calculateAccelerations(accData.get(i).getX(), accData.get(i).getY(), rotData.get(i).getY(), accData.get(i).getZ(), rotData.get(i).getZ()))
             {
+                //TODO: get time stamp. Note: moved to improvement
                 long time = 0;
-                if (hasWatch){ return theAllmightyAlgorithmsLittleBrother(time);}
+                if (hasWatch){ return watchAlgorithm(time);}
                 return true;
             }
         }
         return false;
     }
 
-    //TODO: find a better name
-    private boolean theAllmightyAlgorithmsLittleBrother (long time)
+    private boolean watchAlgorithm (long time)
     {
         List <AccelerometerData> accData = new ArrayList<>();
         //TODO: Ask for data from watch here
-
+        //TODO: wait for wednesday
         return AlgorithmWatch.patternRecognition(accData);
     }
 
@@ -61,7 +60,6 @@ public class AlgorithmMain {
     {
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<GyroscopeData> rotationVectorData = new ArrayList<>();
-        List <Long> timeStamp = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             switch (entry.getKey().getSensorType()) {
                 case Sensor.TYPE_ACCELEROMETER:
@@ -73,7 +71,7 @@ public class AlgorithmMain {
                 //case Sensor.TYPE_GAME_ROTATION_VECTOR:
                 //    break;
             }
-            theAllmightyAlgorithm(accelerometerData, rotationVectorData);
+            phoneAlgorithm(accelerometerData, rotationVectorData);
         }
     }
 
