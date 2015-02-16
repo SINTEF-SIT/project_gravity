@@ -97,8 +97,9 @@ public class AlgorithmWatch
     public static boolean patternRecognition(List<AccelerometerData> sensors)
     {
         //TODO: make this even better
-        //might not need the ", 20" here, depends on how we set up the use of this algorithm
-        double accelerationData = fallIndex(sensors, 20);
+        double accelerationData;
+        if (sensors.size() >= 20) {accelerationData = fallIndex(sensors, 20);}
+        else {accelerationData = fallIndex(sensors);}
         double afterFallData;
         //for the fall
         //just a guess for the moment, update it when we see what it should be
