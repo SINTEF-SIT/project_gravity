@@ -202,6 +202,24 @@ public class RemoteSensorManager {
         });
     }
 
+    public void setMode(final String mode) {
+        executorService.submit((new Runnable() {
+            @Override
+            public void run() {
+                controlMeasurementInBackground(mode);
+            }
+        }));
+    }
+
+    public void getBuffer() {
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                controlMeasurementInBackground(ClientPaths.START_PUSH);
+            }
+        });
+    }
+
     private void controlMeasurementInBackground(final String path) {
         if (validateConnection()) {
             List<Node> nodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();

@@ -6,6 +6,7 @@ package sintef.android.gravity;
  */
 
 import android.content.Context;
+import android.hardware.SensorEvent;
 import android.util.Log;
 import android.util.SparseLongArray;
 
@@ -22,11 +23,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.data.SensorDataObject;
 
 public class DeviceClient {
     private static final String TAG = Constants.TAG_WEAR;
     private static final int CLIENT_CONNECTION_TIMEOUT = Constants.CLIENT_CONNECTION_TIMEOUT;
+    private String mode = ClientPaths.MODE_PUSH;
+    private SensorEventBuffer mSensorEventBuffer;
 
     public static DeviceClient instance;
 
@@ -52,6 +57,8 @@ public class DeviceClient {
 
         executorService = Executors.newCachedThreadPool();
         lastSensorData = new SparseLongArray();
+
+        mSensorEventBuffer = SensorEventBuffer.getInstance();
     }
 
     public void setSensorFilter(int filterId) {
@@ -60,12 +67,44 @@ public class DeviceClient {
         this.filterId = filterId;
     }
 
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public void pushData() {
+        if (mode.equals(ClientPaths.MODE_PULL)) {
+            for (SensorEventBuffer.SensorEventData data : mSensorEventBuffer.getBufferAsArray()) {
+                sendSensorData(
+                        data.getSession(),
+                        data.getSensorType(),
+                        data.getAccuracy(),
+                        data.getTimestamp(),
+                        data.getValues()
+                );
+            }
+        }
+    }
+
+    public void addSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
+        switch(mode) {
+            case ClientPaths.MODE_PULL:
+                mSensorEventBuffer.addSensorData(session, sensorType, accuracy, timestamp, values);
+                break;
+            case ClientPaths.MODE_PUSH:
+                sendSensorData(session, sensorType, accuracy, timestamp, values);
+                break;
+            default:
+                break;
+        }
+    }
+
     public void sendSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
         long t = System.currentTimeMillis();
 
         long lastTimestamp = lastSensorData.get(sensorType);
         long timeAgo = t - lastTimestamp;
 
+        /* What does this do?
         if (lastTimestamp != 0) {
             if (filterId != Constants.ALL_SENSORS_FILTER && filterId == sensorType && timeAgo < 100) {
                 return;
@@ -75,6 +114,7 @@ public class DeviceClient {
                 return;
             }
         }
+        */
 
         lastSensorData.put(sensorType, t);
 
@@ -87,6 +127,7 @@ public class DeviceClient {
     }
 
     private void sendSensorDataInBackground(String session, int sensorType, int accuracy, long timestamp, float[] values) {
+        /*
         if (filterId == Constants.ALL_SENSORS_FILTER) {
             Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
         }
@@ -95,6 +136,7 @@ public class DeviceClient {
         } else {
             Log.d(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
         }
+        */
 
         PutDataMapRequest dataMap = PutDataMapRequest.create(Constants.DATA_MAP_PATH + sensorType);
 

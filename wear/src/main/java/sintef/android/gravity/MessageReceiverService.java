@@ -31,6 +31,8 @@ public class MessageReceiverService extends WearableListenerService {
         super.onCreate();
 
         deviceClient = DeviceClient.getInstance(this);
+//        startService(new Intent(this, SensorService.class));
+
     }
 
     @Override
@@ -56,12 +58,24 @@ public class MessageReceiverService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
-        if (messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
-            startService(new Intent(this, SensorService.class));
-        }
-
-        if (messageEvent.getPath().equals(ClientPaths.STOP_MEASUREMENT)) {
-            stopService(new Intent(this, SensorService.class));
+        switch(messageEvent.getPath()) {
+            case ClientPaths.START_MEASUREMENT:
+                startService(new Intent(this, SensorService.class));
+                break;
+            case ClientPaths.STOP_MEASUREMENT:
+                stopService(new Intent(this, SensorService.class));
+                break;
+            case ClientPaths.MODE_PULL:
+                deviceClient.setMode(messageEvent.getPath());
+                break;
+            case ClientPaths.MODE_PUSH:
+                deviceClient.setMode(messageEvent.getPath());
+                break;
+            case ClientPaths.START_PUSH:
+                deviceClient.pushData();
+                break;
+            default:
+                break;
         }
     }
 }

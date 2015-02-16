@@ -8,4 +8,7 @@ package sintef.android.controller.common;
 public class ClientPaths {
     public static final String START_MEASUREMENT = "/start";
     public static final String STOP_MEASUREMENT = "/stop";
+    public static final String MODE_PULL = "/pull";
+    public static final String MODE_PUSH = "/push";
+    public static final String START_PUSH = "/start_push";
 }
