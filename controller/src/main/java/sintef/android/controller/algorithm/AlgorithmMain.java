@@ -51,7 +51,7 @@ public class AlgorithmMain {
     {
         List <AccelerometerData> accData = new ArrayList<>();
         //TODO: Ask for data from watch here
-        //TODO: wait for wednesday
+
         return AlgorithmWatch.patternRecognition(accData);
     }
 

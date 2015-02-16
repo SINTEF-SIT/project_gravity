@@ -103,7 +103,7 @@ public class AlgorithmWatch
         double afterFallData;
         //for the fall
         //just a guess for the moment, update it when we see what it should be
-        double thresholdMa = 4;
+        double thresholdMa = 6;
         //for not moving after the fall
         //just a guess for the moment, update it when we see what it should be
         double thresholdMi = 0.5;
