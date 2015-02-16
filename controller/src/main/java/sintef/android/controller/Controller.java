@@ -6,9 +6,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
+import sintef.android.controller.algorithm.SensorAlgorithmPack;
+import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorManager;
 import sintef.android.controller.sensor.SensorSession;
@@ -21,6 +26,7 @@ public class Controller {
     private static Controller sController;
     private static EventBus sEventBus;
     private Context mContext;
+    private RemoteSensorManager mRemoteSensorManager;
 
 //    private static Map<SensorSession, List<SensorData>> mAllSensorData = new ConcurrentHashMap<>();
     private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<Map<SensorSession, List<SensorData>>>();
@@ -33,16 +39,20 @@ public class Controller {
         mContext = context;
         sEventBus = EventBus.getDefault();
         sEventBus.registerSticky(this);
+        mRemoteSensorManager = RemoteSensorManager.getInstance(context);
+
 
         AlgorithmMain.initializeAlgorithmMaster(context);
         SensorManager.getInstance(context);
 
         /** SENDING PACKETS TO ALGORITHM */
 
-        /*
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+
+                mRemoteSensorManager.getBuffer();
 
                 SensorAlgorithmPack pack;
                 allData.add(0, new HashMap<SensorSession, List<SensorData>>());
@@ -65,7 +75,7 @@ public class Controller {
                 // printHash(mAllSensorData);
             }
         }, 0, Constants.ALGORITHM_SEND_FREQUENCY);
-        */
+
 
     }
 

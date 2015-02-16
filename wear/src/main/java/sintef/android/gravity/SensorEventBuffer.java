@@ -15,6 +15,7 @@ import sintef.android.controller.common.Constants;
 public class SensorEventBuffer {
 
     private Buffer fifo;
+
     private static SensorEventBuffer instance;
 
     public static synchronized SensorEventBuffer getInstance() {
@@ -36,8 +37,8 @@ public class SensorEventBuffer {
         fifo.add(event);
     }
 
-    public SensorEventData[] getBufferAsArray() {
-        return (SensorEventData[]) fifo.toArray();
+    public Object[] getBufferAsArray() {
+        return fifo.toArray();
     }
 
     public Buffer getBuffer() {

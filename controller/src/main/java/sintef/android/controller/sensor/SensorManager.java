@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
@@ -69,6 +70,7 @@ public class SensorManager implements SensorEventListener {
                     mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), android.hardware.SensorManager.SENSOR_DELAY_NORMAL);
                 }
                 mRemoteSensorManager.startMeasurement();
+                mRemoteSensorManager.setMode(ClientPaths.MODE_PULL);
                 break;
             case ONPAUSE:
                 mSensorManager.unregisterListener(this);

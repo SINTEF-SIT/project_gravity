@@ -73,13 +73,14 @@ public class DeviceClient {
 
     public void pushData() {
         if (mode.equals(ClientPaths.MODE_PULL)) {
-            for (SensorEventBuffer.SensorEventData data : mSensorEventBuffer.getBufferAsArray()) {
+            for (Object data : mSensorEventBuffer.getBufferAsArray()) {
+                SensorEventBuffer.SensorEventData event = (SensorEventBuffer.SensorEventData) data;
                 sendSensorData(
-                        data.getSession(),
-                        data.getSensorType(),
-                        data.getAccuracy(),
-                        data.getTimestamp(),
-                        data.getValues()
+                        event.getSession(),
+                        event.getSensorType(),
+                        event.getAccuracy(),
+                        event.getTimestamp(),
+                        event.getValues()
                 );
             }
         }
