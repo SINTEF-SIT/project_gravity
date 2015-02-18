@@ -53,7 +53,7 @@ public class AlgorithmMain {
     private boolean watchAlgorithm(SensorAlgorithmPack pack)
     {
         List <AccelerometerData> accData;
-        //TODO: Ask for data from watch here
+
         RemoteSensorManager mRemoteSensorManager = RemoteSensorManager.getInstance(mContext);
         mRemoteSensorManager.getBuffer();
 
