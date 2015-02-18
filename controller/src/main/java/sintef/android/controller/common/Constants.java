@@ -18,7 +18,7 @@ public class Constants {
     public static final int WEAR_BUFFER_SIZE = 10; // in seconds
 
     public static final int SENSOR_PULL_FREQ = 50; // in Hz
-    public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
+    public static final int SENSOR_BATCHING_DELAY = 5; // in seconds
     public static final String SENSOR_SESSION_SPLIT_KEY = ";";
 
     public static final int ALGORITHM_SEND_FREQUENCY = 1000;
