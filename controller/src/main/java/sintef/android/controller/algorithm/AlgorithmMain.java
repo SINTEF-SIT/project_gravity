@@ -62,7 +62,6 @@ public class AlgorithmMain {
     }
 
 
-    //maybe drop this
     private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
         List<AccelerometerData> accData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
