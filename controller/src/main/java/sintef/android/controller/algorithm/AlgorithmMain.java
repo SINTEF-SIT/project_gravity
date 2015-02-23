@@ -37,9 +37,9 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<GyroscopeData> rotData, SensorAlgorithmPack pack)
+    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<GyroscopeData> rotData, SensorAlgorithmPack pack, boolean hasWatch)
     {
-        boolean hasWatch = false;
+        //TODO: Find out if the watch is connected
         for (int i=0; i < accData.size(); i++){
             if (AlgorithmPhone.calculateAccelerations(accData.get(i).getX(), accData.get(i).getY(), rotData.get(i).getY(), accData.get(i).getZ(), rotData.get(i).getZ()))
             {
@@ -76,9 +76,11 @@ public class AlgorithmMain {
 
     public void onEvent(SensorAlgorithmPack pack)
     {
+        boolean hasWatch = false;
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<GyroscopeData> rotationVectorData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
+            if (hasWatch == false && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
             switch (entry.getKey().getSensorType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     accelerometerData.add((AccelerometerData) entry.getValue());
@@ -89,7 +91,7 @@ public class AlgorithmMain {
                 //case Sensor.TYPE_GAME_ROTATION_VECTOR:
                 //    break;
             }
-            phoneAlgorithm(accelerometerData, rotationVectorData, pack);
+            phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch);
         }
     }
 
