@@ -29,14 +29,14 @@ public class AlgorithmPhone
         return false;
     }
 
-    public static boolean isFallTest(double x, double y, double z, double tetaY, double tetaZ, double totAccThreshold, double verticalAccThreshold, double accComparisonThreshold)
+    public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ, double testtotAccThreshold, double testverticalAccThreshold, double testaccComparisonThreshold)
     {
         double totalAcceleration = accelerationTotal(x, y, z);
-        double verticalAcceleration = verticalAcceleration(x, y, tetaY, z, tetaZ);
+        double verticalAcceleration = verticalAcceleration(x, y, z, tetaY, tetaZ);
 
-        if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
+        if (totalAcceleration >= testtotAccThreshold && verticalAcceleration >= testverticalAccThreshold)
         {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) <= accComparisonThreshold)
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) <= testaccComparisonThreshold)
             {
                 return true;
             }
