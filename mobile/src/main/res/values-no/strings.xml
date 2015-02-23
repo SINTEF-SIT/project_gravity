@@ -3,13 +3,13 @@
 
     <string name="app_name">Fall Alarm</string>
 
-    <string name="action_advanced">Advanced</string>
-    <string name="action_ken">Next of kin</string
+    <string name="action_advanced">Avansert</string>
+    <string name="action_ken">Pårørende</string
         >
-    <string name="advanced_activity">Advanced</string>
+    <string name="advanced_activity">Avansert</string>
 
-    <string name="fragment_graph">Graph</string>
-    <string name="fragment_advanced">Advanced</string>
+    <string name="fragment_graph">Graf</string>
+    <string name="fragment_advanced">Avansert</string>
 
     <string name="alarm_progress_disabled">Ingen\nalarm</string>
     <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>

@@ -13,10 +13,14 @@
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".AdvancedActivity"
+            android:label="@string/advanced_activity"
+            android:screenOrientation="sensorPortrait"/>
 
         <service android:enabled="true" android:name=".MainService" />
         <service android:name=".RemoteSensorService">
