@@ -23,18 +23,29 @@ public class AlgorithmPhoneTest extends InstrumentationTestCase {
         super.setUp();
     }
 
-    public void testAngleOfPhone (){
-        assertTrue(AlgorithmPhone.angleOfPhone(90, 15, 45));
-        assertFalse(AlgorithmPhone.angleOfPhone(90,45,45));
+    public void testAngleOfPhoneTrue (){
+        assertTrue(AlgorithmPhone.isPhoneVertical(15,90,45));
     }
 
-    public void testIsFallTest(){
+    public void testAngleOfPhoneFalse (){
+        assertFalse(AlgorithmPhone.isPhoneVertical(15,45,45));
+    }
+
+    public void testIsFallTestTrue(){
         double pi = Math.PI;
         double piHalf = pi/2;
-        assertTrue(isFallTest(8,5,20,piHalf,piHalf,4,4,0.9));
-        assertFalse(isFallTest(8,5,1,piHalf,piHalf,4,4,0.9));
+        assertTrue(AlgorithmPhone.isFallTest(8,20,5,piHalf,piHalf,4,4,0.9));
 
+        /*
+        System.out.println("TEST");
+        System.out.println("TEST " + AlgorithmPhone.isFallTest(8,20,5,piHalf,piHalf,4,4,0.9));
+        System.out.println("/TEST");*/
+    }
 
+    public void testIsFallTestFalse(){
+        double pi = Math.PI;
+        double piHalf = pi/2;
+        assertFalse(AlgorithmPhone.isFallTest(8,1,5,piHalf,piHalf,4,4,0.9));
     }
 
     @Override
