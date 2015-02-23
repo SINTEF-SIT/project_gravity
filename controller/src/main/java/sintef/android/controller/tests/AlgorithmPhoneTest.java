@@ -1,6 +1,7 @@
 package sintef.android.controller.tests;
 
 import android.test.InstrumentationTestCase;
+import java.lang.Math;
 
 import junit.framework.TestCase;
 
@@ -23,10 +24,16 @@ public class AlgorithmPhoneTest extends InstrumentationTestCase {
     }
 
     public void testAngleOfPhone (){
-        assertTrue(AlgorithmPhone.angleOfPhone(3.4,6.7));
+        assertTrue(AlgorithmPhone.angleOfPhone(90, 15, 45));
+        assertFalse(AlgorithmPhone.angleOfPhone(90,45,45));
     }
 
-    public void testVerticalComparedToTotal(){
+    public void testIsFallTest(){
+        double pi = Math.PI;
+        double piHalf = pi/2;
+        assertTrue(isFallTest(8,5,20,piHalf,piHalf,4,4,0.9));
+        assertFalse(isFallTest(8,5,1,piHalf,piHalf,4,4,0.9));
+
 
     }
 
