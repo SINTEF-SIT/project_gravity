@@ -17,7 +17,7 @@ public class AlgorithmPhone
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
         double totalAcceleration = accelerationTotal(x, y, z);
-        double verticalAcceleration = verticalAcceleration(x, y, tetaY, z, tetaZ);
+        double verticalAcceleration = verticalAcceleration(x, y, z, tetaY, tetaZ);
 
         if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
         {
