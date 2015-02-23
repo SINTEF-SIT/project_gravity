@@ -11,6 +11,10 @@ import sintef.android.controller.sensor.data.AccelerometerData;
  */
 public class AlgorithmWatch
 {
+    private static final double thresholdFall = 6;
+    //private static final double thresholdImpact = 8;
+    private static final double thresholdStill = 2;
+
     //Calculate the acceleration.
     //Switch back to List <SensorData> after testing
     private static double fallIndex(List<AccelerometerData> sensors)
@@ -96,18 +100,14 @@ public class AlgorithmWatch
     //Recognize fall pattern, and decide if there is a fall or not
     public static boolean patternRecognition(List<AccelerometerData> sensors)
     {
-        //TODO: make this even better
         double accelerationData;
+        double impactFallData;
+        double afterFallData;
+
         if (sensors.size() >= 20) {accelerationData = fallIndex(sensors, 20);}
         else {accelerationData = fallIndex(sensors);}
-        double afterFallData;
-        //for the fall
-        //just a guess for the moment, update it when we see what it should be
-        double thresholdMa = 6;
-        //for not moving after the fall
-        //just a guess for the moment, update it when we see what it should be
-        double thresholdMi = 0.5;
-        if (accelerationData > thresholdMa)
+
+        if (accelerationData > thresholdFall)
         {
             return true;
             //TODO: fix pattern recognition
