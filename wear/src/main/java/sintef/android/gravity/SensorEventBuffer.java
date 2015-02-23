@@ -26,7 +26,7 @@ public class SensorEventBuffer {
     }
 
     private SensorEventBuffer() {
-        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(Constants.WEAR_BUFFER_SIZE));
+        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(Constants.WEAR_BUFFER_SIZE * 150));
     }
 
     public void addSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
