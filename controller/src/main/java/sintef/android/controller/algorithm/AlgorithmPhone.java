@@ -9,16 +9,19 @@ import sintef.android.controller.sensor.SensorData;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold, verticalAccThreshold, accComparisonThreshold, angleThreshold;
+    private static double totAccThreshold = 4;
+    private static double verticalAccThreshold = 4;
+    private static double accComparisonThreshold = 0.9;
+    private static double angleThreshold = 45;
 
-    public static boolean calculateAccelerations(double x, double y, double tetaY, double z, double tetaZ)
+    public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
         double totalAcceleration = accelerationTotal(x, y, z);
         double verticalAcceleration = verticalAcceleration(x, y, tetaY, z, tetaZ);
 
         if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
         {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= accComparisonThreshold)
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) <= accComparisonThreshold)
             {
                 return true;
             }
@@ -26,13 +29,24 @@ public class AlgorithmPhone
         return false;
     }
 
-
-
-    public static boolean angleOfPhone(double priorAngle, double postAngle)
+    public static boolean isFallTest(double x, double y, double z, double tetaY, double tetaZ, double totAccThreshold, double verticalAccThreshold, double accComparisonThreshold)
     {
-        if (postAngle - priorAngle >= angleThreshold){
-            return true;
+        double totalAcceleration = accelerationTotal(x, y, z);
+        double verticalAcceleration = verticalAcceleration(x, y, tetaY, z, tetaZ);
+
+        if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
+        {
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) <= accComparisonThreshold)
+            {
+                return true;
+            }
         }
+        return false;
+    }
+
+    public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
+    {
+        if (postAngle - priorAngle >= angleThreshold){ return true; }
         return false;
     }
 
@@ -48,8 +62,8 @@ public class AlgorithmPhone
     }
 
     //calculates vertical acceleration at one point
-    private static double verticalAcceleration(double x, double y, double tetaY, double z, double tetaZ)
+        private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
     {
-        return x*Math.sin(tetaZ) + z*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ);
+        return x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ);
     }
 }

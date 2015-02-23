@@ -41,7 +41,7 @@ public class AlgorithmMain {
     {
         boolean hasWatch = false;
         for (int i=0; i < accData.size(); i++){
-            if (AlgorithmPhone.calculateAccelerations(accData.get(i).getX(), accData.get(i).getY(), rotData.get(i).getY(), accData.get(i).getZ(), rotData.get(i).getZ()))
+            if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), rotData.get(i).getY(), accData.get(i).getZ(), rotData.get(i).getZ()))
             {
                 if (hasWatch){ return watchAlgorithm(pack);}
                 return true;
