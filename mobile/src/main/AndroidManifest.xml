@@ -22,6 +22,11 @@
             android:label="@string/advanced_activity"
             android:screenOrientation="sensorPortrait"/>
 
+        <activity
+            android:name=".wizard.WizardMain"
+            android:label="@string/wizard_activity"
+            android:screenOrientation="sensorPortrait"/>
+
         <service android:enabled="true" android:name=".MainService" />
         <service android:name=".RemoteSensorService">
             <intent-filter>

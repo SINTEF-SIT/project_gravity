@@ -16,4 +16,20 @@
     <string name="alarm_progress_cancelled">Alarm er\nstoppet</string>
     <string name="alarm_progress_done">Alarm er\nsendt</string>
     <string name="alarm_start_button">Start\nalarm</string>
+
+    <string name="wizard_activity">Wizard</string>
+
+    <string name="next">Next</string>
+    <string name="prev">Previous</string>
+    <string name="finish">Submit order</string>
+
+    <string name="submit_confirm_message">Place the order with the deli? You will receive an email
+        confirmation.</string>
+    <string name="submit_confirm_button">Place order</string>
+
+    <string name="label_your_name">Name</string>
+    <string name="hint_your_name">e.g. Larry</string>
+    <string name="label_your_email">Email</string>
+    <string name="hint_your_email">Optional</string>
+
 </resources>

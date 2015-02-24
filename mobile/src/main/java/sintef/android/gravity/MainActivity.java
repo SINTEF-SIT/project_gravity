@@ -10,17 +10,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "Main Activity";
 
+    private static final String RUN_WIZARD = "run_wizard";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startActivity(new Intent(this, WizardMain.class));
+
+        /*
+        if (PreferencesHelper.getBoolean(RUN_WIZARD, true)) {
+            startActivity(new Intent(this, WizardMain.class));
+            finish();
+            return;
+        }
         Controller.initializeController(this);
         PreferencesHelper.initializePreferences(this);
 
@@ -28,6 +37,7 @@ public class MainActivity extends ActionBarActivity {
 
         init();
         startDetector();
+        */
     }
 
     private void init() {
