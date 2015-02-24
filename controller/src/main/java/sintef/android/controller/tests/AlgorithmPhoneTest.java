@@ -35,11 +35,6 @@ public class AlgorithmPhoneTest extends InstrumentationTestCase {
         double pi = Math.PI;
         double piHalf = pi/2;
         assertTrue(AlgorithmPhone.isFall(8,20,5,piHalf,piHalf,4,4,0.9));
-
-        /*
-        System.out.println("TEST");
-        System.out.println("TEST " + AlgorithmPhone.isFallTest(8,20,5,piHalf,piHalf,4,4,0.9));
-        System.out.println("/TEST");*/
     }
 
     public void testIsFallTestFalse(){
