@@ -11,7 +11,7 @@ import sintef.android.controller.sensor.data.AccelerometerData;
  */
 public class AlgorithmWatch
 {
-    private static final double thresholdFall = 10;
+    private static final double thresholdFall = 2;
     //private static final double thresholdImpact = 8;
     private static final double thresholdStill = 3;
 
@@ -80,12 +80,7 @@ public class AlgorithmWatch
         for (int i = 0; i < sensorData.size(); i++)
         {
             for (int j = sensorData.get(i).size()-numberOfCalculations; j < sensorData.get(i).size(); j++) {
-                if (j > 0)
-                {
-
-                    directionAcceleration += Math.pow((Double) sensorData.get(i).get(j) - (Double) sensorData.get(i).get(j - 1), 2);
-
-                }
+                if (j > 0) directionAcceleration += Math.pow((Double) sensorData.get(i).get(j) - (Double) sensorData.get(i).get(j - 1), 2);
             }
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
@@ -104,13 +99,14 @@ public class AlgorithmWatch
         //double impactFallData;
         double afterFallData;
 
-        if (sensors.size() >= 20) {accelerationData = fallIndex(sensors, 20);}
-        else {accelerationData = fallIndex(sensors);}
+        if (sensors.size() >= 20) accelerationData = fallIndex(sensors, 20);
+        else accelerationData = fallIndex(sensors);
 
         if (accelerationData > thresholdFall)
         {
+            return true;
             //TODO: fix pattern recognition
-            afterFallData = fallIndex(sensors, 5);
+            /*afterFallData = fallIndex(sensors, 5);
             if (afterFallData < thresholdStill)
             {
                 return true;
@@ -118,7 +114,7 @@ public class AlgorithmWatch
             else
             {
                 return false;
-            }
+            }*/
         }
         else
         {

@@ -20,6 +20,7 @@ import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.RotationVectorData;
 
 /**
  * Created by samyboy89 on 05/02/15.
@@ -40,32 +41,16 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<List> accData, List<List> rotData, SensorAlgorithmPack pack, boolean hasWatch)
+    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, SensorAlgorithmPack pack, boolean hasWatch)
     {
         //TODO: Find out if the watch is connected. Done, but not sure if it works or not
-        List <AccelerometerData> accelerationData = new ArrayList<>();
-        List <GyroscopeData> rotationData = new ArrayList<>();
-
-        for (List list : accData)
-        {
-            for (Object acc : list)
+        int numberOfIterations;
+        if (accData.size() <= rotData.size()) numberOfIterations = accData.size();
+        else numberOfIterations = rotData.size();
+        for (int i=0; i < numberOfIterations; i++){
+            if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), rotData.get(i).getEstimatedHeadingAccuracy(), accData.get(i).getZ(), rotData.get(i).getEstimatedHeadingAccuracy()))
             {
-                //System.out.println(acc + " was here");
-                accelerationData.add((AccelerometerData) acc);
-            }
-        }
-        for (List list : rotData)
-        {
-            for (Object rot : list)
-            {
-                rotationData.add((GyroscopeData) rot);
-            }
-        }
-        System.out.println("Gravity was here");
-        for (int i=0; i < accData.size(); i++){
-            if (AlgorithmPhone.isFall(accelerationData.get(i).getX(), accelerationData.get(i).getY(), rotationData.get(i).getY(), accelerationData.get(i).getZ(), rotationData.get(i).getZ()))
-            {
-                if (hasWatch){ return watchAlgorithm(pack);}
+                if (hasWatch) return watchAlgorithm(pack);
                 return true;
             }
         }
@@ -75,30 +60,25 @@ public class AlgorithmMain {
     private boolean watchAlgorithm(SensorAlgorithmPack pack)
     {
         List <AccelerometerData> accData = new ArrayList<>();
-        List <List> accelerationData;
 
         RemoteSensorManager mRemoteSensorManager = RemoteSensorManager.getInstance(mContext);
         mRemoteSensorManager.getBuffer();
 
-        accelerationData = getWatchData(pack);
-        for (List l : accelerationData)
-        {
-            for (Object acc : l)
-            {
-                accData.add((AccelerometerData) acc);
-            }
-        }
+        accData = getWatchData(pack);
 
         return AlgorithmWatch.patternRecognition(accData);
     }
 
 
-    private List <List> getWatchData (SensorAlgorithmPack pack) {
-        List<List> accData = new ArrayList<>();
+    private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
+        List<AccelerometerData> accData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             if (entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {
                 if (entry.getKey().getSensorType() == Sensor.TYPE_ACCELEROMETER) {
-                    accData.add(entry.getValue());
+                    for (int i = 0; i < entry.getValue().size(); i++)
+                    {
+                        accData.add((AccelerometerData) entry.getValue().get(i).getSensorData());
+                    }
                 }
             }
         }
@@ -108,21 +88,28 @@ public class AlgorithmMain {
     public void onEvent(SensorAlgorithmPack pack)
     {
         boolean hasWatch = false;
-        List<List> accelerometerData = new ArrayList<>();
-        List<List> rotationVectorData = new ArrayList<>();
+        List<AccelerometerData> accelerometerData = new ArrayList<>();
+        List<RotationVectorData> rotationVectorData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
             switch (entry.getKey().getSensorType()) {
                 case Sensor.TYPE_ACCELEROMETER:
-                    accelerometerData.add(entry.getValue());
+                    //System.out.println(entry.getValue().get(0).getSensorData().getClass() + " was here");
+                    for (int i = 0; i < entry.getValue().size(); i++)
+                    {
+                        accelerometerData.add((AccelerometerData) entry.getValue().get(i).getSensorData());
+                    }
                     break;
-                case Sensor.TYPE_GYROSCOPE:
-                    rotationVectorData.add(entry.getValue());
+                case Sensor.TYPE_ROTATION_VECTOR:
+                    for (int i = 0; i < entry.getValue().size(); i++)
+                    {
+                        rotationVectorData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
+                    }
                     break;
                 //case Sensor.TYPE_GAME_ROTATION_VECTOR:
                 //    break;
             }
-            phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch);
+            System.out.println(phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch) + " was here");
         }
     }
 

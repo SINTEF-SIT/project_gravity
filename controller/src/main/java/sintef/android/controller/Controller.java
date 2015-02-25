@@ -56,9 +56,9 @@ public class Controller {
 
                 SensorAlgorithmPack pack;
                 allData.add(0, new HashMap<SensorSession, List<SensorData>>());
-                List<Map<SensorSession, List<SensorData>>> cat = new ArrayList<Map<SensorSession, List<SensorData>>>();
+//                List<Map<SensorSession, List<SensorData>>> cat = new ArrayList<Map<SensorSession, List<SensorData>>>();
                 if (allData.size() > 2) {
-//                    cat.addAll((java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(2));
+//                    cat.addAll(entrySet() (java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(2));
 //                    cat.addAll((java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(1));
 
                     pack = SensorAlgorithmPack.processNewSensorData(allData.get(2), allData.get(1));
@@ -84,7 +84,7 @@ public class Controller {
     }
 
     public void onEvent(SensorData data) {
-        if (true) return; /*** DELETE ***/
+        //if (true) return; /*** DELETE ***/
 
         if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
         Map<SensorSession, List<SensorData>> sensorData = allData.get(0);
