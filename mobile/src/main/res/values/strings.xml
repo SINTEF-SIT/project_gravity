@@ -18,18 +18,24 @@
     <string name="alarm_start_button">Start\nalarm</string>
 
     <string name="wizard_activity">Wizard</string>
+    <string name="wizard_intro_welcome_text">Welcome to\nFall Alarm</string>
+    <string name="wizard_intro_welcome_sub_text">We\'re here to help you feel safe and protected.</string>
+    <string name="wizard_notification_header">Always turned on</string>
+    <string name="wizard_notification_explanation_text">This icon means that fall detection is turned on.</string>
+    <string name="wizard_alarm_header">We give you help</string>
+    <string name="wizard_alarm_explanation_text">If you\'re unlucky enough to have fallen, an alarm will notify your caretaker and next of kin.</string>
+    <string name="wizard_false_alarm_header">False alarm</string>
+    <string name="wizard_false_alarm_explanation_text">If you are okay after a fall, you can stop the alarm within 2 min.</string>
+    <string name="wizard_next_of_kin_header">Next of kin</string>
+    <string name="wizard_next_of_kin_name">Name</string>
+    <string name="wizard_next_of_kin_name_not_empty">Must have a name</string>
+    <string name="wizard_next_of_kin_telephone">Telephone</string>
+    <string name="wizard_next_of_kin_telephone_not_empty">Must have a phone number</string>
 
     <string name="next">Next</string>
     <string name="prev">Previous</string>
-    <string name="finish">Submit order</string>
+    <string name="finish">Finish</string>
+    <string name="skip">Skip</string>
 
-    <string name="submit_confirm_message">Place the order with the deli? You will receive an email
-        confirmation.</string>
-    <string name="submit_confirm_button">Place order</string>
-
-    <string name="label_your_name">Name</string>
-    <string name="hint_your_name">e.g. Larry</string>
-    <string name="label_your_email">Email</string>
-    <string name="hint_your_email">Optional</string>
 
 </resources>

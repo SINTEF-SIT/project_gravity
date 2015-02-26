@@ -11,6 +11,19 @@
         <item name="android:colorAccent">@android:color/white</item>
 
         <item name="android:colorButtonNormal">@color/primary</item>
+
+        <item name="floatingHintEditTextStyle">@style/Widget.FloatingHintEditText</item>
+    </style>
+
+    <style name="Widget"></style>
+
+    <style name="Widget.FloatingHintEditText" parent="@android:style/Widget.EditText">
+        <item name="android:paddingTop">0dp</item>
+    </style>
+
+
+    <style name="WizardTheme" parent="AppTheme">
+        <item name="android:navigationBarColor">@color/primary</item>
     </style>
 
     <style name="TextAppearanceFinish">

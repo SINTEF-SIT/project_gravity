@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.Controller;
 
 /**
  * Created by samyboy89 on 03/02/15.
@@ -48,7 +47,7 @@ public class MainService extends Service {
                 .setContentTitle("GRAVITY")
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setSmallIcon(R.drawable.ic_stat_on);
 
         mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
     }
