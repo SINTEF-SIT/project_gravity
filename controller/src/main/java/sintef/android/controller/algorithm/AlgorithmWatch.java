@@ -11,6 +11,10 @@ import sintef.android.controller.sensor.data.AccelerometerData;
  */
 public class AlgorithmWatch
 {
+    private static final double thresholdFall = 2;
+    //private static final double thresholdImpact = 8;
+    private static final double thresholdStill = 3;
+
     //Calculate the acceleration.
     //Switch back to List <SensorData> after testing
     private static double fallIndex(List<AccelerometerData> sensors)
@@ -76,12 +80,7 @@ public class AlgorithmWatch
         for (int i = 0; i < sensorData.size(); i++)
         {
             for (int j = sensorData.get(i).size()-numberOfCalculations; j < sensorData.get(i).size(); j++) {
-                if (j > 0)
-                {
-
-                    directionAcceleration += Math.pow((Double) sensorData.get(i).get(j) - (Double) sensorData.get(i).get(j - 1), 2);
-
-                }
+                if (j > 0) directionAcceleration += Math.pow((Double) sensorData.get(i).get(j) - (Double) sensorData.get(i).get(j - 1), 2);
             }
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
@@ -96,30 +95,26 @@ public class AlgorithmWatch
     //Recognize fall pattern, and decide if there is a fall or not
     public static boolean patternRecognition(List<AccelerometerData> sensors)
     {
-        //TODO: make this even better
         double accelerationData;
-        if (sensors.size() >= 20) {accelerationData = fallIndex(sensors, 20);}
-        else {accelerationData = fallIndex(sensors);}
+        //double impactFallData;
         double afterFallData;
-        //for the fall
-        //just a guess for the moment, update it when we see what it should be
-        double thresholdMa = 6;
-        //for not moving after the fall
-        //just a guess for the moment, update it when we see what it should be
-        double thresholdMi = 0.5;
-        if (accelerationData > thresholdMa)
+
+        if (sensors.size() >= 20) accelerationData = fallIndex(sensors, 20);
+        else accelerationData = fallIndex(sensors);
+
+        if (accelerationData > thresholdFall)
         {
             return true;
             //TODO: fix pattern recognition
-            //might be unnecessary, have to test a little bit before we can be sure.
-            //afterFallData = fallIndex(sensors, 5);
-            //if (afterFallData < thresholdMi)
-            //{
-            //}
-            //else
-            //{
-            //    return false;
-            //}
+            /*afterFallData = fallIndex(sensors, 5);
+            if (afterFallData < thresholdStill)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }*/
         }
         else
         {

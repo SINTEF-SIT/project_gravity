@@ -11,7 +11,7 @@ public class AlgorithmPhone
 {
     private static double totAccThreshold = 4;
     private static double verticalAccThreshold = 4;
-    private static double accComparisonThreshold = 0.9;
+    private static double accComparisonThreshold = 9;
     private static double angleThreshold = 45;
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
