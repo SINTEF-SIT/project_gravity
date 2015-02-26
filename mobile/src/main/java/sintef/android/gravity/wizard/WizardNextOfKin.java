@@ -20,10 +20,10 @@ public class WizardNextOfKin extends WizardTemplate {
     @Override
     public void init() {
         String name = PreferencesHelper.getString(Constants.PREFS_NEXT_OF_KIN_NAME);
-        if (name.equals(PreferencesHelper.INVALID_STRING)) mNameEdit.setText(name);
+        if (!name.equals(PreferencesHelper.INVALID_STRING)) mNameEdit.setText(name);
 
         String telephone = PreferencesHelper.getString(Constants.PREFS_NEXT_OF_KIN_TELEPHONE);
-        if (telephone.equals(PreferencesHelper.INVALID_STRING)) mTelephoneEdit.setText(telephone);
+        if (!telephone.equals(PreferencesHelper.INVALID_STRING)) mTelephoneEdit.setText(telephone);
 
         mWizardMain.setFields(mNameEdit, mTelephoneEdit);
     }
