@@ -94,7 +94,6 @@ public class AlgorithmMain {
             if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
             switch (entry.getKey().getSensorType()) {
                 case Sensor.TYPE_ACCELEROMETER:
-                    //System.out.println(entry.getValue().get(0).getSensorData().getClass() + " was here");
                     for (int i = 0; i < entry.getValue().size(); i++)
                     {
                         accelerometerData.add((AccelerometerData) entry.getValue().get(i).getSensorData());
@@ -106,8 +105,6 @@ public class AlgorithmMain {
                         rotationVectorData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
                     }
                     break;
-                //case Sensor.TYPE_GAME_ROTATION_VECTOR:
-                //    break;
             }
             System.out.println(phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch) + " was here");
         }
