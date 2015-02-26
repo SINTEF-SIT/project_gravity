@@ -1,8 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">gravity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Fall Alarm</string>
+
+    <string name="action_advanced">Advanced</string>
+    <string name="action_ken">Next of kin</string
+        >
+    <string name="advanced_activity">Advanced</string>
+
+    <string name="fragment_graph">Graph</string>
+    <string name="fragment_advanced">Advanced</string>
+
+    <string name="alarm_progress_disabled">Ingen\nalarm</string>
+    <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>
+    <string name="alarm_progress_cancelled">Alarm er\nstoppet</string>
+    <string name="alarm_progress_done">Alarm er\nsendt</string>
+    <string name="alarm_start_button">Start\nalarm</string>
+
+    <string name="wizard_activity">Wizard</string>
+    <string name="wizard_intro_welcome_text">Welcome to\nFall Alarm</string>
+    <string name="wizard_intro_welcome_sub_text">We\'re here to help you feel safe and protected.</string>
+    <string name="wizard_notification_header">Always turned on</string>
+    <string name="wizard_notification_explanation_text">This icon means that fall detection is turned on.</string>
+    <string name="wizard_alarm_header">We give you help</string>
+    <string name="wizard_alarm_explanation_text">If you\'re unlucky enough to have fallen, an alarm will notify your caretaker and next of kin.</string>
+    <string name="wizard_false_alarm_header">False alarm</string>
+    <string name="wizard_false_alarm_explanation_text">If you are okay after a fall, you can stop the alarm within 2 min.</string>
+    <string name="wizard_next_of_kin_header">Next of kin</string>
+    <string name="wizard_next_of_kin_name">Name</string>
+    <string name="wizard_next_of_kin_name_not_empty">Must have a name</string>
+    <string name="wizard_next_of_kin_telephone">Telephone</string>
+    <string name="wizard_next_of_kin_telephone_not_empty">Must have a phone number</string>
+
+    <string name="next">Next</string>
+    <string name="prev">Previous</string>
+    <string name="finish">Finish</string>
+    <string name="skip">Skip</string>
+
 
 </resources>

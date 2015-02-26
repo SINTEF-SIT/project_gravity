@@ -2,4 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <item name="floatinghintedittext_hint_scale" type="dimen" format="float">0.6</item>
+    <item name="floatinghintedittext_animation_steps" type="dimen" format="integer">6</item>
+
 </resources>
