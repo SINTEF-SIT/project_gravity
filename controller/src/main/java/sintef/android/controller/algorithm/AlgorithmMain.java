@@ -4,23 +4,19 @@ import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.hardware.Sensor;
 
-import com.google.android.gms.wearable.MessageEvent;
-
-//import org.apache.commons.collections.bag.SynchronizedSortedBag;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.common.ClientPaths;
+import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.GyroscopeData;
 import sintef.android.controller.sensor.data.RotationVectorData;
+
+//import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
 /**
  * Created by samyboy89 on 05/02/15.
@@ -106,7 +102,13 @@ public class AlgorithmMain {
                     }
                     break;
             }
-            System.out.println(phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch) + " was here");
+
+            boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch);
+            if (isFall) {
+                EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
+            }
+
+            System.out.println(isFall + " was here");
         }
     }
 

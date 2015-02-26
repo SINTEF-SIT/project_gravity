@@ -1,16 +1,12 @@
 package sintef.android.controller.algorithm;
 
-import java.util.List;
-
-import sintef.android.controller.sensor.SensorData;
-
 /**
  * Created by Andreas on 10.02.2015.
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 4;
-    private static double verticalAccThreshold = 4;
+    private static double totAccThreshold = 8;
+    private static double verticalAccThreshold = 8;
     private static double accComparisonThreshold = 9;
     private static double angleThreshold = 45;
 

@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
 import sintef.android.controller.utils.DonutProgress;
 
 /**
@@ -38,6 +40,7 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         if (getView() == null) return;
 
+        EventBus.getDefault().register(this);
 
         init();
 
@@ -48,10 +51,17 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
         mAlarmProgressBackground = getView().findViewById(R.id.progress_background);
         mAlarmProgress = (DonutProgress) getView().findViewById(R.id.progress);
         mForceAlarmButton = (Button) getView().findViewById(R.id.start_alarm);
+        mForceAlarmButton.setVisibility(View.INVISIBLE);
 
         mAlarmProgress.setOnClickListener(this);
         mForceAlarmButton.setOnClickListener(this);
         resetAlarmProgress();
+    }
+
+    public void onEvent(EventTypes type) {
+        if (type == EventTypes.ALARM_DETECTED) {
+            runAlarm();
+        }
     }
 
     private void resetAlarmProgress() {
@@ -81,9 +91,7 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
     private void setAlarm(boolean cancelled) {
         mAlarmStartedAgain = false;
         if (!cancelled) {
-
             // MAKE ALARM
-
         }
 
         mAlarmText.setText(cancelled ? R.string.alarm_progress_cancelled : R.string.alarm_progress_done);
@@ -101,23 +109,17 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
         }, 5000);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.progress:
-            case R.id.progress_background:
-            case R.id.alarm_text:
-                if (mCurrentAlarmTask != null) {
-                    mCurrentAlarmTask.cancel(true);
-                }
-                break;
-            case R.id.start_alarm:
+    private void runAlarm() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
                 if (mCurrentAlarmTask != null) return;
                 mCurrentAlarmTask = new AsyncTask<Void, Integer, Void>() {
                     @Override
                     protected Void doInBackground(Void... voids) {
                         mAlarmStartedAgain = true;
-                        
+
                         for (int i = 0; i < 100; i++) {
                             if (isCancelled()) {
                                 break;
@@ -156,6 +158,22 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
                 };
                 runAlarmProgress();
                 mCurrentAlarmTask.execute();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.progress:
+            case R.id.progress_background:
+            case R.id.alarm_text:
+                if (mCurrentAlarmTask != null) {
+                    mCurrentAlarmTask.cancel(true);
+                }
+                break;
+            case R.id.start_alarm:
+                runAlarm();
                 break;
         }
     }

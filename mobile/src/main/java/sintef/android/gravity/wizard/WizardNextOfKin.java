@@ -1,6 +1,8 @@
 package sintef.android.gravity.wizard;
 
 import butterknife.InjectView;
+import sintef.android.controller.common.Constants;
+import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.R;
 
 /**
@@ -17,6 +19,12 @@ public class WizardNextOfKin extends WizardTemplate {
 
     @Override
     public void init() {
+        String name = PreferencesHelper.getString(Constants.PREFS_NEXT_OF_KIN_NAME);
+        if (name.equals(PreferencesHelper.INVALID_STRING)) mNameEdit.setText(name);
+
+        String telephone = PreferencesHelper.getString(Constants.PREFS_NEXT_OF_KIN_TELEPHONE);
+        if (telephone.equals(PreferencesHelper.INVALID_STRING)) mTelephoneEdit.setText(telephone);
+
         mWizardMain.setFields(mNameEdit, mTelephoneEdit);
     }
 }

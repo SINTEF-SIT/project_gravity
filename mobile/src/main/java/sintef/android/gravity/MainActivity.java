@@ -81,9 +81,15 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_ken:
+                new NextOfKinDialog(this);
+                return true;
+            case R.id.action_help:
+                startActivity(new Intent(this, WizardMain.class));
                 return true;
             case R.id.action_advanced:
                 openActionActivity();
+                return true;
+            case R.id.action_about:
                 return true;
         }
         return super.onOptionsItemSelected(item);
