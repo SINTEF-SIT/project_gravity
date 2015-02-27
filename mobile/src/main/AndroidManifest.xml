@@ -26,7 +26,7 @@
             android:name=".wizard.WizardMain"
             android:label="@string/wizard_activity"
             android:screenOrientation="sensorPortrait"
-            android:theme="@style/WizardTheme"/>
+            android:theme="@style/Theme.AppCompat.Light"/>
 
         <service android:enabled="true" android:name=".MainService" />
         <service android:name=".RemoteSensorService">
