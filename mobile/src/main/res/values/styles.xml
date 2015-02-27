@@ -12,4 +12,8 @@
         <item name="android:paddingTop">0dp</item>
     </style>
 
+    <style name="WizardTheme" parent="AppTheme">
+    </style>
+
+
 </resources>
