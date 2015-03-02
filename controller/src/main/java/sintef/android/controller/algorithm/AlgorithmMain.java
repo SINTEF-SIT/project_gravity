@@ -14,6 +14,7 @@ import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
@@ -37,7 +38,7 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, SensorAlgorithmPack pack, boolean hasWatch)
+    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> magData, SensorAlgorithmPack pack, boolean hasWatch)
     {
         //TODO: Find out if the watch is connected. Done, but not sure if it works or not
         int numberOfIterations;
@@ -86,6 +87,7 @@ public class AlgorithmMain {
         boolean hasWatch = false;
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
+        List<MagneticFieldData> magneticFieldData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
             switch (entry.getKey().getSensorType()) {
@@ -101,9 +103,15 @@ public class AlgorithmMain {
                         rotationVectorData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
                     }
                     break;
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    for (int i = 0; i < entry.getValue().size(); i++)
+                    {
+                        magneticFieldData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
+                    }
+                    break;
             }
 
-            boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch);
+            boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, magneticFieldData, pack, hasWatch);
             if (isFall) {
                 EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
             }
