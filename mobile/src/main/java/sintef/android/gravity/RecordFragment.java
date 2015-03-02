@@ -37,6 +37,7 @@ import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.gravity.wizard.FloatingHintEditText;
 
@@ -164,6 +165,7 @@ public class RecordFragment extends Fragment {
 
                 JsonArray accelerometerArray = new JsonArray();
                 JsonArray rotationVectorArray = new JsonArray();
+                JsonArray magneticFieldArray = new JsonArray();
                 JsonArray gyroscopeArray = new JsonArray();
                 JsonArray gravityArray = new JsonArray();
 
@@ -196,6 +198,18 @@ public class RecordFragment extends Fragment {
                                     rotationVectorArray.add(rotationVectorObject);
                                 }
                                 break;
+                            case Sensor.TYPE_MAGNETIC_FIELD:
+                                for (int i = 0; i < entry.getValue().size(); i++) {
+                                    SensorData data = entry.getValue().get(i);
+                                    MagneticFieldData magData = (MagneticFieldData) data.getSensorData();
+                                    JsonObject magneticFieldObject = new JsonObject();
+                                    magneticFieldObject.addProperty("time", data.getTimeCaptured());
+                                    magneticFieldObject.addProperty("x", magData.getX());
+                                    magneticFieldObject.addProperty("y", magData.getY());
+                                    magneticFieldObject.addProperty("z", magData.getZ());
+                                    magneticFieldArray.add(magneticFieldObject);
+                                }
+                                break;
                             case Sensor.TYPE_GYROSCOPE:
                                 for (int i = 0; i < entry.getValue().size(); i++) {
                                     SensorData data = entry.getValue().get(i);
@@ -226,6 +240,7 @@ public class RecordFragment extends Fragment {
 
                 sensorData.add("accelerometer_data", accelerometerArray);
                 sensorData.add("rotation_vector_data", rotationVectorArray);
+                sensorData.add("magnetic_field_data", magneticFieldArray);
                 sensorData.add("gyroscope_data", gyroscopeArray);
                 sensorData.add("gravity_data", gravityArray);
 

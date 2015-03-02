@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
@@ -16,6 +15,7 @@ import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
@@ -55,6 +55,7 @@ public class SensorManager implements SensorEventListener {
         addSensorToSystem("phone:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+        addSensorToSystem("phone:magnetic_field", Sensor.TYPE_MAGNETIC_FIELD, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
 
     }
 
@@ -99,6 +100,9 @@ public class SensorManager implements SensorEventListener {
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
                 sensorDataObject = new RotationVectorData(event.values);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                sensorDataObject = new MagneticFieldData(event.values);
                 break;
         }
         if (sensorDataObject != null)  {
