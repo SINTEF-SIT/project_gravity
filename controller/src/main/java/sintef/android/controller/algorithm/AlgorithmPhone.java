@@ -5,8 +5,8 @@ package sintef.android.controller.algorithm;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 6;
-    private static double verticalAccThreshold = 4;
+    private static double totAccThreshold = 5;
+    private static double verticalAccThreshold = 5;
     private static double accComparisonThreshold = 0.5;
     private static double angleThreshold = 30;
     private static double gravity = 9.81;
@@ -15,9 +15,6 @@ public class AlgorithmPhone
     {
         double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(gravity-verticalAcceleration(x, y, z, tetaY, tetaZ));
-
-        System.out.println(totalAcceleration+ " totAcc was here");
-        System.out.println(verticalAcceleration + " verAcc was here");
 
         if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
         {

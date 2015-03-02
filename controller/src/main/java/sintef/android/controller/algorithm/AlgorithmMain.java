@@ -103,7 +103,6 @@ public class AlgorithmMain {
         List<MagneticFieldData> geoRotVecData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
-            System.out.println(entry.getKey().getSensorType() + " was here");
             switch (entry.getKey().getSensorType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     for (int i = 0; i < entry.getValue().size(); i++)
@@ -118,7 +117,6 @@ public class AlgorithmMain {
                     }
                     break;
                 case Sensor.TYPE_MAGNETIC_FIELD:
-                    System.out.println("Gravity was here");
                     for (int i = 0; i < entry.getValue().size(); i++)
                     {
                         geoRotVecData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
