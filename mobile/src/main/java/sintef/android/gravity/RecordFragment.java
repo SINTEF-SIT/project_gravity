@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -156,37 +155,6 @@ public class RecordFragment extends Fragment {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                HashMap<Long, AccelerometerData> accelerometerData = new HashMap<>();
-                HashMap<Long, RotationVectorData> rotationVectorData = new HashMap<>();
-                HashMap<Long, GyroscopeData> gyroscopeData = new HashMap<>();
-                HashMap<Long, GravityData> gravityData = new HashMap<>();
-                for (SensorAlgorithmPack pack : mSensorAlgorithmPackList) {
-                    for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
-                        switch (entry.getKey().getSensorType()) {
-                            case Sensor.TYPE_ACCELEROMETER:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    accelerometerData.put(entry.getValue().get(i).getTimeCaptured(), (AccelerometerData) entry.getValue().get(i).getSensorData());
-                                }
-                                break;
-                            case Sensor.TYPE_ROTATION_VECTOR:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    rotationVectorData.put(entry.getValue().get(i).getTimeCaptured(), (RotationVectorData) entry.getValue().get(i).getSensorData());
-                                }
-                                break;
-                            case Sensor.TYPE_GYROSCOPE:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    gyroscopeData.put(entry.getValue().get(i).getTimeCaptured(), (GyroscopeData) entry.getValue().get(i).getSensorData());
-                                }
-                                break;
-                            case Sensor.TYPE_GRAVITY:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    gravityData.put(entry.getValue().get(i).getTimeCaptured(), (GravityData) entry.getValue().get(i).getSensorData());
-                                }
-                                break;
-                        }
-                    }
-                }
-
                 JsonObject recordings = new JsonObject();
 
                 recordings.addProperty("test_id", mTestIdInput.getText().toString());
@@ -195,45 +163,65 @@ public class RecordFragment extends Fragment {
                 JsonObject sensorData = new JsonObject();
 
                 JsonArray accelerometerArray = new JsonArray();
-                for (Map.Entry<Long, AccelerometerData> accData : accelerometerData.entrySet()) {
-                    JsonObject accelerometerObject = new JsonObject();
-                    accelerometerObject.addProperty("time", accData.getKey());
-                    accelerometerObject.addProperty("x", accData.getValue().getX());
-                    accelerometerObject.addProperty("y", accData.getValue().getY());
-                    accelerometerObject.addProperty("z", accData.getValue().getZ());
-                    accelerometerArray.add(accelerometerObject);
-                }
-
                 JsonArray rotationVectorArray = new JsonArray();
-                for (Map.Entry<Long, RotationVectorData> rotData : rotationVectorData.entrySet()) {
-                    JsonObject rotationVectorObject = new JsonObject();
-                    rotationVectorObject.addProperty("time", rotData.getKey());
-                    rotationVectorObject.addProperty("x", rotData.getValue().getX());
-                    rotationVectorObject.addProperty("y", rotData.getValue().getY());
-                    rotationVectorObject.addProperty("z", rotData.getValue().getZ());
-                    rotationVectorObject.addProperty("cos", rotData.getValue().getCos());
-                    rotationVectorObject.addProperty("eha", rotData.getValue().getEstimatedHeadingAccuracy());
-                    rotationVectorArray.add(rotationVectorObject);
-                }
-
                 JsonArray gyroscopeArray = new JsonArray();
-                for (Map.Entry<Long, GyroscopeData> gyrData : gyroscopeData.entrySet()) {
-                    JsonObject gyroscopeObject = new JsonObject();
-                    gyroscopeObject.addProperty("time", gyrData.getKey());
-                    gyroscopeObject.addProperty("x", gyrData.getValue().getX());
-                    gyroscopeObject.addProperty("y", gyrData.getValue().getY());
-                    gyroscopeObject.addProperty("z", gyrData.getValue().getZ());
-                    gyroscopeArray.add(gyroscopeObject);
-                }
-
                 JsonArray gravityArray = new JsonArray();
-                for (Map.Entry<Long, GravityData> graData : gravityData.entrySet()) {
-                    JsonObject gravityObject = new JsonObject();
-                    gravityObject.addProperty("time", graData.getKey());
-                    gravityObject.addProperty("x", graData.getValue().getX());
-                    gravityObject.addProperty("y", graData.getValue().getY());
-                    gravityObject.addProperty("z", graData.getValue().getZ());
-                    gravityArray.add(gravityObject);
+
+                for (SensorAlgorithmPack pack : mSensorAlgorithmPackList) {
+                    for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
+                        switch (entry.getKey().getSensorType()) {
+                            case Sensor.TYPE_ACCELEROMETER:
+                                for (int i = 0; i < entry.getValue().size(); i++) {
+                                    SensorData data = entry.getValue().get(i);
+                                    AccelerometerData accData = (AccelerometerData) data.getSensorData();
+                                    JsonObject accelerometerObject = new JsonObject();
+                                    accelerometerObject.addProperty("time", data.getTimeCaptured());
+                                    accelerometerObject.addProperty("x", accData.getX());
+                                    accelerometerObject.addProperty("y", accData.getY());
+                                    accelerometerObject.addProperty("z", accData.getZ());
+                                    accelerometerArray.add(accelerometerObject);
+                                }
+                                break;
+                            case Sensor.TYPE_ROTATION_VECTOR:
+                                for (int i = 0; i < entry.getValue().size(); i++) {
+                                    SensorData data = entry.getValue().get(i);
+                                    RotationVectorData rotData = (RotationVectorData) data.getSensorData();
+                                    JsonObject rotationVectorObject = new JsonObject();
+                                    rotationVectorObject.addProperty("time", data.getTimeCaptured());
+                                    rotationVectorObject.addProperty("x", rotData.getX());
+                                    rotationVectorObject.addProperty("y", rotData.getY());
+                                    rotationVectorObject.addProperty("z", rotData.getZ());
+                                    rotationVectorObject.addProperty("cos", rotData.getCos());
+                                    rotationVectorObject.addProperty("eha", rotData.getEstimatedHeadingAccuracy());
+                                    rotationVectorArray.add(rotationVectorObject);
+                                }
+                                break;
+                            case Sensor.TYPE_GYROSCOPE:
+                                for (int i = 0; i < entry.getValue().size(); i++) {
+                                    SensorData data = entry.getValue().get(i);
+                                    GyroscopeData gyrData = (GyroscopeData) data.getSensorData();
+                                    JsonObject gyroscopeObject = new JsonObject();
+                                    gyroscopeObject.addProperty("time", data.getTimeCaptured());
+                                    gyroscopeObject.addProperty("x", gyrData.getX());
+                                    gyroscopeObject.addProperty("y", gyrData.getY());
+                                    gyroscopeObject.addProperty("z", gyrData.getZ());
+                                    gyroscopeArray.add(gyroscopeObject);
+                                }
+                                break;
+                            case Sensor.TYPE_GRAVITY:
+                                for (int i = 0; i < entry.getValue().size(); i++) {
+                                    SensorData data = entry.getValue().get(i);
+                                    GravityData graData = (GravityData) data.getSensorData();
+                                    JsonObject gravityObject = new JsonObject();
+                                    gravityObject.addProperty("time", data.getTimeCaptured());
+                                    gravityObject.addProperty("x", graData.getX());
+                                    gravityObject.addProperty("y", graData.getY());
+                                    gravityObject.addProperty("z", graData.getZ());
+                                    gravityArray.add(gravityObject);
+                                }
+                                break;
+                        }
+                    }
                 }
 
                 sensorData.add("accelerometer_data", accelerometerArray);
