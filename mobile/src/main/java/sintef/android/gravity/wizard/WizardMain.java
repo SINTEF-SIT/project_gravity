@@ -1,6 +1,5 @@
 package sintef.android.gravity.wizard;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
@@ -84,6 +82,7 @@ public class WizardMain extends ActionBarActivity {
                 if (mPager.getCurrentItem() == mPagerAdapter.getCount()-1) {
                     if (mNameEdit == null && mTelephoneEdit == null) return;
 
+                    /*
                     if (mNameEdit.getText().length() == 0) {
                         Toast.makeText(getApplicationContext(), R.string.wizard_next_of_kin_name_not_empty, Toast.LENGTH_SHORT).show();
                         return;
@@ -91,7 +90,7 @@ public class WizardMain extends ActionBarActivity {
                     if (mTelephoneEdit.getText().length() == 0) {
                         Toast.makeText(getApplicationContext(), R.string.wizard_next_of_kin_telephone_not_empty, Toast.LENGTH_SHORT).show();
                         return;
-                    }
+                    }*/
 
                     PreferencesHelper.putString(Constants.PREFS_NEXT_OF_KIN_NAME, mNameEdit.getText().toString());
                     PreferencesHelper.putString(Constants.PREFS_NEXT_OF_KIN_TELEPHONE, mTelephoneEdit.getText().toString());
