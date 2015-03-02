@@ -296,6 +296,15 @@ public class RecordFragment extends Fragment {
                     },
                     ...
                   ],
+                  "magnetic_field_data": [
+                    {
+                      "time": 1639543,
+                      "x": 0,
+                      "y": 0,
+                      "z": 0
+                    },
+                    ...
+                  ],
                   "gyroscope_data": [
                     {
                       "time": 1639543,
