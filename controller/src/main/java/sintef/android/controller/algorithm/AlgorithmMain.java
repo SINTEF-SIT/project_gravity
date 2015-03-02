@@ -16,6 +16,7 @@ import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
@@ -40,7 +41,7 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, List<SensorDataObject> geoRotVecData, SensorAlgorithmPack pack, boolean hasWatch)
+    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, List<GravityData> geoRotVecData, SensorAlgorithmPack pack, boolean hasWatch)
     {
         //TODO: Find out if the watch is connected. Done, but not sure if it works or not
         int numberOfIterations;
@@ -98,7 +99,7 @@ public class AlgorithmMain {
         boolean hasWatch = false;
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
-        List<SensorDataObject> geoRotVecData = new ArrayList<>();
+        List<GravityData> geoRotVecData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
             System.out.println(entry.getKey().getSensorType() + " was here");
@@ -119,7 +120,7 @@ public class AlgorithmMain {
                     System.out.println("Gravity was here");
                     for (int i = 0; i < entry.getValue().size(); i++)
                     {
-                        geoRotVecData.add(entry.getValue().get(i).getSensorData());
+                        geoRotVecData.add((GravityData) entry.getValue().get(i).getSensorData());
                     }
                     break;
             }
