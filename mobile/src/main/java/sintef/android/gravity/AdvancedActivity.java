@@ -20,7 +20,7 @@ import sintef.android.controller.EventTypes;
  */
 public class AdvancedActivity extends ActionBarActivity {
 
-    private static final int NUM_PAGES = 2;
+    private static final int NUM_PAGES = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,8 @@ public class AdvancedActivity extends ActionBarActivity {
                     return new GraphFragment();
                 case 1:
                     return new AdvancedFragment();
+                case 2:
+                    return new RecordFragment();
             }
             return new NormalFragment();
         }
@@ -86,6 +88,8 @@ public class AdvancedActivity extends ActionBarActivity {
                     return getString(R.string.fragment_graph);
                 case 1:
                     return getString(R.string.fragment_advanced);
+                case 2:
+                    return getString(R.string.fragment_record);
             }
             return super.getPageTitle(position);
         }

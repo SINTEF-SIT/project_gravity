@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdvancedFragment"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/record_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:textColor="@color/white"
+        android:text="@string/record_header"
+        android:padding="20dp"/>
+
+    <LinearLayout
+        android:id="@+id/input_fields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/record_header"
+        android:visibility="gone">
+
+        <sintef.android.gravity.wizard.FloatingHintEditText
+            android:id="@+id/record_test_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/record_test_id"
+            android:inputType="text"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <sintef.android.gravity.wizard.FloatingHintEditText
+            android:id="@+id/record_fall_nr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/record_fall_nr"
+            android:inputType="text"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/record_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="36sp"
+        android:textColor="@color/white"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/button_bar"
+        style="@style/ButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/cancel_button"
+            style="@style/ButtonBarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/selectable_item_background"
+            android:text="@string/cancel"/>
+
+        <Button
+            android:id="@+id/send_button"
+            style="@style/ButtonBarButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/selectable_item_background"
+            android:text="@string/send" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/record_button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/circle_white"
+        android:clickable="true"
+        android:layout_margin="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:id="@+id/stop"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:background="@drawable/square"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <View
+            android:id="@+id/record"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/circle"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

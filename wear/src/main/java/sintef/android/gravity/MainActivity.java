@@ -3,11 +3,10 @@ package sintef.android.gravity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
-    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +16,12 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                showAlarm(findViewById(R.id.watch_view_stub));
             }
         });
+    }
+
+    public void showAlarm(View view) {
+        setContentView(R.layout.show_alarm);
     }
 }
