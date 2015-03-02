@@ -3,7 +3,9 @@ package sintef.android.controller.algorithm;
 import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.hardware.Sensor;
+import android.hardware.SensorManager;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.RotationVectorData;
+import sintef.android.controller.sensor.data.SensorDataObject;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
@@ -37,14 +40,23 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, SensorAlgorithmPack pack, boolean hasWatch)
+    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, List<SensorDataObject> geoRotVecData, SensorAlgorithmPack pack, boolean hasWatch)
     {
         //TODO: Find out if the watch is connected. Done, but not sure if it works or not
         int numberOfIterations;
+        float[] degs = new float[3];
+        float[] rotationMatrix = new float[9];
+        double tetaY;
+        double tetaZ;
+        //System.out.println(rotData.size() + " " + geoRotVecData.size() + " was here");
         if (accData.size() <= rotData.size()) numberOfIterations = accData.size();
         else numberOfIterations = rotData.size();
         for (int i=0; i < numberOfIterations; i++){
-            if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), rotData.get(i).getEstimatedHeadingAccuracy(), accData.get(i).getZ(), rotData.get(i).getEstimatedHeadingAccuracy()))
+            SensorManager.getRotationMatrix(rotationMatrix, null, rotData.get(i).getValues(), geoRotVecData.get(i).getValues());
+            SensorManager.getOrientation(rotationMatrix, degs);
+            tetaY = degs[2];
+            tetaZ = degs[0];
+            if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ))
             {
                 if (hasWatch) return watchAlgorithm(pack);
                 return true;
@@ -86,8 +98,10 @@ public class AlgorithmMain {
         boolean hasWatch = false;
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
+        List<SensorDataObject> geoRotVecData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
+            System.out.println(entry.getKey().getSensorType() + " was here");
             switch (entry.getKey().getSensorType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     for (int i = 0; i < entry.getValue().size(); i++)
@@ -101,14 +115,19 @@ public class AlgorithmMain {
                         rotationVectorData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
                     }
                     break;
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    System.out.println("Gravity was here");
+                    for (int i = 0; i < entry.getValue().size(); i++)
+                    {
+                        geoRotVecData.add(entry.getValue().get(i).getSensorData());
+                    }
+                    break;
             }
 
-            boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, pack, hasWatch);
+            boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
             if (isFall) {
                 EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
             }
-
-            System.out.println(isFall + " was here");
         }
     }
 

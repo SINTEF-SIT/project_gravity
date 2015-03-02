@@ -5,19 +5,23 @@ package sintef.android.controller.algorithm;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 8;
-    private static double verticalAccThreshold = 8;
-    private static double accComparisonThreshold = 9;
-    private static double angleThreshold = 45;
+    private static double totAccThreshold = 6;
+    private static double verticalAccThreshold = 4;
+    private static double accComparisonThreshold = 0.5;
+    private static double angleThreshold = 30;
+    private static double gravity = 9.81;
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
-        double totalAcceleration = accelerationTotal(x, y, z);
-        double verticalAcceleration = verticalAcceleration(x, y, z, tetaY, tetaZ);
+        double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));
+        double verticalAcceleration = Math.abs(gravity-verticalAcceleration(x, y, z, tetaY, tetaZ));
+
+        System.out.println(totalAcceleration+ " totAcc was here");
+        System.out.println(verticalAcceleration + " verAcc was here");
 
         if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
         {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) <= accComparisonThreshold)
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= accComparisonThreshold)
             {
                 return true;
             }
@@ -48,7 +52,7 @@ public class AlgorithmPhone
 
     private static double verticalComparedToTotal(double vertical, double total)
     {
-        return total/vertical;
+        return vertical/total;
     }
 
     //Calculates total acceleration at one point
@@ -60,6 +64,6 @@ public class AlgorithmPhone
     //calculates vertical acceleration at one point
         private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
     {
-        return x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ);
+        return Math.abs(x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ));
     }
 }
