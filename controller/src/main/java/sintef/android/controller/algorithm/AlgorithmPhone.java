@@ -5,7 +5,7 @@ package sintef.android.controller.algorithm;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 5;
+    private static double totAccThreshold = 5.5;
     private static double verticalAccThreshold = 5;
     private static double accComparisonThreshold = 0.5;
     private static double angleThreshold = 30;
@@ -43,8 +43,7 @@ public class AlgorithmPhone
 
     public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
     {
-        if (postAngle - priorAngle >= angleThreshold){ return true; }
-        return false;
+        return postAngle - priorAngle >= angleThreshold;
     }
 
     private static double verticalComparedToTotal(double vertical, double total)
