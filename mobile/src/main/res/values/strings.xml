@@ -12,6 +12,7 @@
 
     <string name="fragment_graph">Graph</string>
     <string name="fragment_advanced">Advanced</string>
+    <string name="fragment_record">Record</string>
 
     <string name="alarm_progress_disabled">Ingen\nalarm</string>
     <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>
@@ -40,6 +41,11 @@
     <string name="skip">Skip</string>
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
+    <string name="send">Send</string>
+
+    <string name="record_test_id">Test ID</string>
+    <string name="record_fall_nr">Fall NR</string>
+    <string name="record_header">Record sensor data</string>
 
 
 </resources>
