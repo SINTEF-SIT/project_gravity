@@ -5,7 +5,7 @@ package sintef.android.controller.algorithm;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 5.5;
+    private static double totAccThreshold = 6;
     private static double verticalAccThreshold = 5;
     private static double accComparisonThreshold = 0.5;
     private static double angleThreshold = 30;
