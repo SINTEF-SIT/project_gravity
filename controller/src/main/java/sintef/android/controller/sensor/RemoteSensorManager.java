@@ -114,13 +114,13 @@ public class RemoteSensorManager {
         SensorDataObject sensorDataObject;
         switch(sensorSession.getSensorType()) {
             case Sensor.TYPE_ACCELEROMETER:
-                sensorDataObject = new AccelerometerData(values);
+                sensorDataObject = new AccelerometerData(values.clone());
                 break;
             case Sensor.TYPE_GYROSCOPE:
-                sensorDataObject = new GyroscopeData(values);
+                sensorDataObject = new GyroscopeData(values.clone());
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
-                sensorDataObject = new RotationVectorData(values);
+                sensorDataObject = new RotationVectorData(values.clone());
                 break;
             default:
                 sensorDataObject = null;

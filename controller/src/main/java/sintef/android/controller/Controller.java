@@ -83,7 +83,7 @@ public class Controller {
         return sController;
     }
 
-    public void onEvent(SensorData data) {
+    public synchronized void onEvent(SensorData data) {
         //if (true) return; /*** DELETE ***/
 
         if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());

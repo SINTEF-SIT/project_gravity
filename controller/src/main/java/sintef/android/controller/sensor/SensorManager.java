@@ -90,19 +90,19 @@ public class SensorManager implements SensorEventListener {
         SensorDataObject sensorDataObject = null;
         switch (event.sensor.getType()) {
             case Sensor.TYPE_GRAVITY:
-                sensorDataObject = new GravityData(event.values);
+                sensorDataObject = new GravityData(event.values.clone());
                 break;
             case Sensor.TYPE_ACCELEROMETER:
-                sensorDataObject = new AccelerometerData(event.values);
+                sensorDataObject = new AccelerometerData(event.values.clone());
                 break;
             case Sensor.TYPE_GYROSCOPE:
-                sensorDataObject = new GyroscopeData(event.values);
+                sensorDataObject = new GyroscopeData(event.values.clone());
                 break;
             case Sensor.TYPE_ROTATION_VECTOR:
-                sensorDataObject = new RotationVectorData(event.values);
+                sensorDataObject = new RotationVectorData(event.values.clone());
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                sensorDataObject = new MagneticFieldData(event.values);
+                sensorDataObject = new MagneticFieldData(event.values.clone());
                 break;
         }
         if (sensorDataObject != null)  {
