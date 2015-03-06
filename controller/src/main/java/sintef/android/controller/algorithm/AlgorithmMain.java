@@ -124,10 +124,11 @@ public class AlgorithmMain {
                     break;
             }
 
-            boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
-            if (isFall) {
-                EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
-            }
+        }
+        System.out.println(accelerometerData.size() + " " + rotationVectorData.size() + " " + geoRotVecData.size() + " was here");
+        boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
+        if (isFall) {
+            EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
         }
     }
 
