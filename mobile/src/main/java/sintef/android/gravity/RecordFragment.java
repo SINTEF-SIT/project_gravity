@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +115,7 @@ public class RecordFragment extends Fragment {
     }
 
     public void onEvent(EventTypes type) {
-        if (mIsRecording && type == EventTypes.ALARM_DETECTED) {
+        if (mIsRecording && type == EventTypes.FALL_DETECTED) {
             mFallDetectedAtTimes.add(System.currentTimeMillis());
         }
     }

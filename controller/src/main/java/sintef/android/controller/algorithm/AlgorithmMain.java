@@ -5,7 +5,6 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +15,8 @@ import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
-import sintef.android.controller.sensor.data.SensorDataObject;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
@@ -126,7 +123,7 @@ public class AlgorithmMain {
 
             boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
             if (isFall) {
-                EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
+                EventBus.getDefault().post(EventTypes.FALL_DETECTED);
             }
         }
     }

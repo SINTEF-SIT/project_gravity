@@ -59,7 +59,7 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onEvent(EventTypes type) {
-        if (type == EventTypes.ALARM_DETECTED) {
+        if (type == EventTypes.FALL_DETECTED) {
             runAlarm();
         }
     }
@@ -170,6 +170,7 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
             case R.id.alarm_text:
                 if (mCurrentAlarmTask != null) {
                     mCurrentAlarmTask.cancel(true);
+                    EventBus.getDefault().post(EventTypes.ALARM_STOPPED);
                 }
                 break;
             case R.id.start_alarm:
