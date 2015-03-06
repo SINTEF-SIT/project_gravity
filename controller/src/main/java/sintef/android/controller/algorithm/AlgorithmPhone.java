@@ -9,10 +9,10 @@ import sintef.android.controller.sensor.SensorData;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 4;
-    private static double verticalAccThreshold = 4;
-    private static double accComparisonThreshold = 0.9;
-    private static double angleThreshold = 45;
+    private static double totAccThreshold = 9;
+    private static double verticalAccThreshold = 8;
+    private static double accComparisonThreshold = 0.75;
+    private static double angleThreshold = 20;
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
@@ -52,7 +52,7 @@ public class AlgorithmPhone
 
     private static double verticalComparedToTotal(double vertical, double total)
     {
-        return total/vertical;
+        return vertical/total;
     }
 
     //Calculates total acceleration at one point
