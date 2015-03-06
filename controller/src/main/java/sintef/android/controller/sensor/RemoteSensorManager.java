@@ -185,39 +185,40 @@ public class RemoteSensorManager {
     }
 
     public void startMeasurement() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                controlMeasurementInBackground(ClientPaths.START_MEASUREMENT);
-            }
-        });
+        sendMessage(ClientPaths.START_MEASUREMENT);
     }
 
     public void stopMeasurement() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                controlMeasurementInBackground(ClientPaths.STOP_MEASUREMENT);
-            }
-        });
+        sendMessage(ClientPaths.STOP_MEASUREMENT);
     }
 
     public void setMode(final String mode) {
-        executorService.submit((new Runnable() {
-            @Override
-            public void run() {
-                controlMeasurementInBackground(mode);
-            }
-        }));
+        sendMessage(mode);
     }
 
     public void getBuffer() {
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                controlMeasurementInBackground(ClientPaths.START_PUSH);
-            }
-        });
+        sendMessage(ClientPaths.START_PUSH);
+    }
+
+    public void startAlarm() {
+        sendMessage(ClientPaths.START_ALARM);
+    }
+
+    public void stopAlarm() {
+        sendMessage(ClientPaths.STOP_ALARM);
+    }
+
+    public void setAlarmProgress(int progress) {
+        sendMessage(ClientPaths.ALARM_PROGRESS + progress);
+    }
+
+    private void sendMessage(final String message) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    controlMeasurementInBackground(message);
+                }
+            });
     }
 
     private void controlMeasurementInBackground(final String path) {
