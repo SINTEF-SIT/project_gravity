@@ -48,21 +48,32 @@ public class AlgorithmPhone
     /*
     impact pattern recognition:
     if there is a massive deaccelreation close after the max acceleration impact indicates that it is a fall.
+
+        Test values == TRUE:
+    x = [3, 4, 2, 6, 4, 4, 2]
+    y = [3, 4, 2, 6, 4, 3, 1]
+    z = [3, 4, 2, 6, 4, 4, 2]
+        Test values == FALSE:
+    x = [6, 5, 5, 4, 4, 3, 0]
+    y = [6, 5, 5, 4, 3, 3, 0]
+    z = [6, 5, 5, 4, 3, 3, 0]
      */
-    public boolean impactPattern(List<AccelerometerData> accelerometerData, int indeks){
+    public boolean impactPattern(List<AccelerometerData> accelerometerData, int index){
         double maxAcceleration = 0;
         int counter = 0;
+        final int iterationsAfterMaxAcc = 5;
         double currentAcceleration;
-        double threshold1 = 5;
+        double threshold1 = 3;
 
-        for (int i = indeks; indeks < accelerometerData.size(); i++){
+        for (int i = index; i < accelerometerData.size(); i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
             if (currentAcceleration > maxAcceleration){
                 maxAcceleration = currentAcceleration;
-                counter = 10;
+                counter = iterationsAfterMaxAcc;
             }
             else {
-                if(counter != 0 && currentAcceleration*threshold1 < maxAcceleration){return true;}
+                if(counter == 0){return false;}
+                if(currentAcceleration*threshold1 < maxAcceleration){return true;}
                 counter --;
             }
         }
