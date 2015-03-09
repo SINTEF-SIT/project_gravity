@@ -46,6 +46,13 @@ public class AlgorithmPhone
         return false;
     }
 
+    //main pattern recognition method
+    public boolean Patternrecognition(List<AccelerometerData> accelerometerData, int index){
+        if (impactPattern(accelerometerData, index)){
+            return true;
+        }
+        return false;
+    }
     /*
     impact pattern recognition:
     if there is a massive deaccelreation close after the max acceleration impact indicates that it is a fall.
@@ -61,7 +68,7 @@ public class AlgorithmPhone
     y = [6, 5, 5, 4, 3, 3, 0]
     z = [6, 5, 5, 4, 3, 3, 0]
      */
-    public boolean impactPattern(List<AccelerometerData> accelerometerData, int index){
+    private boolean impactPattern(List<AccelerometerData> accelerometerData, int index){
         double maxAcceleration = 0;
         int counter = 0;
         final int iterationsAfterMaxAcc = 5;
