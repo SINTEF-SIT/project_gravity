@@ -32,6 +32,8 @@ public class Constants {
         SENSORS_WEAR.put(Sensor.TYPE_ROTATION_VECTOR, "rotation_vector");
     }
 
+    public static final long[] ALARM_VIBRATION_PATTERN_ON_WATCH = {0, 100, 1000};
+
     public static final String SENSOR_SESSION_SPLIT_KEY = ";";
 
     public static final int ALGORITHM_SEND_FREQUENCY = 1000;

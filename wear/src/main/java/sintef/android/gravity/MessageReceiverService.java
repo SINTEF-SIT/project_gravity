@@ -25,6 +25,7 @@ public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "SensorDashboard/MessageReceiverService";
 
     private DeviceClient deviceClient;
+    private Intent alarm;
 
     @Override
     public void onCreate() {
@@ -58,7 +59,7 @@ public class MessageReceiverService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
-        switch(messageEvent.getPath()) {
+        switch(messageEvent.getPath().substring(0, messageEvent.getPath().lastIndexOf("/"))) {
             case ClientPaths.START_MEASUREMENT:
                 startService(new Intent(this, SensorService.class));
                 break;
@@ -74,8 +75,26 @@ public class MessageReceiverService extends WearableListenerService {
             case ClientPaths.START_PUSH:
                 deviceClient.pushData();
                 break;
+            case ClientPaths.START_ALARM:
+                changeAlarm(true);
+            case ClientPaths.STOP_ALARM:
+                changeAlarm(false);
+            case ClientPaths.ALARM_PROGRESS:
+                updateAlarmProgress(Integer.valueOf(messageEvent.getPath().substring(messageEvent.getPath().length() - 1)));
             default:
                 break;
         }
+    }
+
+    private void changeAlarm(boolean keep) {
+        alarm = new Intent(this, AlarmActivity.class);
+        alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        alarm.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        alarm.putExtra("keep", keep);
+        startActivity(alarm);
+    }
+
+    private void updateAlarmProgress(int progress) {
+
     }
 }

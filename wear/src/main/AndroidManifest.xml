@@ -3,6 +3,7 @@
     package="sintef.android.gravity" >
 
     <uses-feature android:name="android.hardware.type.watch" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -13,7 +14,8 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".AlarmActivity"
+            android:launchMode="singleTop"
             android:label="@string/app_name"
             android:screenOrientation="sensorPortrait">
             <intent-filter>
