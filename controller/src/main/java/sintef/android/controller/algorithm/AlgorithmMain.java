@@ -51,8 +51,10 @@ public class AlgorithmMain {
         double tetaY;
         double tetaZ;
         //System.out.println(rotData.size() + " " + geoRotVecData.size() + " was here");
-        if (accData.size() <= rotData.size()) numberOfIterations = accData.size();
+        if (accData.size() <= rotData.size() && accData.size() <= geoRotVecData.size()) numberOfIterations = accData.size();
+        else if (geoRotVecData.size() <= accData.size() && geoRotVecData.size() <= rotData.size()) numberOfIterations = geoRotVecData.size();
         else numberOfIterations = rotData.size();
+        System.out.println(numberOfIterations + " was here");
         for (int i=0; i < numberOfIterations; i++){
             SensorManager.getRotationMatrix(rotationMatrix, null, rotData.get(i).getValues(), geoRotVecData.get(i).getValues());
             SensorManager.getOrientation(rotationMatrix, degs);
