@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,18 +33,20 @@ public class AlarmActivity extends Activity {
                 }
             });
         }
+        Log.w("ALARM", "started alarm activity");
     }
 
     public void showAlarm(View view) {
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
         setContentView(R.layout.show_alarm);
+
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        keep = intent.getExtras().getBoolean("keep");
+        keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
         if (!keep) {
             mVibrator.cancel();
             AlarmActivity.this.finish();

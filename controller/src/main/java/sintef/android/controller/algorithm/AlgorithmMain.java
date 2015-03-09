@@ -128,7 +128,7 @@ public class AlgorithmMain {
         }
         boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
         if (isFall) {
-            EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
+            EventBus.getDefault().post(EventTypes.FALL_DETECTED);
         }
     }
 

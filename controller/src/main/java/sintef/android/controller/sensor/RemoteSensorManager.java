@@ -22,6 +22,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.AlarmEvent;
+import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.AccelerometerData;
@@ -75,40 +77,25 @@ public class RemoteSensorManager {
 
         this.executorService = Executors.newCachedThreadPool();
         mEventBus = EventBus.getDefault();
+        mEventBus.register(this);
     }
 
-    /*
-    public List<Sensor> getSensors() {
-        return (List<Sensor>) sensors.clone();
-    }
-
-    public Sensor getSensor(long id) {
-        return sensorMapping.get((int) id);
-    }
-    */
-
-    /*
-    private Sensor createSensor(int id) {
-        Sensor sensor = new Sensor(id, sensorNames.getName(id));
-
-        sensors.add(sensor);
-        sensorMapping.append(id, sensor);
-
-        mEventBus.post(new NewSensorEvent(sensor));
-
-        return sensor;
-    }
-
-    private Sensor getOrCreateSensor(int id) {
-        Sensor sensor = sensorMapping.get(id);
-
-        if (sensor == null) {
-            sensor = createSensor(id);
+    public void onEvent(EventTypes event) {
+        switch (event) {
+            case FALL_DETECTED:
+                startAlarm();
+                break;
+            case ALARM_STOPPED:
+                stopAlarm();
+                break;
+            default:
+                break;
         }
-
-        return sensor;
     }
-    */
+
+    public void onEvent(AlarmEvent event) {
+        setAlarmProgress(event.progress);
+    }
 
     public synchronized void addSensorData(SensorSession sensorSession, int accuracy, long timestamp, float[] values) {
         SensorDataObject sensorDataObject;
