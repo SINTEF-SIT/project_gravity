@@ -54,7 +54,6 @@ public class AlgorithmMain {
         if (accData.size() <= rotData.size() && accData.size() <= geoRotVecData.size()) numberOfIterations = accData.size();
         else if (geoRotVecData.size() <= accData.size() && geoRotVecData.size() <= rotData.size()) numberOfIterations = geoRotVecData.size();
         else numberOfIterations = rotData.size();
-        System.out.println(numberOfIterations + " was here");
         for (int i=0; i < numberOfIterations; i++){
             SensorManager.getRotationMatrix(rotationMatrix, null, rotData.get(i).getValues(), geoRotVecData.get(i).getValues());
             SensorManager.getOrientation(rotationMatrix, degs);
@@ -127,7 +126,6 @@ public class AlgorithmMain {
             }
 
         }
-        System.out.println(accelerometerData.size() + " " + rotationVectorData.size() + " " + geoRotVecData.size() + " was here");
         boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
         if (isFall) {
             EventBus.getDefault().post(EventTypes.ALARM_DETECTED);
