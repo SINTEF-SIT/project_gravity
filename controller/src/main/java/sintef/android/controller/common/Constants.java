@@ -22,7 +22,7 @@ public class Constants {
     public static final int ALL_SENSORS_FILTER = 99;
     public static final int WEAR_BUFFER_SIZE = 10; // in seconds
 
-    public static final int SENSOR_PULL_FREQ = 50; // in Hz
+    public static final int SENSOR_PULL_FREQ = 40000; // in Hz
     public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
     public static final Map<Integer, String> SENSORS_WEAR;
     static {
