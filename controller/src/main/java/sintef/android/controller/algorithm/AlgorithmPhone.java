@@ -47,7 +47,7 @@ public class AlgorithmPhone
     }
 
     //main pattern recognition method
-    public boolean Patternrecognition(List<AccelerometerData> accelerometerData, int index){
+    public static boolean Patternrecognition(List<AccelerometerData> accelerometerData, int index){
         if (impactPattern(accelerometerData, index)){
             return true;
         }
@@ -68,12 +68,11 @@ public class AlgorithmPhone
     y = [6, 5, 5, 4, 3, 3, 0]
     z = [6, 5, 5, 4, 3, 3, 0]
      */
-    private boolean impactPattern(List<AccelerometerData> accelerometerData, int index){
+    private static boolean impactPattern(List<AccelerometerData> accelerometerData, int index){
         double maxAcceleration = 0;
         int counter = 0;
         final int iterationsAfterMaxAcc = 5;
         double currentAcceleration;
-
 
         for (int i = index; i < accelerometerData.size(); i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
@@ -90,12 +89,11 @@ public class AlgorithmPhone
         return false;
     }
     //FOR TESTING PURPOSES
-    public boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double impactThreshold){
+    public static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double impactThreshold){
         double maxAcceleration = 0;
         int counter = 0;
         final int iterationsAfterMaxAcc = 5;
         double currentAcceleration;
-
 
         for (int i = index; i < accelerometerData.size(); i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
@@ -111,6 +109,20 @@ public class AlgorithmPhone
         }
         return false;
     }
+    /*
+    pattern for pre impact:
+    increase in acceleration,
+     */
+    public static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index){
+        int something = 15;
+
+        if (index < something){something = index;}
+        for (int i = index-something; i < index; i++){
+            //TODO: fill in
+        }
+        return false;
+    }
+
     public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
     {
         if (postAngle - priorAngle >= angleThreshold){ return true; }
