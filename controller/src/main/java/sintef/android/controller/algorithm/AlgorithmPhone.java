@@ -115,9 +115,11 @@ public class AlgorithmPhone
      */
     public static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index){
         int something = 15;
+        double currentAcceleration;
 
         if (index < something){something = index;}
         for (int i = index-something; i < index; i++){
+            currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
             //TODO: fill in
         }
         return false;
