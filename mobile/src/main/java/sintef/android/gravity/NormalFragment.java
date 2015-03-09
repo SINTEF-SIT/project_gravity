@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.AlarmEvent;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.utils.DonutProgress;
 
@@ -55,6 +56,7 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
 
         mAlarmProgress.setOnClickListener(this);
         mForceAlarmButton.setOnClickListener(this);
+        mAlarmProgress.setMax(1200);
         resetAlarmProgress();
     }
 
@@ -109,6 +111,14 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
         }, 5000);
     }
 
+    public void onEvent(AlarmEvent event) {
+        if (mAlarmProgress != null) {
+            correct_i = event.progress;
+        }
+    }
+
+    private int correct_i = -1;
+
     private void runAlarm() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -120,12 +130,16 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
                     protected Void doInBackground(Void... voids) {
                         mAlarmStartedAgain = true;
 
-                        for (int i = 0; i < 100; i++) {
+                        for (int i = 0; i < 1200; i++) {
                             if (isCancelled()) {
                                 break;
                             }
+                            if (correct_i > 0) {
+                                i = correct_i;
+                                correct_i = -1;
+                            }
                             try {
-                                Thread.sleep(300);
+                                Thread.sleep(50);
                                 onProgressUpdate(i);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();

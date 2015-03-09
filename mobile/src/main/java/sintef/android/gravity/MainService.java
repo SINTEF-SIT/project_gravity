@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.AlarmEvent;
 import sintef.android.controller.EventTypes;
 
 /**
@@ -121,15 +122,16 @@ public class MainService extends Service {
 
         public void run() {
             boolean alarm = false;
-            for (int i = 0; i <= 100; i++) {
+            for (int i = 0; i <= 1200; i++) {
                 if (!isRunning) {
                     alarm = false;
                     break;
                 }
-                mNotificationBuilder.setProgress(100, i, false);
+                mNotificationBuilder.setProgress(1200, i, false);
                 mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
                 try {
-                    Thread.sleep(1000);
+                    EventBus.getDefault().post(new AlarmEvent(1200, i, AlarmEvent.AlarmEventType.RUNNING));
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     alarm = false;
                     Log.d("Alarm", "sleep failure");
