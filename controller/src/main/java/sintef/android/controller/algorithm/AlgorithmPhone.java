@@ -10,10 +10,10 @@ import sintef.android.controller.sensor.data.AccelerometerData;
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 9;
-    private static double verticalAccThreshold = 8;
-    private static double accComparisonThreshold = 0.75;
-    private static double angleThreshold = 20;
+    private static double totAccThreshold = 6;
+    private static double verticalAccThreshold = 5;
+    private static double accComparisonThreshold = 0.5;
+    private static double angleThreshold = 30;
      private static double gravity = 9.81;
     private static double impactThreshold = 3;
 
