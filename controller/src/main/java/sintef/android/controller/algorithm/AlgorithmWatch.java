@@ -49,9 +49,8 @@ public class AlgorithmWatch
             for (int j = startValue; j < sensorData.get(i).size(); j++)
             {
                 directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
-                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > 70)
+                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > 50 && startList < j)
                 {
-                    fall = Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
                     startList = j;
                 }
             }
@@ -132,7 +131,7 @@ class FallIndexValues
     FallIndexValues(double fallData, int startIndex)
     {
         this.fallData = fallData;
-        this.startIndex = startIndex;
+        this.startIndex = startIndex+10;
     }
 
     public int getStartIndex() {
