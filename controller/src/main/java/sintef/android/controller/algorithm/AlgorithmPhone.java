@@ -2,7 +2,6 @@ package sintef.android.controller.algorithm;
 
 import java.util.List;
 
-import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.data.AccelerometerData;
 
 /**
@@ -14,8 +13,9 @@ public class AlgorithmPhone
     private static double verticalAccThreshold = 5;
     private static double accComparisonThreshold = 0.5;
     private static double angleThreshold = 30;
-     private static double gravity = 9.81;
+    private static double gravity = 9.81;
     private static double impactThreshold = 3;
+    private static double preimpactThreshold = 3;
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
@@ -48,8 +48,21 @@ public class AlgorithmPhone
     }
 
     //main pattern recognition method
-    public static boolean Patternrecognition(List<AccelerometerData> accelerometerData, int index){
-        if (impactPattern(accelerometerData, index)){
+    public static boolean Patternrecognition(List<AccelerometerData> accelerometerData){
+        double maxAcceleration = 0;
+        double currentAcceleration;
+        int index = 0;
+
+        //iterating over the data and finds the point with the highest acceleration
+        for (int i = 0; i < accelerometerData.size(); i++){
+            currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
+            if (currentAcceleration > maxAcceleration){
+                index = i;
+                maxAcceleration = currentAcceleration;
+            }
+        }
+
+        if (impactPattern(accelerometerData, index, maxAcceleration)){
             return true;
         }
         return false;
@@ -59,72 +72,97 @@ public class AlgorithmPhone
     if there is a massive deaccelreation close after the max acceleration impact indicates that it is a fall.
 
         Test values == TRUE:
-    impactThreshold = 3
     x = [3, 4, 2, 6, 4, 4, 2]
     y = [3, 4, 2, 6, 4, 3, 1]
     z = [3, 4, 2, 6, 4, 4, 2]
+    index = 3
+    maxAcceleration = 10.39
+    TESTimpactThreshold = 3
+
         Test values == FALSE:
-    impactThreshold = 3
     x = [6, 5, 5, 4, 4, 3, 0]
     y = [6, 5, 5, 4, 3, 3, 0]
     z = [6, 5, 5, 4, 3, 3, 0]
+    index = 0
+    maxAcceleration = 10.39
+    TESTimpactThreshold = 3
      */
-    private static boolean impactPattern(List<AccelerometerData> accelerometerData, int index){
-        double maxAcceleration = 0;
-        int counter = 0;
+    private static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration){
         final int iterationsAfterMaxAcc = 5;
         double currentAcceleration;
 
-        for (int i = index; i < accelerometerData.size(); i++){
+        //iterating from toppoint to see if there is a big deacceleration after it.
+        for (int i = index+1; i <= index+iterationsAfterMaxAcc; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
-            if (currentAcceleration > maxAcceleration){
-                maxAcceleration = currentAcceleration;
-                counter = iterationsAfterMaxAcc;
+            if (currentAcceleration*impactThreshold <= maxAcceleration){
+                return true;
             }
-            else {
-                if(counter == 0){return false;}
-                if(currentAcceleration*impactThreshold < maxAcceleration){return true;}
-                counter --;
-            }
+            return false;
         }
         return false;
     }
     //FOR TESTING PURPOSES
-    public static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double impactThreshold){
-        double maxAcceleration = 0;
-        int counter = 0;
+    public static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration, double TESTimpactThreshold){
         final int iterationsAfterMaxAcc = 5;
         double currentAcceleration;
 
-        for (int i = index; i < accelerometerData.size(); i++){
+        //iterating from toppoint to see if there is a big deacceleration after it.
+        for (int i = index+1; i <= index+iterationsAfterMaxAcc; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
-            if (currentAcceleration > maxAcceleration){
-                maxAcceleration = currentAcceleration;
-                counter = iterationsAfterMaxAcc;
+            if (currentAcceleration*TESTimpactThreshold <= maxAcceleration){
+                return true;
             }
-            else {
-                if(counter == 0){return false;}
-                if(currentAcceleration*impactThreshold < maxAcceleration){return true;}
-                counter --;
-            }
+            return false;
         }
         return false;
     }
+
     /*
     pattern for pre impact:
-    increase in acceleration,
-     */
-    public static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index){
-        int something = 15;
-        double currentAcceleration;
+    increase in acceleration, to the max
+    hvis det ved et punkt før var mye lavere akslerasjon så indikerer det et fall i preimpact stadiet.
 
-        if (index < something){something = index;}
-        for (int i = index-something; i < index; i++){
+        Test values == TRUE:
+    x = [1, 3, 4, 6]
+    y = [1, 3, 4, 6]
+    z = [1, 3, 4, 6]
+    index = 3
+    maxAcceleration = 10,39
+    TESTpreimpactThreshold = 3
+
+        Test values == FALSE
+    x = [1, 3, 4, 4, 4, 4, 6]
+    y = [1, 3, 4, 4, 4, 4, 6]
+    z = [1, 3, 4, 4, 4, 4, 6]
+    index = 6
+    maxAcceleration = 10,39
+    TESTpreimpactThreshold = 3
+    */
+    private static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration){
+        double currentAcceleration;
+        int n = 5;
+        int endLoop = index-n;
+
+        if (endLoop < 0){endLoop = 0;}
+
+        for (int i = index-1; i >= endLoop; i--){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
-            //TODO: fill in
+            if (currentAcceleration*preimpactThreshold < maxAcceleration){return true;}
         }
         return false;
     }
+    //for testing purposes
+    public static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration, double TESTpreimpactThreshold){
+        double currentAcceleration;
+        int n = 5;
+
+        for (int i = index-1; i >= index-n; i--){
+            currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
+            if (currentAcceleration*TESTpreimpactThreshold < maxAcceleration){return true;}
+        }
+        return false;
+    }
+
 
     public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
     {
