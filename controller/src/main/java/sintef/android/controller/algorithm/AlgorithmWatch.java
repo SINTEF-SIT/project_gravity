@@ -11,19 +11,20 @@ import sintef.android.controller.sensor.data.AccelerometerData;
  */
 public class AlgorithmWatch
 {
-    private static final double thresholdFall = 2;
+    private static final double thresholdFall = 20;
     //private static final double thresholdImpact = 8;
-    private static final double thresholdStill = 3;
+    private static final double thresholdStill = 5;
     private static  final double gravity = 9.81;
 
     //Calculate the acceleration.
     //Switch back to List <SensorData> after testing
-    private static double fallIndex(List<AccelerometerData> sensors, int startXYZ, int startList)
+    private static FallIndexValues fallIndex(List<AccelerometerData> sensors, int startList)
     {
 
         List <Double> x = new ArrayList<>();
         List <Double> y = new ArrayList<>();
         List <Double> z = new ArrayList<>();
+        int startValue = startList;
 
         double fall = 0;
 
@@ -45,25 +46,22 @@ public class AlgorithmWatch
 
         for (int i = 0; i < sensorData.size(); i++)
         {
-            for (int j = 1; j < sensorData.get(i).size(); j++)
+            for (int j = startValue; j < sensorData.get(i).size(); j++)
             {
                 directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
-                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > fall)
+                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > 70)
                 {
                     fall = Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
-                    startXYZ = i;
                     startList = j;
                 }
             }
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
         }
-        //result = Math.sqrt(totAcceleration);
-
-        return Math.sqrt(totAcceleration);
+        return new FallIndexValues (Math.sqrt(totAcceleration), startList);
     }
 
-    private static double fallIndex(List<AccelerometerData> sensors, int numberOfCalculations)
+    /*private static double fallIndex(List<AccelerometerData> sensors, int numberOfCalculations)
     {
         List <Double> x = new ArrayList<>();
         List <Double> y = new ArrayList<>();
@@ -97,11 +95,11 @@ public class AlgorithmWatch
         //result = Math.sqrt(totAcceleration);
 
         return Math.sqrt(totAcceleration);
-    }
+    }*/
 
-    private static double stillPattern(List<AccelerometerData> sensors, int startXYZ, int startList)
+    private static FallIndexValues stillPattern(List<AccelerometerData> sensors, int startList)
     {
-        return fallIndex(sensors, startXYZ, startList);
+        return fallIndex(sensors, startList);
     }
 
 
@@ -109,20 +107,39 @@ public class AlgorithmWatch
     //Recognize fall pattern, and decide if there is a fall or not
     public static boolean patternRecognition(List<AccelerometerData> sensors)
     {
-        double accelerationData;
+        FallIndexValues accelerationData;
         //double impactFallData;
         double afterFallData;
-        int startXYZ = 0;
-        int startList = 0;
+        int startList = 1;
 
         //if (sensors.size() >= 20) accelerationData = fallIndex(sensors, 20);
-        accelerationData = fallIndex(sensors, startXYZ, startList);
+        accelerationData = fallIndex(sensors, startList);
 
-        if (accelerationData > thresholdFall)
+        System.out.println(accelerationData.getFallData() + " was here");
+        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > 20)
         {
-            afterFallData = stillPattern(sensors, startXYZ, startList);
-            return afterFallData < thresholdStill;
+            afterFallData = stillPattern(sensors, accelerationData.getStartIndex()).getFallData();
+            System.out.println(afterFallData + " was here");
+            return afterFallData <= thresholdStill;
         }
         return false;
+    }
+}
+class FallIndexValues
+{
+    private double fallData;
+    private int startIndex;
+    FallIndexValues(double fallData, int startIndex)
+    {
+        this.fallData = fallData;
+        this.startIndex = startIndex;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public double getFallData() {
+        return fallData;
     }
 }
