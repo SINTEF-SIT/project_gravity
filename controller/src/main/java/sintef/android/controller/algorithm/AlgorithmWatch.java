@@ -96,9 +96,9 @@ public class AlgorithmWatch
         return Math.sqrt(totAcceleration);
     }*/
 
-    private static FallIndexValues stillPattern(List<AccelerometerData> sensors, int startList)
+    private static double stillPattern(List<AccelerometerData> sensors, int startList)
     {
-        return fallIndex(sensors, startList);
+        return fallIndex(sensors, startList).getFallData();
     }
 
 
@@ -114,11 +114,9 @@ public class AlgorithmWatch
         //if (sensors.size() >= 20) accelerationData = fallIndex(sensors, 20);
         accelerationData = fallIndex(sensors, startList);
 
-        System.out.println(accelerationData.getFallData() + " was here");
         if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > 20)
         {
-            afterFallData = stillPattern(sensors, accelerationData.getStartIndex()).getFallData();
-            System.out.println(afterFallData + " was here");
+            afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
             return afterFallData <= thresholdStill;
         }
         return false;
