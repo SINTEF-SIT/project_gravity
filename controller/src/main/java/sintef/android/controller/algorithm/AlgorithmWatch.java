@@ -11,8 +11,8 @@ import sintef.android.controller.sensor.data.AccelerometerData;
  */
 public class AlgorithmWatch
 {
+    //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 20;
-    //private static final double thresholdImpact = 8;
     private static final double thresholdStill = 5;
     private static  final double gravity = 9.81;
 
@@ -128,10 +128,12 @@ class FallIndexValues
 {
     private double fallData;
     private int startIndex;
+    private final int layingDownCount = 10; //number of readings to skip when checking if the person is laying still, so that it will not check the fall again and therefor say that the person is not laying still
+
     FallIndexValues(double fallData, int startIndex)
     {
         this.fallData = fallData;
-        this.startIndex = startIndex+10;
+        this.startIndex = startIndex+layingDownCount;
     }
 
     public int getStartIndex() {
