@@ -53,7 +53,9 @@ public class NormalFragment extends Fragment {
             case FALL_DETECTED:
                 mAlarmView.startAlarm();
                 break;
-
+            case ALARM_STOPPED:
+                // mAlarmView.stopAlarm();
+                break;
         }
     }
     public void onEvent(AlarmEvent event) {

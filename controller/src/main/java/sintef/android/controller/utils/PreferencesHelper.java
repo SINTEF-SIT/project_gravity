@@ -114,7 +114,7 @@ public class PreferencesHelper {
         editor.commit();
     }
 
-    public static void putFloat(String key, long value) {
+    public static void putFloat(String key, float value) {
         editor.putFloat(key, value);
         editor.commit();
     }
@@ -154,6 +154,10 @@ public class PreferencesHelper {
 
     public static float getFloat(String key) {
         return preferences.getFloat(key, INVALID_INT);
+    }
+
+    public static float getFloat(String key, float defValue) {
+        return preferences.getFloat(key, defValue);
     }
 
     public static Set<String> getStringSet(String key) {

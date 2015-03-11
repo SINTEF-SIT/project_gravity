@@ -1,14 +1,23 @@
 package sintef.android.controller.algorithm;
+import android.util.Log;
+
 import java.util.List;
 import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.utils.PreferencesHelper;
+
 /**
  * Created by Andreas on 10.02.2015.
  */
 public class AlgorithmPhone
 {
-    private static double totAccThreshold = 6;
-    private static double verticalAccThreshold = 5;
-    private static double accComparisonThreshold = 0.5;
+    public static final String TOTAL_ACCELEROMETER_THRESHOLD = "tot_acc_thr";
+    public static final String VERTICAL_ACCELEROMETER_THRESHOLD = "ver_acc_thr";
+    public static final String ACCELEROMETER_COMPARISON_THRESHOLD = "acc_comp_thr";
+
+    public static final double default_totAccThreshold = 6;
+    public static final double default_verticalAccThreshold = 5;
+    public static final double default_accComparisonThreshold = 0.5;
+
     private static double angleThreshold = 30;
     private static double gravity = 9.81;
     private static double impactThreshold = 3;
@@ -20,9 +29,9 @@ public class AlgorithmPhone
         double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(gravity-verticalAcceleration(x, y, z, tetaY, tetaZ));
 
-        if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
+        if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold())
         {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= accComparisonThreshold)
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold())
             {
                 return true;
             }
@@ -245,5 +254,23 @@ public class AlgorithmPhone
     private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
     {
         return Math.abs(x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ));
+    }
+
+    public static double getTotAccThreshold() {
+        double value = PreferencesHelper.getFloat(TOTAL_ACCELEROMETER_THRESHOLD, (float) default_totAccThreshold);
+        Log.wtf("AlgPhone", "TOTAL_ACCELEROMETER_THRESHOLD: " + value);
+        return value;
+    }
+
+    public static double getVerticalAccThreshold() {
+        double value = PreferencesHelper.getFloat(VERTICAL_ACCELEROMETER_THRESHOLD, (float) default_verticalAccThreshold);
+        Log.wtf("AlgPhone", "VERTICAL_ACCELEROMETER_THRESHOLD: " + value);
+        return value;
+    }
+
+    public static double getAccComparisonThreshold() {
+        double value = PreferencesHelper.getFloat(ACCELEROMETER_COMPARISON_THRESHOLD, (float) default_accComparisonThreshold);
+        Log.wtf("AlgPhone", "ACCELEROMETER_COMPARISON_THRESHOLD: " + value);
+        return value;
     }
 }
