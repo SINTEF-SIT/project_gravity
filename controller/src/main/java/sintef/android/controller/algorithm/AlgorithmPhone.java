@@ -20,7 +20,7 @@ public class AlgorithmPhone
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
-        double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));    
+        double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(gravity-verticalAcceleration(x, y, z, tetaY, tetaZ));
 
         if (totalAcceleration >= totAccThreshold && verticalAcceleration >= verticalAccThreshold)
