@@ -20,6 +20,7 @@ import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static final boolean TEST = false;
     private static final String TAG = "Main Activity";
 
     @Override
@@ -32,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
 
         if (PreferencesHelper.getBoolean(Constants.PREFS_FIRST_START, true)) {
             startActivity(new Intent(this, WizardMain.class));
-            finish();
+            // finish();
             return;
         }
 

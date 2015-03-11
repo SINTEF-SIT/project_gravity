@@ -41,7 +41,7 @@ public class NormalFragment extends Fragment {
 
         mAlarmView = (AlarmView) getView().findViewById(R.id.alarm_view);
 
-        EventBus.getDefault().register(this);
+        if (!MainActivity.TEST) EventBus.getDefault().register(this);
 
         boolean start_alarm = getArguments().getBoolean(MainService.ALARM_STARTED);
 

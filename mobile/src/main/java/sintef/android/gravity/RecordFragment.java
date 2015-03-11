@@ -159,7 +159,6 @@ public class RecordFragment extends Fragment {
                 JsonObject recordings = new JsonObject();
 
                 recordings.addProperty("test_id", mTestIdInput.getText().toString());
-                recordings.addProperty("fall_nr", mFallNrInput.getText().toString());
 
                 JsonObject sensorData = new JsonObject();
 
