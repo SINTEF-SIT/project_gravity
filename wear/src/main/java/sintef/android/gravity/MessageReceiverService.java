@@ -20,22 +20,25 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.Arrays;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.AlarmEvent;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 
 public class MessageReceiverService extends WearableListenerService {
-    private static final String TAG = "SensorDashboard/MessageReceiverService";
 
+    private static final String TAG = "SensorDashboard/MessageReceiverService";
     private DeviceClient deviceClient;
     private Intent alarm;
+    private EventBus mEventBus;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        mEventBus = EventBus.getDefault();
         deviceClient = DeviceClient.getInstance(this);
-//        startService(new Intent(this, SensorService.class));
-
+        startService(new Intent(this, SensorService.class));
     }
 
     @Override
@@ -67,7 +70,7 @@ public class MessageReceiverService extends WearableListenerService {
 
         switch("/" + message[1]) {
             case ClientPaths.START_MEASUREMENT:
-                startService(new Intent(this, SensorService.class));
+                //startService(new Intent(this, SensorService.class));
                 break;
             case ClientPaths.STOP_MEASUREMENT:
                 stopService(new Intent(this, SensorService.class));
@@ -105,6 +108,6 @@ public class MessageReceiverService extends WearableListenerService {
     }
 
     private void updateAlarmProgress(int progress) {
-
+        mEventBus.post(progress);
     }
 }

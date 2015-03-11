@@ -31,6 +31,7 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
+        android.os.Debug.waitForDebugger();
 
         client = DeviceClient.getInstance(this);
 
@@ -62,11 +63,6 @@ public class SensorService extends Service implements SensorEventListener {
         for (int key : Constants.SENSORS_WEAR.keySet()) {
             addSensorToSystem("watch:" + Constants.SENSORS_WEAR.get(key), key, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
         }
-        /*
-        addSensorToSystem("watch:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
-        addSensorToSystem("watch:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
-        addSensorToSystem("watch:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
-        */
     }
 
     private void addSensorToSystem(String id, int type, SensorDevice device, SensorLocation location) {
