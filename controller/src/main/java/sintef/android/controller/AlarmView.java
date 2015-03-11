@@ -28,12 +28,13 @@ public class AlarmView extends RelativeLayout {
     private AsyncTask<Void, Integer, Void> mCurrentAlarmTask;
     private int mCorrectIndex = -1;
 
+    private static OnStopListener mStopListener;
+
     private int seconds = 60;
     private int resolution_multiplier = 4;
     private int max = seconds * resolution_multiplier;
     private int second = 1000;
     private int resolution_second = second / resolution_multiplier;
-
 
     public AlarmView(Activity activity, int layout_id) {
         super(activity);
@@ -121,6 +122,10 @@ public class AlarmView extends RelativeLayout {
         }, 5000);
     }
 
+    public void setOnStopListener(OnStopListener listener) {
+        mStopListener =  listener;
+    }
+
     public void setAlarmProgress(int progress) {
         mCorrectIndex = progress;
     }
@@ -129,7 +134,8 @@ public class AlarmView extends RelativeLayout {
         if (mCurrentAlarmTask != null) {
             mCurrentAlarmTask.cancel(true);
 
-            EventBus.getDefault().post(EventTypes.ALARM_STOPPED);
+            if (mStopListener == null) EventBus.getDefault().post(EventTypes.ALARM_STOPPED);
+            else mStopListener.onStop();
         }
     }
 
@@ -189,6 +195,9 @@ public class AlarmView extends RelativeLayout {
                 mCurrentAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
           });
+    }
 
+    public interface OnStopListener {
+        void onStop();
     }
 }
