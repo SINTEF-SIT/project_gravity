@@ -74,8 +74,10 @@ public class SensorManager implements SensorEventListener {
                 mRemoteSensorManager.setMode(ClientPaths.MODE_PULL);
                 break;
             case ONPAUSE:
+                /*
                 mSensorManager.unregisterListener(this);
                 mRemoteSensorManager.stopMeasurement();
+                */
                 break;
         }
     }

@@ -1,35 +1,33 @@
 package sintef.android.gravity;
 
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmEvent;
+import sintef.android.controller.AlarmView;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.utils.DonutProgress;
 
 /**
  * Created by samyboy89 on 23/02/15.
  */
-public class NormalFragment extends Fragment implements View.OnClickListener {
+public class NormalFragment extends Fragment {
 
-    private View mAlarmProgressBackground;
-    private DonutProgress mAlarmProgress;
-    private Button mForceAlarmButton;
-    private TextView mAlarmText;
+    private AlarmView mAlarmView;
 
-    private boolean mAlarmStartedAgain = false;
+    public NormalFragment() { }
 
-    private AsyncTask<Void, Integer, Void> mCurrentAlarmTask;
+    public static NormalFragment newInstance(boolean start_alarm) {
+        NormalFragment fragment = new NormalFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(MainService.ALARM_STARTED, start_alarm);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,155 +39,24 @@ public class NormalFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         if (getView() == null) return;
 
+        mAlarmView = (AlarmView) getView().findViewById(R.id.alarm_view);
+
         EventBus.getDefault().register(this);
 
-        init();
+        boolean start_alarm = getArguments().getBoolean(MainService.ALARM_STARTED);
 
-    }
-
-    private void init() {
-        mAlarmText = (TextView) getView().findViewById(R.id.alarm_text);
-        mAlarmProgressBackground = getView().findViewById(R.id.progress_background);
-        mAlarmProgress = (DonutProgress) getView().findViewById(R.id.progress);
-        mForceAlarmButton = (Button) getView().findViewById(R.id.start_alarm);
-        mForceAlarmButton.setVisibility(View.INVISIBLE);
-
-        mAlarmProgress.setOnClickListener(this);
-        mForceAlarmButton.setOnClickListener(this);
-        mAlarmProgress.setMax(1200);
-        resetAlarmProgress();
+        if (start_alarm) mAlarmView.startAlarm();
     }
 
     public void onEvent(EventTypes type) {
-        if (type == EventTypes.FALL_DETECTED) {
-            runAlarm();
+        switch (type) {
+            case FALL_DETECTED:
+                mAlarmView.startAlarm();
+                break;
+
         }
     }
-
-    private void resetAlarmProgress() {
-        mAlarmText.setText(R.string.alarm_progress_disabled);
-        mAlarmText.setTextColor(Color.WHITE);
-        mAlarmProgress.setVisibility(View.VISIBLE);
-        mAlarmProgressBackground.setVisibility(View.VISIBLE);
-        mAlarmProgressBackground.setBackgroundResource(R.drawable.circle_disabled);
-        mAlarmProgress.setUnfinishedStrokeColor(Color.BLACK);
-        mAlarmProgress.setUnfinishedStrokeWidth(30);
-        mAlarmProgress.setProgress(0);
-    }
-
-    private void runAlarmProgress() {
-        mAlarmText.setText(R.string.alarm_progress_running);
-        mAlarmText.setTextColor(Color.WHITE);
-        mAlarmProgress.setVisibility(View.VISIBLE);
-        mAlarmProgressBackground.setVisibility(View.VISIBLE);
-        mAlarmProgressBackground.setBackgroundResource(R.drawable.circle);
-        mAlarmProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.red_stroke));
-        mAlarmProgress.setUnfinishedStrokeWidth(30);
-        mAlarmProgress.setFinishedStrokeColor(getResources().getColor(R.color.orange));
-        mAlarmProgress.setFinishedStrokeWidth(30);
-        mAlarmProgress.setProgress(0);
-    }
-
-    private void setAlarm(boolean cancelled) {
-        mAlarmStartedAgain = false;
-        if (!cancelled) {
-            // MAKE ALARM
-        }
-
-        mAlarmText.setText(cancelled ? R.string.alarm_progress_cancelled : R.string.alarm_progress_done);
-        mAlarmText.setTextColor(Color.BLACK);
-
-        mAlarmProgress.setVisibility(View.GONE);
-        mAlarmProgressBackground.setVisibility(View.GONE);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mAlarmStartedAgain) return;
-                resetAlarmProgress();
-            }
-        }, 5000);
-    }
-
     public void onEvent(AlarmEvent event) {
-        if (mAlarmProgress != null) {
-            correct_i = event.progress;
-        }
-    }
-
-    private int correct_i = -1;
-
-    private void runAlarm() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                if (mCurrentAlarmTask != null) return;
-                mCurrentAlarmTask = new AsyncTask<Void, Integer, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        mAlarmStartedAgain = true;
-
-                        for (int i = 0; i < 1200; i++) {
-                            if (isCancelled()) {
-                                break;
-                            }
-                            if (correct_i > 0) {
-                                i = correct_i;
-                                correct_i = -1;
-                            }
-                            try {
-                                Thread.sleep(50);
-                                onProgressUpdate(i);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onProgressUpdate(final Integer... values) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mAlarmProgress != null) mAlarmProgress.setProgress(values[0] + 1);
-                            }
-                        });
-                    }
-
-                    @Override
-                    protected void onCancelled(Void aVoid) {
-                        mCurrentAlarmTask = null;
-                        setAlarm(true);
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        mCurrentAlarmTask = null;
-                        setAlarm(false);
-                    }
-                };
-                runAlarmProgress();
-                mCurrentAlarmTask.execute();
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.progress:
-            case R.id.progress_background:
-            case R.id.alarm_text:
-                if (mCurrentAlarmTask != null) {
-                    mCurrentAlarmTask.cancel(true);
-                    EventBus.getDefault().post(EventTypes.ALARM_STOPPED);
-                }
-                break;
-            case R.id.start_alarm:
-                runAlarm();
-                break;
-        }
+        mAlarmView.setAlarmProgress(event.progress);
     }
 }

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -21,13 +22,15 @@ public class MainService extends Service {
 
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotificationBuilder;
-    private TimerState mState;
-    private TimerRunnable mTimerRunnable;
+    private TimerState mState = TimerState.PENDING;
+
+    public static final String ALARM_STARTED = "alarm_started";
+
+    private final int WAIT_BEFORE_RESET_PERIOD = 5000;
 
     @Override
     public void onCreate() {
         EventBus.getDefault().registerSticky(this);
-        mState = TimerState.PENDING;
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         showNotification();
@@ -42,6 +45,7 @@ public class MainService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mNotificationManager.cancel(R.string.app_name);
     }
 
     @Override
@@ -50,16 +54,7 @@ public class MainService extends Service {
     }
 
     private void showNotification() {
-        // PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, ServiceLauncher.class), 0);
-
-        mNotificationBuilder = new Notification.Builder(getApplicationContext())
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentTitle("Detecting")
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setSmallIcon(R.drawable.ic_stat_on);
-
-        mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
+        resetNotification();
     }
 
     public void onEvent(String update) {
@@ -70,89 +65,124 @@ public class MainService extends Service {
     public void onEvent(EventTypes type) {
         switch (type) {
             case FALL_DETECTED:
-                PendingIntent stopIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainService.class), 0);
+                if (mAlarmTask != null) return;
+                Intent start_app_intent = new Intent(this, MainActivity.class);
+                start_app_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                start_app_intent.putExtra(ALARM_STARTED, true);
+                startActivity(start_app_intent);
+
+                PendingIntent start_app_pending_intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
 
                 mState = TimerState.TIMER_RUNNING;
 
-                if (mTimerRunnable != null) {
-                    mNotificationBuilder = new Notification.Builder(getApplicationContext())
-                            .setContentTitle("Detecting")
-                            .setAutoCancel(false)
-                            .setOngoing(true)
-                            .setSmallIcon(R.drawable.ic_stat_on);
-
-                    mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
-                    mTimerRunnable.kill();
-                } else {
-                    mTimerRunnable = new TimerRunnable();
-                }
-
-                mNotificationBuilder.setContentText("Waiting to send alarm");
-                mNotificationBuilder.addAction(android.R.drawable.presence_busy, "Cancel", stopIntent);
+                mNotificationBuilder.setContentTitle("Waiting to send alarm");
+                // mNotificationBuilder.addAction(android.R.drawable.presence_busy, "Cancel", stopIntent);
+                mNotificationBuilder.setContentIntent(start_app_pending_intent);
                 mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
 
-                Thread thread = new Thread(mTimerRunnable);
-                thread.start();
+                mAlarmTask = getAlarmTask();
+                mAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 break;
             case ALARM_STOPPED:
-                if (mTimerRunnable != null) {
-                    mTimerRunnable.kill();
+                if (mAlarmTask != null) {
+                    mAlarmTask.cancel(true);
                 }
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mNotificationBuilder = new Notification.Builder(getApplicationContext())
-                                .setContentTitle("Detecting")
-                                .setAutoCancel(false)
-                                .setOngoing(true)
-                                .setSmallIcon(R.drawable.ic_stat_on);
-
-                        mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
-                    }
-                }, 5000);
                 break;
 
         }
     }
 
-    public class TimerRunnable implements Runnable {
+    AsyncTask<Void, Integer, Boolean> mAlarmTask;
+    private int seconds = 60;
+    private int resolution_multiplier = 4;
+    private int max = seconds * resolution_multiplier;
+    private int second = 1000;
+    private int resolution_second = second / resolution_multiplier;
+    private int update_frequency = resolution_multiplier * 2;
 
-        private volatile boolean isRunning = true;
+    private AsyncTask<Void, Integer, Boolean> getAlarmTask() {
+        return new AsyncTask<Void, Integer, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                for (int i = 0; i <= max; i++) {
+                    if (isCancelled()) {
+                        return false;
+                    }
 
-        public void run() {
-            boolean alarm = false;
-            for (int i = 0; i <= 1200; i++) {
-                if (!isRunning) {
-                    alarm = false;
-                    break;
+                    try {
+                        Thread.sleep(resolution_second);
+                        publishProgress(i);
+                    } catch (InterruptedException e) {
+                        Log.d("Alarm", "sleep failure");
+                        return false;
+                    }
                 }
-                mNotificationBuilder.setProgress(1200, i, false);
-                mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
-                try {
-                    EventBus.getDefault().post(new AlarmEvent(1200, i, AlarmEvent.AlarmEventType.RUNNING));
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    alarm = false;
-                    Log.d("Alarm", "sleep failure");
-                }
-                alarm = true;
+                return true;
             }
 
-            mNotificationBuilder = new Notification.Builder(getApplicationContext())
-                    .setContentTitle(alarm ? "Alarm sent" : "Alarm cancelled")
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setSmallIcon(R.drawable.ic_stat_on);
+            @Override
+            protected void onProgressUpdate(Integer... values) {
+                super.onProgressUpdate(values);
+                int i = values[0];
 
-            mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
-            mTimerRunnable = null;
-        }
+                if (i % update_frequency == 0) EventBus.getDefault().post(new AlarmEvent(max, i));
+                mNotificationBuilder.setProgress(max, i, false);
+                mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
+            }
 
-        public void kill() {
-            isRunning = false;
-        }
+            @Override
+            protected void onPostExecute(Boolean alarm) {
+                super.onPostExecute(alarm);
+                updateTaskState(alarm);
+            }
 
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                updateTaskState(false);
+            }
+
+            @Override
+            protected void onCancelled(Boolean alarm) {
+                super.onCancelled(alarm);
+                updateTaskState(alarm);
+            }
+
+            private void updateTaskState(boolean alarm) {
+                mNotificationBuilder = new Notification.Builder(getApplicationContext())
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setContentTitle(alarm ? "Alarm sent" : "Alarm cancelled")
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setSmallIcon(R.drawable.ic_stat_on);
+                mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
+
+                mState = alarm ? TimerState.ALARM_SENT : TimerState.TIMER_CANCELLED;
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        resetNotification();
+                        mAlarmTask = null;
+                    }
+                }, WAIT_BEFORE_RESET_PERIOD);
+            }
+        };
+    }
+
+    private void resetNotification() {
+        if (mState == TimerState.TIMER_RUNNING) return;
+
+        mState = TimerState.PENDING;
+
+        mNotificationBuilder = new Notification.Builder(getApplicationContext())
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentTitle("Detecting")
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.ic_stat_on);
+
+        mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
     }
 
     public static enum TimerState {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item type="id" name="alarm_text"/>
+    <item type="id" name="alarm_progress"/>
+    <item type="id" name="alarm_progress_background"/>
+
+</resources>

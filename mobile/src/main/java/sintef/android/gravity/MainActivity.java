@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +15,7 @@ import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.controller.utils.SoundHelper;
 import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
@@ -25,14 +27,16 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         startDetector();
 
+        SoundHelper.initializeSoundsHelper(this);
         PreferencesHelper.initializePreferences(this);
+
         if (PreferencesHelper.getBoolean(Constants.PREFS_FIRST_START, true)) {
             startActivity(new Intent(this, WizardMain.class));
             finish();
             return;
         }
 
-        Controller.initializeController(this);
+        Controller.initializeController(getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
@@ -44,9 +48,14 @@ public class MainActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
+        boolean alarm_started = false;
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey(MainService.ALARM_STARTED)) alarm_started = true;
+        }
+
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.fragment_placeholder, new NormalFragment());
+        ft.replace(R.id.fragment_placeholder, NormalFragment.newInstance(alarm_started));
         ft.commit();
 
     }
@@ -62,13 +71,38 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.wtf("MAIN ACTIVITY", "onResume");
         EventBus.getDefault().post(EventTypes.ONRESUME);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.wtf("MAIN ACTIVITY", "onPause");
         EventBus.getDefault().post(EventTypes.ONPAUSE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.wtf("MAIN ACTIVITY", "onStop");
+        EventBus.getDefault().post(EventTypes.ONSTOP);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.wtf("MAIN ACTIVITY", "onDestroy");
+        EventBus.getDefault().post(EventTypes.ONDESTROY);
+
+        startActivity(new Intent(this, this.getClass()));
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Log.wtf("MAIN ACTIVITY", "finish");
+        EventBus.getDefault().post(EventTypes.FINISH);
     }
 
     @Override
