@@ -68,7 +68,7 @@ public class SensorManager implements SensorEventListener {
         switch (eventType) {
             case ONRESUME:
                 for (int type : mSensorGroup.keySet()) {
-                    mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), android.hardware.SensorManager.SENSOR_DELAY_NORMAL);
+                    mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
                 }
                 mRemoteSensorManager.startMeasurement();
                 mRemoteSensorManager.setMode(ClientPaths.MODE_PULL);

@@ -18,6 +18,8 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.util.Arrays;
+
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 
@@ -25,6 +27,7 @@ public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "SensorDashboard/MessageReceiverService";
 
     private DeviceClient deviceClient;
+    private Intent alarm;
 
     @Override
     public void onCreate() {
@@ -58,7 +61,11 @@ public class MessageReceiverService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
-        switch(messageEvent.getPath()) {
+        String[] message = messageEvent.getPath().split("/");
+
+        Log.w("MSG", Arrays.toString(message));
+
+        switch("/" + message[1]) {
             case ClientPaths.START_MEASUREMENT:
                 startService(new Intent(this, SensorService.class));
                 break;
@@ -74,8 +81,30 @@ public class MessageReceiverService extends WearableListenerService {
             case ClientPaths.START_PUSH:
                 deviceClient.pushData();
                 break;
+            case ClientPaths.START_ALARM:
+                changeAlarm(true);
+                break;
+            case ClientPaths.STOP_ALARM:
+                changeAlarm(false);
+                break;
+            case ClientPaths.ALARM_PROGRESS:
+                updateAlarmProgress(Integer.valueOf(message[2]));
             default:
                 break;
         }
+    }
+
+    private void changeAlarm(boolean keep) {
+        alarm = new Intent(this, AlarmActivity.class);
+        alarm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        alarm.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        alarm.putExtra("keep", keep);
+        Log.w("MRS", "starting activity alarm");
+        startActivity(alarm);
+    }
+
+    private void updateAlarmProgress(int progress) {
+
     }
 }

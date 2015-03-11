@@ -11,4 +11,7 @@ public class ClientPaths {
     public static final String MODE_PULL = "/pull";
     public static final String MODE_PUSH = "/push";
     public static final String START_PUSH = "/start_push";
+    public static final String START_ALARM = "/start_alarm";
+    public static final String STOP_ALARM = "/stop_alarm";
+    public static final String ALARM_PROGRESS = "/progress/";
 }

@@ -22,7 +22,7 @@ public class Constants {
     public static final int ALL_SENSORS_FILTER = 99;
     public static final int WEAR_BUFFER_SIZE = 10; // in seconds
 
-    public static final int SENSOR_PULL_FREQ = 50; // in Hz
+    public static final int SENSOR_PULL_FREQ = 40000; // in Hz
     public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
     public static final Map<Integer, String> SENSORS_WEAR;
     static {
@@ -31,6 +31,8 @@ public class Constants {
         SENSORS_WEAR.put(Sensor.TYPE_GYROSCOPE, "gyroscope");
         SENSORS_WEAR.put(Sensor.TYPE_ROTATION_VECTOR, "rotation_vector");
     }
+
+    public static final long[] ALARM_VIBRATION_PATTERN_ON_WATCH = {0, 100, 1000};
 
     public static final String SENSOR_SESSION_SPLIT_KEY = ";";
 
