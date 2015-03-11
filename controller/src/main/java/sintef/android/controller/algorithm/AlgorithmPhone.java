@@ -1,9 +1,6 @@
 package sintef.android.controller.algorithm;
-
 import java.util.List;
-
 import sintef.android.controller.sensor.data.AccelerometerData;
-
 /**
  * Created by Andreas on 10.02.2015.
  */
@@ -171,7 +168,7 @@ public class AlgorithmPhone
 
     private static double verticalComparedToTotal(double vertical, double total)
     {
-        return total/vertical;
+        return vertical/total;
     }
 
     //Calculates total acceleration at one point

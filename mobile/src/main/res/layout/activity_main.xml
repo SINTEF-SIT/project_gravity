@@ -9,42 +9,11 @@
         android:id="@+id/toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_red_dark"/>
+        android:background="@color/primary"/>
 
-    <LinearLayout
-        android:id="@+id/chart"
+    <FrameLayout
+        android:id="@+id/fragment_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="@android:color/black">
-
-        <Button
-            android:id="@+id/zoom_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ZOOM IN"
-            android:textColor="@android:color/white"/>
-
-        <Button
-            android:id="@+id/zoom_reset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ZOOM RESET"
-            android:textColor="@android:color/white"/>
-
-        <Button
-            android:id="@+id/zoom_out"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ZOOM OUT"
-            android:textColor="@android:color/white"/>
-    </LinearLayout>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

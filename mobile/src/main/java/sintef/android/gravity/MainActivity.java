@@ -1,72 +1,74 @@
 package sintef.android.gravity;
 
 import android.content.Intent;
-import android.hardware.Sensor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.sensor.RemoteSensorManager;
-import sintef.android.controller.sensor.SensorData;
+import sintef.android.controller.common.Constants;
+import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "Main Activity";
 
-    private EventBus mEventBus;
-
-    private LinearLayout mChart;
-//    private RemoteSensorManager mRemoteSensorManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Controller.initializeController(this);
+        startDetector();
 
-        mEventBus = EventBus.getDefault();
-        mEventBus.registerSticky(this);
+        PreferencesHelper.initializePreferences(this);
+        if (PreferencesHelper.getBoolean(Constants.PREFS_FIRST_START, true)) {
+            startActivity(new Intent(this, WizardMain.class));
+            finish();
+            return;
+        }
+
+        Controller.initializeController(this);
 
         setContentView(R.layout.activity_main);
 
+        init();
+    }
+
+    private void init() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
-        mChart = (LinearLayout) findViewById(R.id.chart);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment_placeholder, new NormalFragment());
+        ft.commit();
 
-        new Chart(this, mChart);
+    }
 
+    private void startDetector() {
         startService(new Intent(this, MainService.class));
-//        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
-
     }
 
-    public void onEvent(String message) {
-        // Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    private void openActionActivity() {
+        startActivity(new Intent(this, AdvancedActivity.class));
     }
-
-    public void onEvent(SensorData data) {
-
-        // Toast.makeText(this, data.value+"", Toast.LENGTH_SHORT).show();
-    }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        mEventBus.post(EventTypes.ONRESUME);
+        EventBus.getDefault().post(EventTypes.ONRESUME);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mEventBus.post(EventTypes.ONPAUSE);
+        EventBus.getDefault().post(EventTypes.ONPAUSE);
     }
 
     @Override
@@ -78,7 +80,16 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.action_ken:
+                new NextOfKinDialog(this);
+                return true;
+            case R.id.action_help:
+                startActivity(new Intent(this, WizardMain.class));
+                return true;
+            case R.id.action_advanced:
+                openActionActivity();
+                return true;
+            case R.id.action_about:
                 return true;
         }
         return super.onOptionsItemSelected(item);

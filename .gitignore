@@ -168,3 +168,5 @@ Session.vim
 .netrwhist
 *~
 
+# Eclipse
+.metadata

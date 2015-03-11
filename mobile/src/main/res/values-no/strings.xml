@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Fall Alarm</string>
+
+    <string name="action_advanced">Avansert</string>
+    <string name="action_ken">Pårørende</string
+        >
+    <string name="advanced_activity">Avansert</string>
+
+    <string name="fragment_graph">Graf</string>
+    <string name="fragment_advanced">Avansert</string>
+
+    <string name="alarm_progress_disabled">Ingen\nalarm</string>
+    <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>
+    <string name="alarm_progress_cancelled">Alarm er\nstoppet</string>
+    <string name="alarm_progress_done">Alarm er\nsendt</string>
+    <string name="alarm_start_button">Start\nalarm</string>
+</resources>
