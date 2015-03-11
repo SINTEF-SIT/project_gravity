@@ -16,6 +16,7 @@ public class AlgorithmPhone
     private static double gravity = 9.81;
     private static double impactThreshold = 3;
     private static double preimpactThreshold = 3;
+    private static double postImpactThreshold = 5;
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
@@ -48,10 +49,11 @@ public class AlgorithmPhone
     }
 
     //main pattern recognition method
-    public static boolean Patternrecognition(List<AccelerometerData> accelerometerData){
+    public static boolean PatternRecognition(List<AccelerometerData> accelerometerData){
         double maxAcceleration = 0;
         double currentAcceleration;
         int index = 0;
+        int iterations = 10;
 
         //iterating over the data and finds the point with the highest acceleration
         for (int i = 0; i < accelerometerData.size(); i++){
@@ -62,7 +64,7 @@ public class AlgorithmPhone
             }
         }
 
-        if (impactPattern(accelerometerData, index, maxAcceleration)){
+        if (preImpactPattern(accelerometerData, index, iterations,maxAcceleration) && impactPattern(accelerometerData, index, iterations,maxAcceleration) && postImpactPattern(accelerometerData, index+iterations)){
             return true;
         }
         return false;
@@ -76,6 +78,7 @@ public class AlgorithmPhone
     y = [3, 4, 2, 6, 4, 3, 1]
     z = [3, 4, 2, 6, 4, 4, 2]
     index = 3
+    iterations = 5
     maxAcceleration = 10.39
     TESTimpactThreshold = 3
 
@@ -84,15 +87,15 @@ public class AlgorithmPhone
     y = [6, 5, 5, 4, 3, 3, 0]
     z = [6, 5, 5, 4, 3, 3, 0]
     index = 0
+    iterations = 5
     maxAcceleration = 10.39
     TESTimpactThreshold = 3
      */
-    private static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration){
-        final int iterationsAfterMaxAcc = 5;
+    private static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
 
         //iterating from toppoint to see if there is a big deacceleration after it.
-        for (int i = index+1; i <= index+iterationsAfterMaxAcc; i++){
+        for (int i = index+1; i <= index+iterations; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
             if (currentAcceleration*impactThreshold <= maxAcceleration){
                 return true;
@@ -102,12 +105,11 @@ public class AlgorithmPhone
         return false;
     }
     //FOR TESTING PURPOSES
-    public static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration, double TESTimpactThreshold){
-        final int iterationsAfterMaxAcc = 5;
+    public static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTimpactThreshold){
         double currentAcceleration;
 
         //iterating from toppoint to see if there is a big deacceleration after it.
-        for (int i = index+1; i <= index+iterationsAfterMaxAcc; i++){
+        for (int i = index+1; i <= index+iterations; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
             if (currentAcceleration*TESTimpactThreshold <= maxAcceleration){
                 return true;
@@ -127,6 +129,7 @@ public class AlgorithmPhone
     y = [1, 3, 4, 6]
     z = [1, 3, 4, 6]
     index = 3
+    iterations = 5
     maxAcceleration = 10,39
     TESTpreimpactThreshold = 3
 
@@ -135,13 +138,13 @@ public class AlgorithmPhone
     y = [1, 3, 4, 4, 4, 4, 6]
     z = [1, 3, 4, 4, 4, 4, 6]
     index = 6
+    iterations = 5
     maxAcceleration = 10,39
     TESTpreimpactThreshold = 3
     */
-    private static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration){
+    private static boolean preImpactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
-        int n = 5;
-        int endLoop = index-n;
+        int endLoop = index-iterations;
 
         if (endLoop < 0){endLoop = 0;}
 
@@ -152,17 +155,55 @@ public class AlgorithmPhone
         return false;
     }
     //for testing purposes
-    public static boolean preImpactpattern(List<AccelerometerData> accelerometerData, int index, double maxAcceleration, double TESTpreimpactThreshold){
+    public static boolean preImpactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTpreimpactThreshold){
         double currentAcceleration;
-        int n = 5;
 
-        for (int i = index-1; i >= index-n; i--){
+        for (int i = index-1; i >= index-iterations; i--){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
             if (currentAcceleration*TESTpreimpactThreshold < maxAcceleration){return true;}
         }
         return false;
     }
 
+    /*
+    Pattern for post impact:
+        Test values == TRUE
+    x = [0, 0, 5, 6]
+    y = [0, 0, 5, 6]
+    z = [0, 0, 5, 6]
+    index = 0
+    TESTPostImpactThreshold = 5
+
+        Test values == FALSE
+    x = [0, 0, 5, 6]
+    y = [0, 0, 5, 6]
+    z = [0, 0, 5, 6]
+    index = 2
+    TESTPostImpactThreshold = 5
+    */
+    private static boolean postImpactPattern(List<AccelerometerData> accelerometerData, int index){
+        double sumOfAccelerations = 0;
+
+        for (int i = index; i < accelerometerData.size(); i++){
+            sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
+        }
+        if(sumOfAccelerations/(accelerometerData.size()-index) < postImpactThreshold){
+            return true;
+        }
+        return false;
+    }
+    //For testing
+    public static boolean postImpactPattern(List<AccelerometerData> accelerometerData, int index, double TESTPostImpactThreshold){
+        double sumOfAccelerations = 0;
+
+        for (int i = index; i < accelerometerData.size(); i++){
+            sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
+        }
+        if(sumOfAccelerations/(accelerometerData.size()-index) < TESTPostImpactThreshold){
+            return true;
+        }
+        return false;
+    }
 
     public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
     {
