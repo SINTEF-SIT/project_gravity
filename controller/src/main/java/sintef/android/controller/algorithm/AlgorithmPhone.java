@@ -48,7 +48,26 @@ public class AlgorithmPhone
         return false;
     }
 
-    //main pattern recognition method
+    /*   Test values == TRUE
+    x = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
+    y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
+    z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
+
+        Test values == FALSE
+    x = [5, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
+    y = [5, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
+    z = [5, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
+
+        Test values == FALSE
+    x = [0, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 0, 0]
+    y = [0, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 0, 0]
+    z = [0, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 0, 0]
+
+        Test values == FALSE
+    x = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
+    y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
+    z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
+    Main pattern recognition method*/
     public static boolean PatternRecognition(List<AccelerometerData> accelerometerData){
         double maxAcceleration = 0;
         double currentAcceleration;
@@ -187,6 +206,7 @@ public class AlgorithmPhone
         for (int i = index; i < accelerometerData.size(); i++){
             sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
         }
+
         if(sumOfAccelerations/(accelerometerData.size()-index) < postImpactThreshold){
             return true;
         }
@@ -204,6 +224,9 @@ public class AlgorithmPhone
         }
         return false;
     }
+
+
+
 
     public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
     {
