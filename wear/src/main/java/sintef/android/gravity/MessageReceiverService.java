@@ -38,7 +38,7 @@ public class MessageReceiverService extends WearableListenerService {
 
         mEventBus = EventBus.getDefault();
         deviceClient = DeviceClient.getInstance(this);
-        startService(new Intent(this, SensorService.class));
+        //startService(new Intent(this, SensorService.class));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MessageReceiverService extends WearableListenerService {
                 //startService(new Intent(this, SensorService.class));
                 break;
             case ClientPaths.STOP_MEASUREMENT:
-                stopService(new Intent(this, SensorService.class));
+                //stopService(new Intent(this, SensorService.class));
                 break;
             case ClientPaths.MODE_PULL:
                 deviceClient.setMode(messageEvent.getPath());
@@ -97,7 +97,7 @@ public class MessageReceiverService extends WearableListenerService {
         }
     }
 
-    private void changeAlarm(boolean keep) {
+    private synchronized void changeAlarm(boolean keep) {
         alarm = new Intent(this, AlarmActivity.class);
         alarm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
