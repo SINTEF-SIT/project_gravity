@@ -86,6 +86,7 @@ public class MainService extends Service {
                 mAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 break;
             case ALARM_STOPPED:
+            case STOP_ALARM:
                 if (mAlarmTask != null) {
                     mAlarmTask.cancel(true);
                 }
