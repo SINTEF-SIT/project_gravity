@@ -31,13 +31,6 @@ import sintef.android.controller.sensor.data.GyroscopeData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
-/*
-import sintef.android.gravity.data.Sensor;
-import sintef.android.gravity.data.SensorDataPoint;
-import sintef.android.gravity.data.SensorNames;
-import sintef.android.gravity.events.NewSensorEvent;
-import sintef.android.gravity.events.SensorUpdatedEvent;
-*/
 
 /**
  * Created by iver on 09.02.15.
@@ -69,7 +62,6 @@ public class RemoteSensorManager {
         this.context = context;
         this.sensorMapping = new SparseArray<Sensor>();
         this.sensors = new ArrayList<Sensor>();
-//        this.sensorNames = new SensorNames();
 
         this.googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
@@ -78,6 +70,10 @@ public class RemoteSensorManager {
         this.executorService = Executors.newCachedThreadPool();
         mEventBus = EventBus.getDefault();
         mEventBus.register(this);
+    }
+
+    public GoogleApiClient getGoogleApiClient() {
+        return googleApiClient;
     }
 
     public void onEvent(EventTypes event) {
@@ -115,22 +111,9 @@ public class RemoteSensorManager {
         }
 
         if (sensorDataObject != null) {
-//            Log.d(TAG, "should appear in graph now");
             mEventBus.post(new SensorData(sensorSession, sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
 
         }
-
-        /*
-        Sensor sensor = getOrCreateSensor(sensorType);
-
-        // TODO: We probably want to pull sensor data point objects from a pool here
-        SensorDataPoint dataPoint = new SensorDataPoint(timestamp, accuracy, values);
-
-        sensor.addDataPoint(dataPoint);
-
-        Log.d(TAG, "added: " + dataPoint.toString());
-        mEventBus.post(new SensorUpdatedEvent(sensor, dataPoint));
-        */
     }
 
     private boolean validateConnection() {

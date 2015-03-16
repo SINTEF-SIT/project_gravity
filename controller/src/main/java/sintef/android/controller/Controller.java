@@ -51,7 +51,7 @@ public class Controller {
             @Override
             public void run() {
 
-                mRemoteSensorManager.getBuffer();
+                //mRemoteSensorManager.getBuffer();
 
                 SensorAlgorithmPack pack;
                 allData.add(0, new HashMap<SensorSession, List<SensorData>>());
