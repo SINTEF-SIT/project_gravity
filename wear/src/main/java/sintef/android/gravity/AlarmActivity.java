@@ -22,16 +22,14 @@ public class AlarmActivity extends Activity {
 
     private boolean keep;
     private Intent intent;
-    private Vibrator mVibrator;
+    private static Vibrator mVibrator;
     private RemoteSensorManager mRemoteSensorManager;
     private EventBus mEventBus;
-    private PowerManager.WakeLock mWakeLock;
+    private static PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
 
         mEventBus = EventBus.getDefault();
         mEventBus.register(this);
@@ -45,20 +43,10 @@ public class AlarmActivity extends Activity {
             }
         });
 
-        intent = this.getIntent();
-        keep = intent.getExtras().getBoolean("keep");
-        if (keep) {
-            stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-                @Override
-                public void onLayoutInflated(WatchViewStub stub) {
-                    showAlarm(findViewById(R.id.watch_view_stub));
 
-                }
-            });
-        }
     }
 
-    public void showAlarm(View view) {
+    public void showAlarm() {
         mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
         mWakeLock.acquire(1000);
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -66,6 +54,18 @@ public class AlarmActivity extends Activity {
         setContentView(mAlarmView);
         mAlarmView.startAlarm();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        intent = this.getIntent();
+        keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
+        if (keep) {
+            showAlarm();
+        } else {
+            stopAlarmActivity();
+        }
     }
 
     @Override
@@ -80,6 +80,18 @@ public class AlarmActivity extends Activity {
     private void stopAlarmActivity() {
         if (mVibrator != null) mVibrator.cancel();
         AlarmActivity.this.finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mVibrator != null) mVibrator.cancel();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mVibrator != null) mVibrator.cancel();
     }
 
     public void onEvent(int progress) {
