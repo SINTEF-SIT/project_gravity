@@ -258,19 +258,19 @@ public class AlgorithmPhone
 
     public static double getTotAccThreshold() {
         double value = PreferencesHelper.getFloat(TOTAL_ACCELEROMETER_THRESHOLD, (float) default_totAccThreshold);
-        Log.wtf("AlgPhone", "TOTAL_ACCELEROMETER_THRESHOLD: " + value);
+//        Log.wtf("AlgPhone", "TOTAL_ACCELEROMETER_THRESHOLD: " + value);
         return value;
     }
 
     public static double getVerticalAccThreshold() {
         double value = PreferencesHelper.getFloat(VERTICAL_ACCELEROMETER_THRESHOLD, (float) default_verticalAccThreshold);
-        Log.wtf("AlgPhone", "VERTICAL_ACCELEROMETER_THRESHOLD: " + value);
+//        Log.wtf("AlgPhone", "VERTICAL_ACCELEROMETER_THRESHOLD: " + value);
         return value;
     }
 
     public static double getAccComparisonThreshold() {
         double value = PreferencesHelper.getFloat(ACCELEROMETER_COMPARISON_THRESHOLD, (float) default_accComparisonThreshold);
-        Log.wtf("AlgPhone", "ACCELEROMETER_COMPARISON_THRESHOLD: " + value);
+//        Log.wtf("AlgPhone", "ACCELEROMETER_COMPARISON_THRESHOLD: " + value);
         return value;
     }
 }
