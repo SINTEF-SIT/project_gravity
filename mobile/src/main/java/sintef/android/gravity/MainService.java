@@ -61,10 +61,11 @@ public class MainService extends Service {
         return null;
     }
 
-    public void onEvent(EventTypes type) {
+    public synchronized void onEvent(EventTypes type) {
         switch (type) {
             case FALL_DETECTED:
-                if (mState != TimerState.PENDING) return;
+                if (!mState.equals(TimerState.PENDING)) return;
+                mState = TimerState.TIMER_RUNNING;
 
                 Intent start_app_intent = new Intent(this, MainActivity.class);
                 start_app_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -73,7 +74,6 @@ public class MainService extends Service {
 
                 PendingIntent start_app_pending_intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
 
-                mState = TimerState.TIMER_RUNNING;
 
                 mNotificationBuilder.setContentTitle("Waiting to send alarm");
                 // mNotificationBuilder.addAction(android.R.drawable.presence_busy, "Cancel", stopIntent);
