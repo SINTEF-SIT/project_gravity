@@ -78,7 +78,7 @@ public class RemoteSensorManager {
 
     public void onEvent(EventTypes event) {
         switch (event) {
-            case FALL_DETECTED:
+            case START_ALARM:
                 startAlarm();
                 break;
             case ALARM_STOPPED:

@@ -10,6 +10,7 @@ public enum EventTypes {
     ONSTOP,
     FINISH,
     FALL_DETECTED,
+    START_ALARM,
     STOP_ALARM,
     ALARM_STOPPED
 }

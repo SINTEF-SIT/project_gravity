@@ -68,6 +68,8 @@ public class MainService extends Service {
         switch (type) {
             case FALL_DETECTED:
                 if (!mState.equals(TimerState.PENDING)) return;
+                EventBus.getDefault().post(EventTypes.START_ALARM);
+
                 mState = TimerState.TIMER_RUNNING;
 
                 Intent start_app_intent = new Intent(this, MainActivity.class);

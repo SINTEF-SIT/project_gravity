@@ -50,7 +50,7 @@ public class NormalFragment extends Fragment {
 
     public void onEvent(EventTypes type) {
         switch (type) {
-            case FALL_DETECTED:
+            case START_ALARM:
                 mAlarmView.startAlarm();
                 break;
             case STOP_ALARM:
