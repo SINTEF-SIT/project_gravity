@@ -28,6 +28,14 @@ public class MainService extends Service {
 
     private final int WAIT_BEFORE_RESET_PERIOD = 5000;
 
+    private AsyncTask<Void, Integer, Boolean> mAlarmTask;
+    private int seconds = 60;
+    private int resolution_multiplier = 4;
+    private int max = seconds * resolution_multiplier;
+    private int second = 1000;
+    private int resolution_second = second / resolution_multiplier;
+    private int update_frequency = resolution_multiplier * 2;
+
     @Override
     public void onCreate() {
         if (!MainActivity.TEST) EventBus.getDefault().registerSticky(this);
@@ -56,7 +64,8 @@ public class MainService extends Service {
     public void onEvent(EventTypes type) {
         switch (type) {
             case FALL_DETECTED:
-                if (mAlarmTask != null) return;
+                if (mState != TimerState.PENDING) return;
+
                 Intent start_app_intent = new Intent(this, MainActivity.class);
                 start_app_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 start_app_intent.putExtra(ALARM_STARTED, true);
@@ -82,14 +91,6 @@ public class MainService extends Service {
 
         }
     }
-
-    AsyncTask<Void, Integer, Boolean> mAlarmTask;
-    private int seconds = 60;
-    private int resolution_multiplier = 4;
-    private int max = seconds * resolution_multiplier;
-    private int second = 1000;
-    private int resolution_second = second / resolution_multiplier;
-    private int update_frequency = resolution_multiplier * 2;
 
     private AsyncTask<Void, Integer, Boolean> getAlarmTask() {
         return new AsyncTask<Void, Integer, Boolean>() {
