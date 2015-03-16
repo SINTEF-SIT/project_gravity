@@ -23,7 +23,6 @@ public class MainService extends Service {
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotificationBuilder;
 
-    private Handler mResetHandler;
     private TimerState mState = TimerState.PENDING;
 
     public static final String ALARM_STARTED = "alarm_started";
@@ -42,7 +41,6 @@ public class MainService extends Service {
     public void onCreate() {
         if (!MainActivity.TEST) EventBus.getDefault().registerSticky(this);
 
-        mResetHandler = new Handler();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         resetNotification();
 
@@ -155,8 +153,7 @@ public class MainService extends Service {
 
                 mState = alarm ? TimerState.ALARM_SENT : TimerState.TIMER_CANCELLED;
 
-                mResetHandler.removeCallbacksAndMessages(null);
-                mResetHandler.postDelayed(new Runnable() {
+                new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         resetNotification();
