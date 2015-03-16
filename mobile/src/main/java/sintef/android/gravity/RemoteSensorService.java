@@ -8,11 +8,16 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.Arrays;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
+import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorSession;
@@ -25,8 +30,8 @@ public class RemoteSensorService extends WearableListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
-
         mRemoteSensorManager = RemoteSensorManager.getInstance(this);
+        Wearable.MessageApi.addListener(mRemoteSensorManager.getGoogleApiClient(), this);
 
     }
 
@@ -42,6 +47,19 @@ public class RemoteSensorService extends WearableListenerService {
         super.onPeerDisconnected(peer);
 
         Log.i(TAG, "Disconnected: " + peer.getDisplayName() + " (" + peer.getId() + ")");
+    }
+
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent) {
+        Log.w("MRS", "Received message: " + messageEvent.getPath());
+
+        switch(messageEvent.getPath()) {
+            case ClientPaths.STOP_ALARM:
+                EventBus.getDefault().post(EventTypes.STOP_ALARM);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

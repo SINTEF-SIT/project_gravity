@@ -39,7 +39,6 @@ public class DeviceClient {
         if (instance == null) {
             instance = new DeviceClient(context.getApplicationContext());
         }
-
         return instance;
     }
 
@@ -105,18 +104,6 @@ public class DeviceClient {
         long lastTimestamp = lastSensorData.get(sensorType);
         long timeAgo = t - lastTimestamp;
 
-        /* What does this do?
-        if (lastTimestamp != 0) {
-            if (filterId != Constants.ALL_SENSORS_FILTER && filterId == sensorType && timeAgo < 100) {
-                return;
-            }
-
-            if (filterId != Constants.ALL_SENSORS_FILTER && filterId != sensorType && timeAgo < 3000) {
-                return;
-            }
-        }
-        */
-
         lastSensorData.put(sensorType, t);
 
         executorService.submit(new Runnable() {
@@ -128,17 +115,6 @@ public class DeviceClient {
     }
 
     private void sendSensorDataInBackground(String session, int sensorType, int accuracy, long timestamp, float[] values) {
-        /*
-        if (filterId == Constants.ALL_SENSORS_FILTER) {
-            Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
-        }
-        else if (sensorType == filterId) {
-            Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
-        } else {
-            Log.d(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
-        }
-        */
-
         PutDataMapRequest dataMap = PutDataMapRequest.create(Constants.DATA_MAP_PATH + sensorType);
 
         dataMap.getDataMap().putString(Constants.SESSION, session);
