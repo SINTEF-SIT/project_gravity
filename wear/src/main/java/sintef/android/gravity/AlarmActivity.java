@@ -6,10 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.support.wearable.view.WatchViewStub;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
@@ -40,6 +36,12 @@ public class AlarmActivity extends Activity {
             public void onStop() {
                 mRemoteSensorManager.stopAlarm();
                 stopAlarmActivity();
+            }
+        });
+        mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
+            @Override
+            public void onAlarm() {
+                if (mVibrator != null) mVibrator.cancel();
             }
         });
 

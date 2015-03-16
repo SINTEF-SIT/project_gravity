@@ -29,6 +29,7 @@ public class AlarmView extends RelativeLayout {
     private int mCorrectIndex = -1;
 
     private static OnStopListener mStopListener;
+    private static OnAlarmListener mAlarmListener;
 
     private int seconds = 60;
     private int resolution_multiplier = 4;
@@ -104,6 +105,7 @@ public class AlarmView extends RelativeLayout {
     private void setAlarm(boolean cancelled) {
         mAlarmStartedAgain = false;
         if (!cancelled) {
+            if (mAlarmListener != null) mAlarmListener.onAlarm();
             // MAKE ALARM
         }
 
@@ -124,6 +126,10 @@ public class AlarmView extends RelativeLayout {
 
     public void setOnStopListener(OnStopListener listener) {
         mStopListener =  listener;
+    }
+
+    public void setOnAlarmListener(OnAlarmListener listener) {
+        mAlarmListener =  listener;
     }
 
     public void setAlarmProgress(int progress) {
@@ -205,5 +211,9 @@ public class AlarmView extends RelativeLayout {
 
     public interface OnStopListener {
         void onStop();
+    }
+
+    public interface OnAlarmListener {
+        void onAlarm();
     }
 }
