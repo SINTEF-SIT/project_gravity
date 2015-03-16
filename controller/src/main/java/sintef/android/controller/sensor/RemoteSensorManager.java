@@ -72,6 +72,10 @@ public class RemoteSensorManager {
         mEventBus.register(this);
     }
 
+    public GoogleApiClient getGoogleApiClient() {
+        return googleApiClient;
+    }
+
     public void onEvent(EventTypes event) {
         switch (event) {
             case FALL_DETECTED:

@@ -32,7 +32,6 @@ public class MainService extends Service {
     public void onCreate() {
         if (!MainActivity.TEST) EventBus.getDefault().registerSticky(this);
 
-        startService(new Intent(this, MessageReceiverService.class));
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         showNotification();
 
