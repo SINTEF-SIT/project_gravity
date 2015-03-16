@@ -139,6 +139,12 @@ public class AlarmView extends RelativeLayout {
         }
     }
 
+    public void stopAlarmWithoutNotify() {
+        if (mCurrentAlarmTask != null) {
+            mCurrentAlarmTask.cancel(true);
+        }
+    }
+
     public void startAlarm() {
         ((Activity) getContext()).runOnUiThread(new Runnable() {
             @Override
