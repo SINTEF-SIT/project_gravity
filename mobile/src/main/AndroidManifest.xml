@@ -37,6 +37,7 @@
             android:excludeFromRecents="true"/>
 
         <service android:enabled="true" android:name=".MainService" />
+
         <service android:name=".RemoteSensorService">
             <intent-filter>
                 <action

@@ -14,7 +14,6 @@ import android.widget.EditText;
 
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
-import sintef.android.gravity.AdvancedFragment;
 import sintef.android.gravity.MainActivity;
 import sintef.android.gravity.R;
 
@@ -142,7 +141,7 @@ public class WizardMain extends ActionBarActivity {
         }
 
         @Override
-        public Fragment getItem(int i) {
+        public WizardTemplate getItem(int i) {
             switch (i) {
                 case 0:
                     return WizardXMLOnly.newInstance(WizardXMLOnly.class, R.layout.wizard_into, i);
@@ -155,7 +154,7 @@ public class WizardMain extends ActionBarActivity {
                 case 4:
                     return WizardNextOfKin.newInstance(i);
             }
-            return new AdvancedFragment();
+            throw new IllegalArgumentException("Not that many fragments");
         }
 
         @Override

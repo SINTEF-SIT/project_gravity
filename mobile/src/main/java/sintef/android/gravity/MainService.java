@@ -33,7 +33,7 @@ public class MainService extends Service {
         if (!MainActivity.TEST) EventBus.getDefault().registerSticky(this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        showNotification();
+        resetNotification();
 
     }
 
@@ -51,15 +51,6 @@ public class MainService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private void showNotification() {
-        resetNotification();
-    }
-
-    public void onEvent(String update) {
-        mNotificationBuilder.setContentText(update);
-        mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
     }
 
     public void onEvent(EventTypes type) {

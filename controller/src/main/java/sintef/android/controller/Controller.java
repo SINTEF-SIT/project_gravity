@@ -41,7 +41,6 @@ public class Controller {
         sEventBus.registerSticky(this);
         mRemoteSensorManager = RemoteSensorManager.getInstance(context);
 
-
         AlgorithmMain.initializeAlgorithmMaster(context);
         SensorManager.getInstance(context);
 
