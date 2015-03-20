@@ -44,8 +44,6 @@ public class AlarmActivity extends Activity {
                 if (mVibrator != null) mVibrator.cancel();
             }
         });
-
-
     }
 
     public void showAlarm() {
