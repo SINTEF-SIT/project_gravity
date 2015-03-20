@@ -44,7 +44,6 @@ public class AlgorithmMain {
 
     private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, SensorAlgorithmPack pack, boolean hasWatch)
     {
-        //TODO: Find out if the watch is connected. Done, but not sure if it works or not
         int numberOfIterations;
         float[] degs = new float[3];
         float[] rotationMatrix = new float[9];
@@ -99,6 +98,7 @@ public class AlgorithmMain {
 */
     public void onEvent(SensorAlgorithmPack pack)
     {
+        //TODO: better way to check if the watch is connected or not
         boolean hasWatch = false;
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
