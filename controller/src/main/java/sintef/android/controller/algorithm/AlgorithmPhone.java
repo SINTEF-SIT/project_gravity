@@ -1,7 +1,7 @@
 package sintef.android.controller.algorithm;
 import android.util.Log;
 import java.util.List;
-import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.utils.PreferencesHelper;
 /**
  * Created by Andreas on 10.02.2015.
@@ -62,7 +62,7 @@ public class AlgorithmPhone
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     Main pattern recognition method*/
-    public static boolean PatternRecognition(List<AccelerometerData> accelerometerData){
+    public static boolean PatternRecognition(List<LinearAccelerationData> accelerometerData){
         double maxAcceleration = 0;
         double currentAcceleration;
         int index = 0;
@@ -100,7 +100,7 @@ public class AlgorithmPhone
     maxAcceleration = 10.39
     TESTimpactThreshold = 3
     */
-    private static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration){
+    private static boolean impactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
 //iterating from toppoint to see if there is a big deacceleration after it.
         for (int i = index+1; i <= index+iterations; i++){
@@ -113,7 +113,7 @@ public class AlgorithmPhone
         return false;
     }
     //FOR TESTING PURPOSES
-    public static boolean impactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTimpactThreshold){
+    public static boolean impactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTimpactThreshold){
         double currentAcceleration;
 //iterating from toppoint to see if there is a big deacceleration after it.
         for (int i = index+1; i <= index+iterations; i++){
@@ -146,7 +146,7 @@ public class AlgorithmPhone
     maxAcceleration = 10,39
     TESTpreimpactThreshold = 3
     */
-    private static boolean preImpactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration){
+    private static boolean preImpactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
         int endLoop = index-iterations;
         if (endLoop < 0){endLoop = 0;}
@@ -157,7 +157,7 @@ public class AlgorithmPhone
         return false;
     }
     //for testing purposes
-    public static boolean preImpactPattern(List<AccelerometerData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTpreimpactThreshold){
+    public static boolean preImpactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTpreimpactThreshold){
         double currentAcceleration;
         for (int i = index-1; i >= index-iterations; i--){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
@@ -180,7 +180,7 @@ public class AlgorithmPhone
     index = 2
     TESTPostImpactThreshold = 5
     */
-    private static boolean postImpactPattern(List<AccelerometerData> accelerometerData, int index){
+    private static boolean postImpactPattern(List<LinearAccelerationData> accelerometerData, int index){
         double sumOfAccelerations = 0;
         double listSize = accelerometerData.size();
         if (listSize-index > 20){
@@ -194,7 +194,7 @@ public class AlgorithmPhone
         return false;
     }
     //For testing
-    public static boolean postImpactPattern(List<AccelerometerData> accelerometerData, int index, double TESTPostImpactThreshold){
+    public static boolean postImpactPattern(List<LinearAccelerationData> accelerometerData, int index, double TESTPostImpactThreshold){
         double sumOfAccelerations = 0;
         for (int i = index; i < accelerometerData.size(); i++){
             sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());

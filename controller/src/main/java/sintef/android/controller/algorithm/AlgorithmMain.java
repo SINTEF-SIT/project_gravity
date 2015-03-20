@@ -20,6 +20,9 @@ import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
+import static android.bluetooth.BluetoothClass.Device.WEARABLE_WRIST_WATCH;
+import static sintef.android.controller.algorithm.AlgorithmPhone.PatternRecognition;
+
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
 /**
@@ -41,7 +44,7 @@ public class AlgorithmMain {
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<AccelerometerData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, List<LinearAccelerationData> linearAccelerationData, SensorAlgorithmPack pack, boolean hasWatch)
+    private boolean phoneAlgorithm(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, boolean hasWatch)
     {
         //TODO: Find out if the watch is connected. Done, but not sure if it works or not
         int numberOfIterations;
@@ -60,30 +63,31 @@ public class AlgorithmMain {
             tetaZ = degs[0];
             if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ))
             {
-                if (hasWatch) return watchAlgorithm(pack);
+                if (PatternRecognition(accData))
+                {
+                    if (hasWatch) {
+                        RemoteSensorManager mRemoteSensorManager = RemoteSensorManager.getInstance(mContext);
+                        mRemoteSensorManager.getBuffer();
+                        //might have to change this, but for now this is the idea of how it should work
+                        return false;
+                    }
+                }
                 return true;
             }
         }
         return false;
     }
 
-    private boolean watchAlgorithm(SensorAlgorithmPack pack)
+    private boolean watchAlgorithm(List<AccelerometerData> accData)
     {
-        List <AccelerometerData> accData = new ArrayList<>();
-
-        RemoteSensorManager mRemoteSensorManager = RemoteSensorManager.getInstance(mContext);
-        mRemoteSensorManager.getBuffer();
-
-        accData = getWatchData(pack);
-
         return AlgorithmWatch.patternRecognition(accData);
     }
 
 
-    private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
+    /*private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
         List<AccelerometerData> accData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
-            if (entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {
+            if (entry.getKey().getSensorDevice().equals(WEARABLE_WRIST_WATCH)) {
                 if (entry.getKey().getSensorType() == Sensor.TYPE_ACCELEROMETER) {
                     for (int i = 0; i < entry.getValue().size(); i++)
                     {
@@ -94,7 +98,7 @@ public class AlgorithmMain {
         }
         return accData;
     }
-
+*/
     public void onEvent(SensorAlgorithmPack pack)
     {
         boolean hasWatch = false;
@@ -102,37 +106,48 @@ public class AlgorithmMain {
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> geoRotVecData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();
+        List<AccelerometerData> accDataWatch = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
-            if (!hasWatch && entry.getKey().getSensorDevice().equals(BluetoothClass.Device.WEARABLE_WRIST_WATCH)) {hasWatch = true;}
-            switch (entry.getKey().getSensorType()) {
-                case Sensor.TYPE_ACCELEROMETER:
-                    for (int i = 0; i < entry.getValue().size(); i++)
-                    {
-                        accelerometerData.add((AccelerometerData) entry.getValue().get(i).getSensorData());
+            switch (entry.getKey().getSensorDevice()) {
+                case PHONE:
+                    switch (entry.getKey().getSensorType()) {
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++)
+                            {
+                                linearAccelerationData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                        case Sensor.TYPE_ROTATION_VECTOR:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                rotationVectorData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                        case Sensor.TYPE_MAGNETIC_FIELD:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                geoRotVecData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
                     }
                     break;
-                case Sensor.TYPE_ROTATION_VECTOR:
-                    for (int i = 0; i < entry.getValue().size(); i++)
-                    {
-                        rotationVectorData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
+                case WATCH:
+                    switch (entry.getKey().getSensorType()){
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++)
+                            {
+                                linearAccelerationData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
                     }
                     break;
-                case Sensor.TYPE_MAGNETIC_FIELD:
-                    for (int i = 0; i < entry.getValue().size(); i++)
-                    {
-                        geoRotVecData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
-                    }
-                    break;
-                case Sensor.TYPE_LINEAR_ACCELERATION:
-                    for (int i = 0; i < entry.getValue().size(); i++)
-                    {
-                        linearAccelerationData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
-                    }
+                case OTHER:
                     break;
             }
 
         }
-        boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, linearAccelerationData, pack, hasWatch);
+        boolean isFall;
+        if (!accDataWatch.isEmpty()) {isFall = watchAlgorithm(accDataWatch);}
+        else {isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);}
+
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
                 EventBus.getDefault().post(EventTypes.FALL_DETECTED);
