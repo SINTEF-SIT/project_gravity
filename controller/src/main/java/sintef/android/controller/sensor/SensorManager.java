@@ -71,7 +71,7 @@ public class SensorManager implements SensorEventListener {
                     mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
                 }
                 mRemoteSensorManager.startMeasurement();
-                mRemoteSensorManager.setMode(ClientPaths.MODE_PULL);
+                mRemoteSensorManager.setMode(ClientPaths.MODE_PUSH);
                 break;
             case ONDESTROY:
                 mSensorManager.unregisterListener(this);

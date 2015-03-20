@@ -13,6 +13,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -32,6 +33,7 @@ public class SensorService extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
         android.os.Debug.waitForDebugger();
+        Log.w("SS", "started sensor service");
 
         client = DeviceClient.getInstance(this);
 
