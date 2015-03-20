@@ -1,10 +1,15 @@
 package sintef.android.controller.algorithm;
+<<<<<<< HEAD
 import android.util.Log;
 
 import java.util.List;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.utils.PreferencesHelper;
 
+=======
+import java.util.List;
+import sintef.android.controller.sensor.data.AccelerometerData;
+>>>>>>> b11804ed23d58a02a89c29d91f74c088103c94bf
 /**
  * Created by Andreas on 10.02.2015.
  */
@@ -22,6 +27,7 @@ public class AlgorithmPhone
     private static double gravity = 9.81;
     private static double impactThreshold = 3;
     private static double preimpactThreshold = 3;
+<<<<<<< HEAD
     private static double postImpactThreshold = 5;
 
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
