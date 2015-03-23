@@ -14,7 +14,8 @@ public class AlgorithmWatch
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 20;
     private static final double thresholdStill = 5;
-    private static  final double gravity = 9.81;
+    private static final double gravity = 9.81;
+    private static final double atleastReadings = 10;
 
     //Calculate the acceleration.
     //Switch back to List <SensorData> after testing
@@ -114,7 +115,7 @@ public class AlgorithmWatch
         //if (sensors.size() >= 20) accelerationData = fallIndex(sensors, 20);
         accelerationData = fallIndex(sensors, startList);
 
-        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > 20)
+        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > atleastReadings)
         {
             afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
             return afterFallData <= thresholdStill;

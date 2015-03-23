@@ -220,6 +220,8 @@ public class AlgorithmPhone
     //calculates vertical acceleration at one point
     private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
     {
+        //System.out.println(y + " was here");
+        System.out.println(Math.sin(tetaZ) + " was here");
         return Math.abs(x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ));
     }
     public static double getTotAccThreshold() {
