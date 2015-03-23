@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -180,7 +181,8 @@ public class RecordFragment extends Fragment {
             protected Void doInBackground(Void... voids) {
                 JsonObject recordings = new JsonObject();
 
-                recordings.addProperty("test_id", mTestIdInput.getText().toString());
+                String id = mTestIdInput.getText().toString();
+                recordings.addProperty("test_id", id);
 
                 JsonObject sensorData = new JsonObject();
 
@@ -291,18 +293,33 @@ public class RecordFragment extends Fragment {
 
                 Gson gson = new GsonBuilder().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 
-                String ip = mServerIp.getText().toString();
-                String port = mServerPort.getText().toString();
+                final String ip = mServerIp.getText().toString();
+                final String port = mServerPort.getText().toString();
                 PreferencesHelper.putString(SERVER_IP, ip);
                 PreferencesHelper.putString(SERVER_PORT, port);
+
+                final String jsonData = gson.toJson(recordings);
+                RecordHistoryFragment.saveJSONDataToDisk(id, jsonData);
 
                 try {
                     Socket socket = new Socket(ip, Integer.valueOf(port));
                     DataOutputStream DOS = new DataOutputStream(socket.getOutputStream());
-                    DOS.writeBytes(gson.toJson(recordings));
+                    DOS.writeBytes(jsonData);
                     socket.close();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Sensor data sent to server " + ip + ":" + port, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Sensor data failed to send to " + ip + ":" + port , Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
                 /** gson.toJson(recordings) */

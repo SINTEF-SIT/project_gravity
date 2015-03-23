@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -174,7 +175,7 @@ public class PreferencesHelper {
         return preferences.getStringSet(key, null);
     }
 
-    public static void setStringArrayPref(final String key, final ArrayList<String> values) {
+    public static void setStringArrayPref(final String key, final List<String> values) {
         final JSONArray a = new JSONArray();
         for (String value : values)
             a.put(value);
@@ -182,8 +183,8 @@ public class PreferencesHelper {
         editor.commit();
     }
 
-    public static ArrayList<String> getStringArrayPref(final String key) {
-        if (preferences == null) return null;
+    public static List<String> getStringArrayPref(final String key) {
+        if (preferences == null) return new ArrayList<>();
         final String json = preferences.getString(key, null);
         final ArrayList<String> stored_array = new ArrayList<String>();
         if (json != null) {

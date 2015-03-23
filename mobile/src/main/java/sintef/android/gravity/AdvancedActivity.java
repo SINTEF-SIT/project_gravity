@@ -8,8 +8,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -24,7 +26,7 @@ import sintef.android.controller.utils.PreferencesHelper;
  */
 public class AdvancedActivity extends ActionBarActivity {
 
-    private static final int NUM_PAGES = 3;
+    private static final int NUM_PAGES = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +36,33 @@ public class AdvancedActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        pager.setOffscreenPageLimit(NUM_PAGES-1);
 
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setTextColor(Color.WHITE);
         tabs.setViewPager(pager);
+
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = ((PagerAdapter) pager.getAdapter()).getRegisteredFragment(position);
+                if (fragment instanceof RecordHistoryFragment) {
+                    ((RecordHistoryFragment) fragment).notifyOnDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -62,7 +85,6 @@ public class AdvancedActivity extends ActionBarActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
         Switch fall_detection_switch = (Switch) menu.findItem(R.id.fall_detection_switch).getActionView().findViewById(R.id.switch_toolbar);
         fall_detection_switch.setChecked(PreferencesHelper.getBoolean(PreferencesHelper.FALL_DETECTION_ENABLED, true));
         fall_detection_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -87,6 +109,8 @@ public class AdvancedActivity extends ActionBarActivity {
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
         public PagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -100,6 +124,8 @@ public class AdvancedActivity extends ActionBarActivity {
                     return new AdvancedFragment();
                 case 2:
                     return new RecordFragment();
+                case 3:
+                    return new RecordHistoryFragment();
             }
             return new NormalFragment();
         }
@@ -113,8 +139,27 @@ public class AdvancedActivity extends ActionBarActivity {
                     return getString(R.string.fragment_advanced);
                 case 2:
                     return getString(R.string.fragment_record);
+                case 3:
+                    return getString(R.string.fragment_record_history);
             }
             return super.getPageTitle(position);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
         }
 
         @Override

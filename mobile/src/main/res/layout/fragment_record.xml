@@ -45,8 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:hint="@string/record_server_ip"
-                android:inputType="text"
-                android:padding="4dp"/>
+                android:inputType="text"/>
 
             <sintef.android.gravity.wizard.FloatingHintEditText
                 android:id="@+id/server_port"
@@ -54,8 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/record_server_port"
-                android:inputType="text"
-                android:padding="4dp"/>
+                android:inputType="text"/>
 
         </LinearLayout>
 
@@ -78,7 +76,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:background="@color/advanced_background">
 
         <Button
             android:id="@+id/cancel_button"

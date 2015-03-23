@@ -14,6 +14,7 @@
     <string name="fragment_graph">Graph</string>
     <string name="fragment_advanced">Advanced</string>
     <string name="fragment_record">Record</string>
+    <string name="fragment_record_history">Record history</string>
 
     <string name="alarm_progress_disabled">Ingen\nalarm</string>
     <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>
