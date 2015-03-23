@@ -22,8 +22,6 @@ public class AlgorithmPhone
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
-        System.out.println(verticalAcceleration + " was here");
-        System.out.println(totalAcceleration + " tot was here");
         if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold())
         {
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold())

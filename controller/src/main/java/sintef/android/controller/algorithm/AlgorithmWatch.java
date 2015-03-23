@@ -15,7 +15,6 @@ public class AlgorithmWatch
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 20;
     private static final double thresholdStill = 5;
-    private static final double gravity = 9.81;
     private static final double atleastReadings = 10;
 
     //Calculate the acceleration.
@@ -33,7 +32,7 @@ public class AlgorithmWatch
         for (LinearAccelerationData xyz : sensors)
         {
             x.add((double) xyz.getX());
-            y.add((double) xyz.getY()-gravity);
+            y.add((double) xyz.getY());
             z.add((double) xyz.getZ());
         }
 
