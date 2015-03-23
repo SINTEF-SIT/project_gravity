@@ -10,14 +10,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import com.astuetz.PagerSlidingTabStrip;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.utils.PreferencesHelper;
 
 /**
  * Created by samyboy89 on 23/02/15.
@@ -57,15 +54,23 @@ public class AdvancedActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_advanced, menu);
-        Switch fall_detection_switch = (Switch) menu.findItem(R.id.switch_toolbar);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        /*
+        Switch fall_detection_switch = (Switch) menu.findItem(R.id.fall_detection_switch);
         fall_detection_switch.setChecked(PreferencesHelper.getBoolean(PreferencesHelper.FALL_DETECTION_ENABLED, true));
         fall_detection_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 PreferencesHelper.putBoolean(PreferencesHelper.FALL_DETECTION_ENABLED, b);
             }
-        });
-        return true;
+        });*/
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
