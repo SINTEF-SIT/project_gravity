@@ -70,8 +70,9 @@ public class AlgorithmMain {
                         //might have to change this, but for now this is the idea of how it should work
                         return false;
                     }
+                    return true;
                 }
-                return true;
+                return false;
             }
         }
         return false;
@@ -145,8 +146,6 @@ public class AlgorithmMain {
 
         }
 
-        System.out.println(hasWatch + " was here");
-        System.out.println(accDataWatch.size() + " was here");
         boolean isFall;
         if (!accDataWatch.isEmpty()) {isFall = watchAlgorithm(accDataWatch);}
         else {isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);}
