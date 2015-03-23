@@ -275,6 +275,7 @@ public class RecordFragment extends Fragment {
                 sensorData.add("magnetic_field_data", magneticFieldArray);
                 sensorData.add("gyroscope_data", gyroscopeArray);
                 sensorData.add("gravity_data", gravityArray);
+                sensorData.add("linear_acceleration", linearAccelerationArray);
 
                 recordings.add("sensor_data", sensorData);
 
