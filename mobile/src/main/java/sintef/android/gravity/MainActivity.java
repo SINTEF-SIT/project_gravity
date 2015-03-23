@@ -23,7 +23,6 @@ import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static final boolean TEST = false;
     public static final String ADVANCED_MENU_AVAILABLE = "advanced_menu_available";
     private static final String TAG = "Main Activity";
 

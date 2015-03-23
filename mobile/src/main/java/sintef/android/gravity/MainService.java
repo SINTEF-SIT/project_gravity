@@ -39,7 +39,7 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        if (!MainActivity.TEST) EventBus.getDefault().registerSticky(this);
+        EventBus.getDefault().registerSticky(this);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         resetNotification();

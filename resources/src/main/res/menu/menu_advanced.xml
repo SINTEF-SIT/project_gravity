@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/fall_detection_switch"
+        android:title=""
+        app:showAsAction="always"
+        app:actionLayout="@layout/toolbar_switch" />
+</menu>

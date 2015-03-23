@@ -42,6 +42,12 @@ public class PreferencesHelper {
         INT, STRING, BOOLEAN, LONG, FLOAT, SET_STRING;
     }
 
+    public static final String FALL_DETECTION_ENABLED = "fall_detection_enabled";
+
+    public static boolean isFallDetectionEnabled() {
+        return PreferencesHelper.getBoolean(FALL_DETECTION_ENABLED, true);
+    }
+
     @SuppressLint("CommitPrefEdits")
     public static void initializePreferences(Context c) {
         if (context == null) {
@@ -134,6 +140,10 @@ public class PreferencesHelper {
 
     public static String getString(String key) {
         return preferences.getString(key, INVALID_STRING);
+    }
+
+    public static String getString(String key, String def_value) {
+        return preferences.getString(key, def_value);
     }
 
     public static boolean getBoolean(String key) {

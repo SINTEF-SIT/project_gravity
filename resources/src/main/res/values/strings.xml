@@ -45,7 +45,8 @@
     <string name="send">Send</string>
 
     <string name="record_test_id">Test ID</string>
-    <string name="record_fall_nr">Fall NR</string>
+    <string name="record_server_ip">Server IP</string>
+    <string name="record_server_port">Server PORT</string>
     <string name="record_header">Record sensor data</string>
 
 

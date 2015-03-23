@@ -84,7 +84,7 @@ public class AlarmView extends RelativeLayout {
         mAlarmProgress.setVisibility(View.VISIBLE);
         mAlarmProgressBackground.setVisibility(View.VISIBLE);
         mAlarmProgressBackground.setBackgroundResource(R.drawable.circle_disabled);
-        mAlarmProgress.setUnfinishedStrokeColor(Color.BLACK);
+        mAlarmProgress.setUnfinishedStrokeColor(Color.parseColor("#555555"));
         mAlarmProgress.setUnfinishedStrokeWidth(30);
         mAlarmProgress.setProgress(0);
     }

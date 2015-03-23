@@ -33,15 +33,32 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"/>
 
-        <sintef.android.gravity.wizard.FloatingHintEditText
-            android:id="@+id/record_fall_nr"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/record_fall_nr"
-            android:inputType="text"
             android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:visibility="gone"/>
+            android:layout_marginBottom="12dp">
+
+            <sintef.android.gravity.wizard.FloatingHintEditText
+                android:id="@+id/server_ip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:hint="@string/record_server_ip"
+                android:inputType="text"
+                android:padding="4dp"/>
+
+            <sintef.android.gravity.wizard.FloatingHintEditText
+                android:id="@+id/server_port"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/record_server_port"
+                android:inputType="text"
+                android:padding="4dp"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

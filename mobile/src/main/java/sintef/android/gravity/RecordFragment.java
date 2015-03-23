@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -31,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.algorithm.SensorAlgorithmPack;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
@@ -39,6 +39,7 @@ import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.GyroscopeData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
+import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.wizard.FloatingHintEditText;
 
 /**
@@ -52,11 +53,18 @@ public class RecordFragment extends Fragment {
     @InjectView(R.id.cancel_button)             Button mCancelButton;
     @InjectView(R.id.input_fields)              LinearLayout mInputLayout;
     @InjectView(R.id.record_test_id)            FloatingHintEditText mTestIdInput;
-    @InjectView(R.id.record_fall_nr)            FloatingHintEditText mFallNrInput;
+    @InjectView(R.id.server_ip)                 FloatingHintEditText mServerIp;
+    @InjectView(R.id.server_port)               FloatingHintEditText mServerPort;
     @InjectView(R.id.record)                    View mRecordIcon;
     @InjectView(R.id.stop)                      View mStopIcon;
     @InjectView(R.id.record_button)             FrameLayout mRecordButton;
     @InjectView(R.id.record_time)               TextView mRecordTime;
+
+    private static final String SERVER_IP = "server_ip";
+    private static final String SERVER_PORT = "server_port";
+
+    private static final String DEFAULT_SERVER_IP = "projectgravity.no-ip.org";
+    private static final String DEFAULT_SERVER_PORT = "8765";
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,6 +79,8 @@ public class RecordFragment extends Fragment {
         ButterKnife.inject(this, getView());
         EventBus.getDefault().register(this);
 
+        mServerIp.setText(PreferencesHelper.getString(SERVER_IP, DEFAULT_SERVER_IP));
+        mServerPort.setText(PreferencesHelper.getString(SERVER_PORT, DEFAULT_SERVER_PORT));
 
         mRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,13 +108,13 @@ public class RecordFragment extends Fragment {
         });
     }
 
-    public List<SensorAlgorithmPack> mSensorAlgorithmPackList = new ArrayList<>();
+    private static Map<SensorSession, List<SensorData>> mRecordedData = new HashMap<>();
     public List<Long> mFallDetectedAtTimes = new ArrayList<>();
     private Timer mTimer;
 
     private boolean mIsRecording = false;
-    private boolean mEveryOtherPack = true;
 
+    /*
     public void onEvent(SensorAlgorithmPack pack) {
         if (mIsRecording && mEveryOtherPack) {
             mSensorAlgorithmPackList.add(pack);
@@ -113,16 +123,27 @@ public class RecordFragment extends Fragment {
             mEveryOtherPack = true;
         }
     }
+    */
+
+    public void onEvent(SensorData data) {
+        if (!mIsRecording) return;
+
+        if (!mRecordedData.containsKey(data.getSensorSession())) {
+            mRecordedData.put(data.getSensorSession(), new ArrayList<SensorData>());
+        }
+
+        mRecordedData.get(data.getSensorSession()).add(data);
+    }
 
     public void onEvent(EventTypes type) {
-        if (mIsRecording && type == EventTypes.FALL_DETECTED) {
+        if (mIsRecording && type == EventTypes.FALL_DETECTED_FOR_RECORDING) {
             mFallDetectedAtTimes.add(System.currentTimeMillis());
         }
     }
 
     private void startRecording() {
         mFallDetectedAtTimes.clear();
-        mSensorAlgorithmPackList.clear();
+        mRecordedData.clear();
         mIsRecording = true;
         startRecordingSetViewParams();
 
@@ -168,72 +189,70 @@ public class RecordFragment extends Fragment {
                 JsonArray gyroscopeArray = new JsonArray();
                 JsonArray gravityArray = new JsonArray();
 
-                for (SensorAlgorithmPack pack : mSensorAlgorithmPackList) {
-                    for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
-                        switch (entry.getKey().getSensorType()) {
-                            case Sensor.TYPE_ACCELEROMETER:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    SensorData data = entry.getValue().get(i);
-                                    AccelerometerData accData = (AccelerometerData) data.getSensorData();
-                                    JsonObject accelerometerObject = new JsonObject();
-                                    accelerometerObject.addProperty("time", data.getTimeCaptured());
-                                    accelerometerObject.addProperty("x", accData.getX());
-                                    accelerometerObject.addProperty("y", accData.getY());
-                                    accelerometerObject.addProperty("z", accData.getZ());
-                                    accelerometerArray.add(accelerometerObject);
-                                }
-                                break;
-                            case Sensor.TYPE_ROTATION_VECTOR:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    SensorData data = entry.getValue().get(i);
-                                    RotationVectorData rotData = (RotationVectorData) data.getSensorData();
-                                    JsonObject rotationVectorObject = new JsonObject();
-                                    rotationVectorObject.addProperty("time", data.getTimeCaptured());
-                                    rotationVectorObject.addProperty("x", rotData.getX());
-                                    rotationVectorObject.addProperty("y", rotData.getY());
-                                    rotationVectorObject.addProperty("z", rotData.getZ());
-                                    rotationVectorObject.addProperty("cos", rotData.getCos());
-                                    rotationVectorObject.addProperty("eha", rotData.getEstimatedHeadingAccuracy());
-                                    rotationVectorArray.add(rotationVectorObject);
-                                }
-                                break;
-                            case Sensor.TYPE_MAGNETIC_FIELD:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    SensorData data = entry.getValue().get(i);
-                                    MagneticFieldData magData = (MagneticFieldData) data.getSensorData();
-                                    JsonObject magneticFieldObject = new JsonObject();
-                                    magneticFieldObject.addProperty("time", data.getTimeCaptured());
-                                    magneticFieldObject.addProperty("x", magData.getX());
-                                    magneticFieldObject.addProperty("y", magData.getY());
-                                    magneticFieldObject.addProperty("z", magData.getZ());
-                                    magneticFieldArray.add(magneticFieldObject);
-                                }
-                                break;
-                            case Sensor.TYPE_GYROSCOPE:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    SensorData data = entry.getValue().get(i);
-                                    GyroscopeData gyrData = (GyroscopeData) data.getSensorData();
-                                    JsonObject gyroscopeObject = new JsonObject();
-                                    gyroscopeObject.addProperty("time", data.getTimeCaptured());
-                                    gyroscopeObject.addProperty("x", gyrData.getX());
-                                    gyroscopeObject.addProperty("y", gyrData.getY());
-                                    gyroscopeObject.addProperty("z", gyrData.getZ());
-                                    gyroscopeArray.add(gyroscopeObject);
-                                }
-                                break;
-                            case Sensor.TYPE_GRAVITY:
-                                for (int i = 0; i < entry.getValue().size(); i++) {
-                                    SensorData data = entry.getValue().get(i);
-                                    GravityData graData = (GravityData) data.getSensorData();
-                                    JsonObject gravityObject = new JsonObject();
-                                    gravityObject.addProperty("time", data.getTimeCaptured());
-                                    gravityObject.addProperty("x", graData.getX());
-                                    gravityObject.addProperty("y", graData.getY());
-                                    gravityObject.addProperty("z", graData.getZ());
-                                    gravityArray.add(gravityObject);
-                                }
-                                break;
-                        }
+                for (Map.Entry<SensorSession, List<SensorData>> entry : mRecordedData.entrySet()) {
+                    switch (entry.getKey().getSensorType()) {
+                        case Sensor.TYPE_ACCELEROMETER:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                SensorData data = entry.getValue().get(i);
+                                AccelerometerData accData = (AccelerometerData) data.getSensorData();
+                                JsonObject accelerometerObject = new JsonObject();
+                                accelerometerObject.addProperty("time", data.getTimeCaptured());
+                                accelerometerObject.addProperty("x", accData.getX());
+                                accelerometerObject.addProperty("y", accData.getY());
+                                accelerometerObject.addProperty("z", accData.getZ());
+                                accelerometerArray.add(accelerometerObject);
+                            }
+                            break;
+                        case Sensor.TYPE_ROTATION_VECTOR:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                SensorData data = entry.getValue().get(i);
+                                RotationVectorData rotData = (RotationVectorData) data.getSensorData();
+                                JsonObject rotationVectorObject = new JsonObject();
+                                rotationVectorObject.addProperty("time", data.getTimeCaptured());
+                                rotationVectorObject.addProperty("x", rotData.getX());
+                                rotationVectorObject.addProperty("y", rotData.getY());
+                                rotationVectorObject.addProperty("z", rotData.getZ());
+                                rotationVectorObject.addProperty("cos", rotData.getCos());
+                                rotationVectorObject.addProperty("eha", rotData.getEstimatedHeadingAccuracy());
+                                rotationVectorArray.add(rotationVectorObject);
+                            }
+                            break;
+                        case Sensor.TYPE_MAGNETIC_FIELD:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                SensorData data = entry.getValue().get(i);
+                                MagneticFieldData magData = (MagneticFieldData) data.getSensorData();
+                                JsonObject magneticFieldObject = new JsonObject();
+                                magneticFieldObject.addProperty("time", data.getTimeCaptured());
+                                magneticFieldObject.addProperty("x", magData.getX());
+                                magneticFieldObject.addProperty("y", magData.getY());
+                                magneticFieldObject.addProperty("z", magData.getZ());
+                                magneticFieldArray.add(magneticFieldObject);
+                            }
+                            break;
+                        case Sensor.TYPE_GYROSCOPE:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                SensorData data = entry.getValue().get(i);
+                                GyroscopeData gyrData = (GyroscopeData) data.getSensorData();
+                                JsonObject gyroscopeObject = new JsonObject();
+                                gyroscopeObject.addProperty("time", data.getTimeCaptured());
+                                gyroscopeObject.addProperty("x", gyrData.getX());
+                                gyroscopeObject.addProperty("y", gyrData.getY());
+                                gyroscopeObject.addProperty("z", gyrData.getZ());
+                                gyroscopeArray.add(gyroscopeObject);
+                            }
+                            break;
+                        case Sensor.TYPE_GRAVITY:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                SensorData data = entry.getValue().get(i);
+                                GravityData graData = (GravityData) data.getSensorData();
+                                JsonObject gravityObject = new JsonObject();
+                                gravityObject.addProperty("time", data.getTimeCaptured());
+                                gravityObject.addProperty("x", graData.getX());
+                                gravityObject.addProperty("y", graData.getY());
+                                gravityObject.addProperty("z", graData.getZ());
+                                gravityArray.add(gravityObject);
+                            }
+                            break;
                     }
                 }
 
@@ -257,8 +276,13 @@ public class RecordFragment extends Fragment {
 
                 Gson gson = new GsonBuilder().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 
+                String ip = mServerIp.getText().toString();
+                String port = mServerPort.getText().toString();
+                PreferencesHelper.putString(SERVER_IP, ip);
+                PreferencesHelper.putString(SERVER_PORT, port);
+
                 try {
-                    Socket socket = new Socket("projectgravity.no-ip.org", 8765);
+                    Socket socket = new Socket(ip, Integer.valueOf(port));
                     DataOutputStream DOS = new DataOutputStream(socket.getOutputStream());
                     DOS.writeBytes(gson.toJson(recordings));
                     socket.close();
@@ -338,7 +362,7 @@ public class RecordFragment extends Fragment {
 
     private void cancelRecording() {
         mFallDetectedAtTimes.clear();
-        mSensorAlgorithmPackList.clear();
+        mRecordedData.clear();
         mIsRecording = false;
 
         sendRecordingSetViewParams();

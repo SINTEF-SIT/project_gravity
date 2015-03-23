@@ -17,6 +17,7 @@ import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
+import sintef.android.controller.utils.PreferencesHelper;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
@@ -125,7 +126,11 @@ public class AlgorithmMain {
         }
         boolean isFall = phoneAlgorithm(accelerometerData, rotationVectorData, geoRotVecData, pack, hasWatch);
         if (isFall) {
-            EventBus.getDefault().post(EventTypes.FALL_DETECTED);
+            if (PreferencesHelper.isFallDetectionEnabled()) {
+                EventBus.getDefault().post(EventTypes.FALL_DETECTED);
+            }
+
+            EventBus.getDefault().post(EventTypes.FALL_DETECTED_FOR_RECORDING);
         }
     }
 
