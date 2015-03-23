@@ -37,6 +37,7 @@ import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
 import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
@@ -188,6 +189,7 @@ public class RecordFragment extends Fragment {
                 JsonArray magneticFieldArray = new JsonArray();
                 JsonArray gyroscopeArray = new JsonArray();
                 JsonArray gravityArray = new JsonArray();
+                JsonArray linearAccelerationArray = new JsonArray();
 
                 for (Map.Entry<SensorSession, List<SensorData>> entry : mRecordedData.entrySet()) {
                     switch (entry.getKey().getSensorType()) {
@@ -251,6 +253,18 @@ public class RecordFragment extends Fragment {
                                 gravityObject.addProperty("y", graData.getY());
                                 gravityObject.addProperty("z", graData.getZ());
                                 gravityArray.add(gravityObject);
+                            }
+                            break;
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                SensorData data = entry.getValue().get(i);
+                                LinearAccelerationData linearAccData = (LinearAccelerationData) data.getSensorData();
+                                JsonObject linearAccObject = new JsonObject();
+                                linearAccObject.addProperty("time", data.getTimeCaptured());
+                                linearAccObject.addProperty("x", linearAccData.getX());
+                                linearAccObject.addProperty("y", linearAccData.getY());
+                                linearAccObject.addProperty("z", linearAccData.getZ());
+                                linearAccelerationArray.add(linearAccObject);
                             }
                             break;
                     }

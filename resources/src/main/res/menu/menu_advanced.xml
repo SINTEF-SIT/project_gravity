@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/fall_detection_switch"
-        android:title=""
+        android:title="Detection"
         app:showAsAction="always"
         app:actionLayout="@layout/toolbar_switch" />
 </menu>
