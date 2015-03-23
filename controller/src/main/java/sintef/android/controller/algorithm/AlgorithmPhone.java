@@ -209,12 +209,15 @@ public class AlgorithmPhone
     private static boolean postImpactPattern(List<AccelerometerData> accelerometerData, int index){
         double sumOfAccelerations = 0;
 
-        for (int i = index; i < accelerometerData.size(); i++){
-            sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
-        }
+        double listSize = accelerometerData.size();
+        if (listSize-index > 20){
+            for (int i = index; i < listSize; i++){
+                sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
+            }
 
-        if(sumOfAccelerations/(accelerometerData.size()-index) < postImpactThreshold){
-            return true;
+            if(sumOfAccelerations/(accelerometerData.size()-index) < postImpactThreshold){
+                return true;
+            }
         }
         return false;
     }
