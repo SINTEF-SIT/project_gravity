@@ -15,14 +15,15 @@ public class AlgorithmPhone
     public static final double default_verticalAccThreshold = 5;
     public static final double default_accComparisonThreshold = 0.5;
     private static double angleThreshold = 30;
-    private static double gravity = 9.81;
     private static double impactThreshold = 3;
     private static double preimpactThreshold = 3;
     private static double postImpactThreshold = 5;
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
-        double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));
-        double verticalAcceleration = Math.abs(gravity-verticalAcceleration(x, y, z, tetaY, tetaZ));
+        double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
+        double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
+        System.out.println(verticalAcceleration + " was here");
+        System.out.println(totalAcceleration + " tot was here");
         if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold())
         {
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold())
@@ -34,8 +35,8 @@ public class AlgorithmPhone
     }
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ, double testtotAccThreshold, double testverticalAccThreshold, double testaccComparisonThreshold)
     {
-        double totalAcceleration = Math.abs(gravity-accelerationTotal(x, y, z));
-        double verticalAcceleration = Math.abs(gravity-verticalAcceleration(x, y, z, tetaY, tetaZ));
+        double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
+        double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
         if (totalAcceleration >= testtotAccThreshold && verticalAcceleration >= testverticalAccThreshold)
         {
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= testaccComparisonThreshold)
@@ -220,9 +221,6 @@ public class AlgorithmPhone
     //calculates vertical acceleration at one point
     private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
     {
-        System.out.println(x + " x was here");
-        System.out.println(y + " y was here");
-        System.out.println(z + " z was here");
         return Math.abs(x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ));
     }
     public static double getTotAccThreshold() {
