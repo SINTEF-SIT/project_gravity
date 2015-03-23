@@ -77,7 +77,7 @@ public class AlgorithmMain {
         return false;
     }
 
-    private boolean watchAlgorithm(List<AccelerometerData> accData)
+    private boolean watchAlgorithm(List<LinearAccelerationData> accData)
     {
         return AlgorithmWatch.patternRecognition(accData);
     }
@@ -101,12 +101,12 @@ public class AlgorithmMain {
     public void onEvent(SensorAlgorithmPack pack)
     {
         //TODO: better way to check if the watch is connected or not
-        boolean hasWatch = false;
+        boolean hasWatch = RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> geoRotVecData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();
-        List<AccelerometerData> accDataWatch = new ArrayList<>();
+        List<LinearAccelerationData> accDataWatch = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             switch (entry.getKey().getSensorDevice()) {
                 case PHONE:
@@ -134,7 +134,7 @@ public class AlgorithmMain {
                         case Sensor.TYPE_LINEAR_ACCELERATION:
                             for (int i = 0; i < entry.getValue().size(); i++)
                             {
-                                linearAccelerationData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                                accDataWatch.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
                             }
                             break;
                     }
