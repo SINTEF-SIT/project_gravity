@@ -17,7 +17,7 @@ public class AlgorithmPhone
     private static double angleThreshold = 30;
     private static double impactThreshold = 3;
     private static double preimpactThreshold = 3;
-    private static double postImpactThreshold = 5;
+    private static double postImpactThreshold = 10;
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
@@ -74,6 +74,10 @@ public class AlgorithmPhone
                 maxAcceleration = currentAcceleration;
             }
         }
+        System.out.println(preImpactPattern(accelerometerData, index, iterations,maxAcceleration)  + " was here");
+        System.out.println(impactPattern(accelerometerData, index, iterations,maxAcceleration) + " was here");
+        System.out.println(postImpactPattern(accelerometerData, index+iterations) + " was here");
+
         if (preImpactPattern(accelerometerData, index, iterations,maxAcceleration) && impactPattern(accelerometerData, index, iterations,maxAcceleration) && postImpactPattern(accelerometerData, index+iterations)){
             return true;
         }
@@ -107,7 +111,6 @@ public class AlgorithmPhone
             if (currentAcceleration*impactThreshold <= maxAcceleration){
                 return true;
             }
-            return false;
         }
         return false;
     }
