@@ -116,7 +116,7 @@ public class RemoteSensorManager {
         }
     }
 
-    private boolean validateConnection() {
+    public boolean validateConnection() {
         if (googleApiClient.isConnected()) {
             return true;
         }

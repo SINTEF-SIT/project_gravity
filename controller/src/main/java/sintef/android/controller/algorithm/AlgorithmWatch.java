@@ -5,6 +5,7 @@ import java.util.List;
 
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.data.AccelerometerData;
+import sintef.android.controller.sensor.data.LinearAccelerationData;
 
 /**
  * Created by araneae on 09.02.15.
@@ -14,11 +15,11 @@ public class AlgorithmWatch
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 20;
     private static final double thresholdStill = 5;
-    private static  final double gravity = 9.81;
+    private static final double atleastReadings = 10;
 
     //Calculate the acceleration.
     //Switch back to List <SensorData> after testing
-    private static FallIndexValues fallIndex(List<AccelerometerData> sensors, int startList)
+    private static FallIndexValues fallIndex(List<LinearAccelerationData> sensors, int startList)
     {
 
         List <Double> x = new ArrayList<>();
@@ -28,10 +29,10 @@ public class AlgorithmWatch
 
         double fall = 0;
 
-        for (AccelerometerData xyz : sensors)
+        for (LinearAccelerationData xyz : sensors)
         {
             x.add((double) xyz.getX());
-            y.add((double) xyz.getY()-gravity);
+            y.add((double) xyz.getY());
             z.add((double) xyz.getZ());
         }
 
@@ -96,7 +97,7 @@ public class AlgorithmWatch
         return Math.sqrt(totAcceleration);
     }*/
 
-    private static double stillPattern(List<AccelerometerData> sensors, int startList)
+    private static double stillPattern(List<LinearAccelerationData> sensors, int startList)
     {
         return fallIndex(sensors, startList).getFallData();
     }
@@ -104,7 +105,7 @@ public class AlgorithmWatch
 
     //might change the name/remove this if necessary, might want to change the parameter
     //Recognize fall pattern, and decide if there is a fall or not
-    public static boolean patternRecognition(List<AccelerometerData> sensors)
+    public static boolean patternRecognition(List<LinearAccelerationData> sensors)
     {
         FallIndexValues accelerationData;
         //double impactFallData;
@@ -114,7 +115,7 @@ public class AlgorithmWatch
         //if (sensors.size() >= 20) accelerationData = fallIndex(sensors, 20);
         accelerationData = fallIndex(sensors, startList);
 
-        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > 20)
+        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > atleastReadings)
         {
             afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
             return afterFallData <= thresholdStill;
