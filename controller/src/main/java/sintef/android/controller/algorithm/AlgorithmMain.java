@@ -1,6 +1,5 @@
 package sintef.android.controller.algorithm;
 
-import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -20,7 +19,6 @@ import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
-import static android.bluetooth.BluetoothClass.Device.WEARABLE_WRIST_WATCH;
 import static sintef.android.controller.algorithm.AlgorithmPhone.PatternRecognition;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
@@ -102,7 +100,7 @@ public class AlgorithmMain {
     public void onEvent(SensorAlgorithmPack pack)
     {
         //TODO: better way to check if the watch is connected or not
-        boolean hasWatch = RemoteSensorManager.getInstance(this.mContext).validateConnection();
+        boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> geoRotVecData = new ArrayList<>();
@@ -147,8 +145,6 @@ public class AlgorithmMain {
         }
 
         boolean isFall;
-        System.out.println(accDataWatch.size() + " was here");
-        System.out.println(hasWatch + " was here");
         if (!accDataWatch.isEmpty()) {isFall = watchAlgorithm(accDataWatch);}
         else {isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);}
 

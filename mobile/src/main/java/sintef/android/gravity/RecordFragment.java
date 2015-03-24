@@ -35,12 +35,8 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
-import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.GravityData;
-import sintef.android.controller.sensor.data.GyroscopeData;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
-import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.wizard.FloatingHintEditText;
 
@@ -186,16 +182,16 @@ public class RecordFragment extends Fragment {
 
                 JsonObject sensorData = new JsonObject();
 
-                JsonArray accelerometerArray = new JsonArray();
-                JsonArray rotationVectorArray = new JsonArray();
+                /*JsonArray accelerometerArray = new JsonArray();
+                JsonArray rotationVectorArray = new JsonArray();*/
                 JsonArray magneticFieldArray = new JsonArray();
-                JsonArray gyroscopeArray = new JsonArray();
-                JsonArray gravityArray = new JsonArray();
+                /*JsonArray gyroscopeArray = new JsonArray();
+                JsonArray gravityArray = new JsonArray();*/
                 JsonArray linearAccelerationArray = new JsonArray();
 
                 for (Map.Entry<SensorSession, List<SensorData>> entry : mRecordedData.entrySet()) {
                     switch (entry.getKey().getSensorType()) {
-                        case Sensor.TYPE_ACCELEROMETER:
+                        /*case Sensor.TYPE_ACCELEROMETER:
                             for (int i = 0; i < entry.getValue().size(); i++) {
                                 SensorData data = entry.getValue().get(i);
                                 AccelerometerData accData = (AccelerometerData) data.getSensorData();
@@ -220,7 +216,7 @@ public class RecordFragment extends Fragment {
                                 rotationVectorObject.addProperty("eha", rotData.getEstimatedHeadingAccuracy());
                                 rotationVectorArray.add(rotationVectorObject);
                             }
-                            break;
+                            break;*/
                         case Sensor.TYPE_MAGNETIC_FIELD:
                             for (int i = 0; i < entry.getValue().size(); i++) {
                                 SensorData data = entry.getValue().get(i);
@@ -233,7 +229,7 @@ public class RecordFragment extends Fragment {
                                 magneticFieldArray.add(magneticFieldObject);
                             }
                             break;
-                        case Sensor.TYPE_GYROSCOPE:
+                        /*case Sensor.TYPE_GYROSCOPE:
                             for (int i = 0; i < entry.getValue().size(); i++) {
                                 SensorData data = entry.getValue().get(i);
                                 GyroscopeData gyrData = (GyroscopeData) data.getSensorData();
@@ -256,7 +252,7 @@ public class RecordFragment extends Fragment {
                                 gravityObject.addProperty("z", graData.getZ());
                                 gravityArray.add(gravityObject);
                             }
-                            break;
+                            break;*/
                         case Sensor.TYPE_LINEAR_ACCELERATION:
                             for (int i = 0; i < entry.getValue().size(); i++) {
                                 SensorData data = entry.getValue().get(i);
@@ -272,11 +268,11 @@ public class RecordFragment extends Fragment {
                     }
                 }
 
-                sensorData.add("accelerometer_data", accelerometerArray);
-                sensorData.add("rotation_vector_data", rotationVectorArray);
+                /*sensorData.add("accelerometer_data", accelerometerArray);
+                sensorData.add("rotation_vector_data", rotationVectorArray);*/
                 sensorData.add("magnetic_field_data", magneticFieldArray);
-                sensorData.add("gyroscope_data", gyroscopeArray);
-                sensorData.add("gravity_data", gravityArray);
+                /*sensorData.add("gyroscope_data", gyroscopeArray);
+                sensorData.add("gravity_data", gravityArray);*/
                 sensorData.add("linear_acceleration", linearAccelerationArray);
 
                 recordings.add("sensor_data", sensorData);
