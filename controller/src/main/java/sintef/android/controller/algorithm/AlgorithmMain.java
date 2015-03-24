@@ -147,6 +147,8 @@ public class AlgorithmMain {
         }
 
         boolean isFall;
+        System.out.println(accDataWatch.size() + " was here");
+        System.out.println(hasWatch + " was here");
         if (!accDataWatch.isEmpty()) {isFall = watchAlgorithm(accDataWatch);}
         else {isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);}
 

@@ -74,9 +74,6 @@ public class AlgorithmPhone
                 maxAcceleration = currentAcceleration;
             }
         }
-        System.out.println(preImpactPattern(accelerometerData, index, iterations,maxAcceleration)  + " was here");
-        System.out.println(impactPattern(accelerometerData, index, iterations,maxAcceleration) + " was here");
-        System.out.println(postImpactPattern(accelerometerData, index+iterations) + " was here");
 
         if (preImpactPattern(accelerometerData, index, iterations,maxAcceleration) && impactPattern(accelerometerData, index, iterations,maxAcceleration) && postImpactPattern(accelerometerData, index+iterations)){
             return true;
