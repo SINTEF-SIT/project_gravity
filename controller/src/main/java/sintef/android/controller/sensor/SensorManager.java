@@ -1,9 +1,14 @@
 package sintef.android.controller.sensor;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.os.Handler;
+import android.os.PowerManager;
+import android.util.Log;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +40,27 @@ public class SensorManager implements SensorEventListener {
 
     private static SensorManager instance;
 
+    public BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i("TAG", "onReceive(" + intent + ")");
+
+            if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                return;
+            }
+
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    Log.i("TAG", "Runnable executing.");
+                    /*unregisterListener();
+                    registerListener();*/
+                }
+            };
+
+            new Handler().postDelayed(runnable, 500);
+        }
+    };
+
     public static synchronized SensorManager getInstance(Context context) {
         if (instance == null) {
             instance = new SensorManager(context.getApplicationContext());
@@ -46,6 +72,12 @@ public class SensorManager implements SensorEventListener {
     private SensorManager(Context context) {
         mEventBus = EventBus.getDefault();
         mEventBus.registerSticky(this);
+
+
+        PowerManager manager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        /*mWakeLock = manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TAG");
+
+        context.registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));*/
 
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
@@ -69,6 +101,8 @@ public class SensorManager implements SensorEventListener {
     public void onEvent(EventTypes eventType) {
         switch (eventType) {
             case ONRESUME:
+                mSensorManager.unregisterListener(this);
+
                 for (int type : mSensorGroup.keySet()) {
                     mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
                 }
@@ -78,6 +112,14 @@ public class SensorManager implements SensorEventListener {
             case ONDESTROY:
                 mSensorManager.unregisterListener(this);
                 mRemoteSensorManager.stopMeasurement();
+                // mWakeLock.release();
+                break;
+            case RESET_SENSOR_LISTENERS:
+                mSensorManager.unregisterListener(this);
+
+                for (int type : mSensorGroup.keySet()) {
+                    mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
+                }
                 break;
         }
     }

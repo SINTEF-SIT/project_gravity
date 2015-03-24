@@ -1,6 +1,8 @@
 package sintef.android.controller;
 
 import android.content.Context;
+import android.hardware.Sensor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +34,7 @@ public class Controller {
     private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<Map<SensorSession, List<SensorData>>>();
 
     public static void initializeController(Context context) {
-        sController = new Controller(context);
+        if (sController == null) sController = new Controller(context);
     }
 
     private Controller(Context context) {
@@ -44,9 +46,6 @@ public class Controller {
         AlgorithmMain.initializeAlgorithmMaster(context);
         SensorManager.getInstance(context);
 
-        /** SENDING PACKETS TO ALGORITHM */
-
-
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -55,23 +54,14 @@ public class Controller {
 
                 SensorAlgorithmPack pack;
                 allData.add(0, new HashMap<SensorSession, List<SensorData>>());
-//                List<Map<SensorSession, List<SensorData>>> cat = new ArrayList<Map<SensorSession, List<SensorData>>>();
                 if (allData.size() > 2) {
-//                    cat.addAll(entrySet() (java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(2));
-//                    cat.addAll((java.util.Collection<? extends Map<SensorSession, List<SensorData>>>) allData.get(1));
-
                     pack = SensorAlgorithmPack.processNewSensorData(allData.get(2), allData.get(1));
                 } else if (allData.size() > 1) {
                     pack = SensorAlgorithmPack.processNewSensorData(allData.get(1), null);
                 } else {
                     return;
                 }
-
-
-
-//                mAllSensorData = DeepClone.deepClone(pack.getSensorData());
                 sEventBus.post(pack);
-                // printHash(mAllSensorData);
             }
         }, 0, Constants.ALGORITHM_SEND_FREQUENCY);
 
@@ -82,11 +72,22 @@ public class Controller {
         return sController;
     }
 
+    private static long time = System.currentTimeMillis();
+    private static int times_in_sek = 0;
+
     public synchronized void onEvent(SensorData data) {
         //if (true) return; /*** DELETE ***/
 
         if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
         Map<SensorSession, List<SensorData>> sensorData = allData.get(0);
+
+        if (data.getSensorSession().getSensorType() == Sensor.TYPE_ACCELEROMETER) times_in_sek += 1;
+        if (time + 1000 <= System.currentTimeMillis() ) {
+            Log.wtf("SDPS", String.format("%d @ %d", times_in_sek, time));
+
+            time = System.currentTimeMillis();
+            times_in_sek = 0;
+        }
 
         if (data.getSensorSession() == null) return;
         if (!sensorData.containsKey(data.getSensorSession())) {
