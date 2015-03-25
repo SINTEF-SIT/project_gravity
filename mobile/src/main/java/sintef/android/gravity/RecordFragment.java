@@ -34,6 +34,7 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.SensorData;
+import sintef.android.controller.sensor.SensorDevice;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
@@ -125,12 +126,16 @@ public class RecordFragment extends Fragment {
             mRecordedData.put(data.getSensorSession(), new ArrayList<SensorData>());
         }
 
-        if (data.getSensorSession().getSensorType() == Sensor.TYPE_MAGNETIC_FIELD && !gotMagLast) {
+        if (data.getSensorSession().getSensorDevice() == SensorDevice.PHONE) {
+            if (data.getSensorSession().getSensorType() == Sensor.TYPE_MAGNETIC_FIELD && !gotMagLast) {
+                mRecordedData.get(data.getSensorSession()).add(data);
+                gotMagLast = true;
+            } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION && gotMagLast) {
+                mRecordedData.get(data.getSensorSession()).add(data);
+                gotMagLast = false;
+            }
+        } else {
             mRecordedData.get(data.getSensorSession()).add(data);
-            gotMagLast = true;
-        } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION && gotMagLast) {
-            mRecordedData.get(data.getSensorSession()).add(data);
-            gotMagLast = false;
         }
     }
 
