@@ -28,6 +28,7 @@ import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GyroscopeData;
+import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
@@ -98,6 +99,9 @@ public class RemoteSensorManager {
         switch(sensorSession.getSensorType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 sensorDataObject = new AccelerometerData(values.clone());
+                break;
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                sensorDataObject = new LinearAccelerationData(values.clone());
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 sensorDataObject = new GyroscopeData(values.clone());

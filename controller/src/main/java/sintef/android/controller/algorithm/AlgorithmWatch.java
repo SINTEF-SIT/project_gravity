@@ -120,25 +120,25 @@ public class AlgorithmWatch
         }
         return false;
     }
-}
 
-class FallIndexValues
-{
-    private double fallData;
-    private int startIndex;
-    private final int layingDownCount = 10; //number of readings to skip when checking if the person is laying still, so that it will not check the fall again and therefor say that the person is not laying still
-
-    FallIndexValues(double fallData, int startIndex)
+    private static class FallIndexValues
     {
-        this.fallData = fallData;
-        this.startIndex = startIndex+layingDownCount;
-    }
+        private double fallData;
+        private int startIndex;
+        private final int layingDownCount = 10; //number of readings to skip when checking if the person is laying still, so that it will not check the fall again and therefor say that the person is not laying still
 
-    public int getStartIndex() {
-        return startIndex;
-    }
+        FallIndexValues(double fallData, int startIndex)
+        {
+            this.fallData = fallData;
+            this.startIndex = startIndex+layingDownCount;
+        }
 
-    public double getFallData() {
-        return fallData;
+        public int getStartIndex() {
+            return startIndex;
+        }
+
+        public double getFallData() {
+            return fallData;
+        }
     }
 }

@@ -70,7 +70,7 @@ public class SensorService extends Service implements SensorEventListener {
     private void addSensorToSystem(String id, int type, SensorDevice device, SensorLocation location) {
         SensorSession sensorSession = new SensorSession(id, type, device, location);
         mSensorGroup.put(type, sensorSession);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
     }
 
     private void stopMeasurement() {

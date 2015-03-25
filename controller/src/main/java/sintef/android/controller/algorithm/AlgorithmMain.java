@@ -145,8 +145,14 @@ public class AlgorithmMain {
         }
 
         boolean isFall;
-        if (!accDataWatch.isEmpty()) {isFall = watchAlgorithm(accDataWatch);}
-        else {isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);}
+        if (!accDataWatch.isEmpty() && hasWatch)
+        {
+            isFall = watchAlgorithm(accDataWatch);
+        }
+        else
+        {
+            isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);
+        }
 
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
