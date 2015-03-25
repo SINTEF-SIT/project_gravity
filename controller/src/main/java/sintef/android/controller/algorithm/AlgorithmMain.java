@@ -3,6 +3,7 @@ package sintef.android.controller.algorithm;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +14,12 @@ import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
-import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
-import static sintef.android.controller.algorithm.AlgorithmPhone.PatternRecognition;
+import static sintef.android.controller.algorithm.AlgorithmPhone.patternRecognition;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
@@ -30,6 +30,9 @@ public class AlgorithmMain {
 
     private static AlgorithmMain sAlgorithmMain;
     private Context mContext;
+
+    private static final String TAG = "ALG";
+    public static final boolean DEBUG = false;
 
     public static void initializeAlgorithmMaster(Context context)
     {
@@ -60,8 +63,10 @@ public class AlgorithmMain {
             tetaZ = degs[0];
             if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ))
             {
-                if (PatternRecognition(accData))
+                if (DEBUG) Log.wtf(TAG, "possible fall, checking pattern recognition");
+                if (patternRecognition(accData))
                 {
+                    if (DEBUG) Log.wtf(TAG, "pattern recognition said it was a fall");
                     if (hasWatch) {
                         RemoteSensorManager mRemoteSensorManager = RemoteSensorManager.getInstance(mContext);
                         mRemoteSensorManager.getBuffer();
@@ -70,6 +75,7 @@ public class AlgorithmMain {
                     }
                     return true;
                 }
+                if (DEBUG) Log.wtf(TAG, "pattern recognition said it was not a fall");
                 return false;
             }
         }
@@ -101,9 +107,8 @@ public class AlgorithmMain {
     {
         //TODO: better way to check if the watch is connected or not
         boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
-        List<AccelerometerData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
-        List<MagneticFieldData> geoRotVecData = new ArrayList<>();
+        List<MagneticFieldData> magneticFieldData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();
         List<LinearAccelerationData> accDataWatch = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
@@ -123,7 +128,7 @@ public class AlgorithmMain {
                             break;
                         case Sensor.TYPE_MAGNETIC_FIELD:
                             for (int i = 0; i < entry.getValue().size(); i++) {
-                                geoRotVecData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
+                                magneticFieldData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
                             }
                             break;
                     }
@@ -131,8 +136,7 @@ public class AlgorithmMain {
                 case WATCH:
                     switch (entry.getKey().getSensorType()){
                         case Sensor.TYPE_LINEAR_ACCELERATION:
-                            for (int i = 0; i < entry.getValue().size(); i++)
-                            {
+                            for (int i = 0; i < entry.getValue().size(); i++) {
                                 accDataWatch.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
                             }
                             break;
@@ -143,17 +147,19 @@ public class AlgorithmMain {
             }
 
         }
-
         boolean isFall;
         if (!accDataWatch.isEmpty() && hasWatch)
         {
+            if (DEBUG) Log.w(TAG, "checking watch algorithm");
             isFall = watchAlgorithm(accDataWatch);
         }
         else
         {
-            isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, geoRotVecData, hasWatch);
+            if (DEBUG) Log.w(TAG, "checking phone algorithm");
+            isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, magneticFieldData, hasWatch);
         }
 
+        if (DEBUG) Log.w(TAG, "is fall = " + isFall);
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
                 EventBus.getDefault().post(EventTypes.FALL_DETECTED);

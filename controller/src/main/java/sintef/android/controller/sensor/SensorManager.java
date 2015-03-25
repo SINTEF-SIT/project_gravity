@@ -14,6 +14,7 @@ import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
+import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
 /**
@@ -48,6 +49,7 @@ public class SensorManager implements SensorEventListener {
 
         addSensorToSystem("phone:magnetic_field", Sensor.TYPE_MAGNETIC_FIELD, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:linear_acceleration", Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
+        addSensorToSystem("phone:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
 
     }
 
@@ -89,6 +91,9 @@ public class SensorManager implements SensorEventListener {
                 break;
             case Sensor.TYPE_LINEAR_ACCELERATION:
                 sensorDataObject = new LinearAccelerationData(event.values.clone());
+                break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                sensorDataObject = new RotationVectorData(event.values.clone());
                 break;
         }
         if (sensorDataObject != null)  {

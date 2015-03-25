@@ -67,7 +67,7 @@ public class AlgorithmPhone
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     Main pattern recognition method*/
-    public static boolean PatternRecognition(List<LinearAccelerationData> accelerometerData){
+    public static boolean patternRecognition(List<LinearAccelerationData> accelerometerData){
         double maxAcceleration = 0;
         double currentAcceleration;
         int index = 0;
@@ -157,7 +157,9 @@ public class AlgorithmPhone
         if (endLoop < 0){endLoop = 0;}
         for (int i = index-1; i >= endLoop; i--){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
-            if (currentAcceleration*getPreImpactThreshold() < maxAcceleration){return true;}
+            if (currentAcceleration*getPreImpactThreshold() < maxAcceleration){
+                return true;
+            }
         }
         return false;
     }

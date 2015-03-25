@@ -26,17 +26,17 @@ public class AdvancedFragment extends Fragment {
     @InjectView(R.id.vat_reset)         Button mVATReset;
     @InjectView(R.id.vat_save)          Button mVATSave;
     @InjectView(R.id.act_edit)          EditText mACTEdit;
-    @InjectView(R.id.act_reset)         Button mACTSave;
-    @InjectView(R.id.act_save)          Button mACTReset;
+    @InjectView(R.id.act_save)          Button mACTSave;
+    @InjectView(R.id.act_reset)         Button mACTReset;
     @InjectView(R.id.it_edit)           EditText mITEdit;
-    @InjectView(R.id.it_reset)          Button mITReset;
     @InjectView(R.id.it_save)           Button mITSave;
+    @InjectView(R.id.it_reset)          Button mITReset;
     @InjectView(R.id.pre_it_edit)       EditText mPrITEdit;
-    @InjectView(R.id.pre_it_reset)      Button mPrITReset;
     @InjectView(R.id.pre_it_save)       Button mPrITSave;
+    @InjectView(R.id.pre_it_reset)      Button mPrITReset;
     @InjectView(R.id.post_it_edit)      EditText mPoITEdit;
-    @InjectView(R.id.post_it_reset)     Button mPoITSave;
-    @InjectView(R.id.post_it_save)      Button mPoITReset;
+    @InjectView(R.id.post_it_save)      Button mPoITSave;
+    @InjectView(R.id.post_it_reset)     Button mPoITReset;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

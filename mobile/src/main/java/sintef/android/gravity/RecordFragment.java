@@ -34,7 +34,6 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorDevice;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.GravityData;
@@ -117,7 +116,9 @@ public class RecordFragment extends Fragment {
 
     private boolean mIsRecording = false;
 
-    private boolean gotMagLast = false;
+    private boolean hasMagData = false;
+    private boolean hasRotData = false;
+    private boolean hasAccData = false;
 
     public void onEvent(SensorData data) {
         if (!mIsRecording) return;
@@ -126,17 +127,38 @@ public class RecordFragment extends Fragment {
             mRecordedData.put(data.getSensorSession(), new ArrayList<SensorData>());
         }
 
+        /*
         if (data.getSensorSession().getSensorDevice() == SensorDevice.PHONE) {
-            if (data.getSensorSession().getSensorType() == Sensor.TYPE_MAGNETIC_FIELD && !gotMagLast) {
+            if (data.getSensorSession().getSensorType() == Sensor.TYPE_MAGNETIC_FIELD && !hasMagData) {
                 mRecordedData.get(data.getSensorSession()).add(data);
-                gotMagLast = true;
-            } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION && gotMagLast) {
+                if (hasAccData && hasRotData) {
+                    hasAccData = false;
+                    hasRotData = false;
+                } else {
+                    hasMagData = true;
+                }
+            } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION && !hasAccData) {
                 mRecordedData.get(data.getSensorSession()).add(data);
-                gotMagLast = false;
+                if (hasMagData && hasRotData) {
+                    hasMagData = false;
+                    hasRotData = false;
+                } else {
+                    hasAccData = true;
+                }
+            } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_ROTATION_VECTOR && !hasRotData) {
+                mRecordedData.get(data.getSensorSession()).add(data);
+                if (hasMagData && hasAccData) {
+                    hasMagData = false;
+                    hasAccData = false;
+                } else {
+                    hasRotData = true;
+                }
             }
         } else {
             mRecordedData.get(data.getSensorSession()).add(data);
-        }
+        }*/
+
+        mRecordedData.get(data.getSensorSession()).add(data);
     }
 
     public void onEvent(EventTypes type) {
