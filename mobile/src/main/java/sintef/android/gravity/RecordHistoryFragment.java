@@ -124,7 +124,7 @@ public class RecordHistoryFragment extends Fragment {
 
             RecordData data = getItem(i);
             if (data != null) {
-                holder.bindData(data);
+                holder.bindData(data, i);
             }
 
             return convertView;
@@ -142,8 +142,8 @@ public class RecordHistoryFragment extends Fragment {
                 mSendButton = (Button) view.findViewById(R.id.send_button);
             }
 
-            public void bindData(final RecordData data) {
-                mTitleView.setText(data.mId);
+            public void bindData(final RecordData data, int position) {
+                mTitleView.setText(String.valueOf(position+1) + ": " + data.mId);
                 mSendButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

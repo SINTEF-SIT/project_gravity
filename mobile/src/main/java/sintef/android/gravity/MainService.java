@@ -8,9 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,22 +15,14 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import java.util.Date;
-
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmEvent;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorDevice;
-import sintef.android.controller.sensor.SensorLocation;
-import sintef.android.controller.sensor.SensorSession;
-import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.SensorDataObject;
 
 /**
  * Created by samyboy89 on 03/02/15.
  */
-public class MainService extends Service  implements SensorEventListener {
+public class MainService extends Service {
 
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotificationBuilder;
@@ -45,22 +34,15 @@ public class MainService extends Service  implements SensorEventListener {
 
     private final int WAIT_BEFORE_RESET_PERIOD = 5000;
 
-    public static final String TAG = MainService.class.getName();
     public static final int SCREEN_OFF_RECEIVER_DELAY = 500;
 
-    SensorSession sensorSession = new SensorSession("phone:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
     public BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "onReceive("+intent+")");
-
-            if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                return;
-            }
+            if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) return;
 
             Runnable runnable = new Runnable() {
                 public void run() {
-                    Log.i(TAG, "Runnable executing.");
                     EventBus.getDefault().post(EventTypes.RESET_SENSOR_LISTENERS);
                 }
             };
@@ -82,7 +64,7 @@ public class MainService extends Service  implements SensorEventListener {
         EventBus.getDefault().registerSticky(this);
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainService.class.getName());
 
         registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
@@ -241,17 +223,5 @@ public class MainService extends Service  implements SensorEventListener {
 
     public static enum TimerState {
         PENDING, TIMER_RUNNING, TIMER_CANCELLED, ALARM_SENT,
-    }
-
-
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        Log.i(TAG, "onAccuracyChanged().");
-    }
-
-    public void onSensorChanged(SensorEvent event) {
-        Log.i(TAG, "onSensorChanged().");
-        SensorDataObject sensorDataObject = new AccelerometerData(event.values.clone());
-        long timestamp = (new Date()).getTime() + (event.timestamp - System.nanoTime()) / 1000000L;
-        EventBus.getDefault().post(new SensorData(sensorSession, sensorDataObject, timestamp));
     }
 }

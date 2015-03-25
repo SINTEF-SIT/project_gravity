@@ -1,14 +1,9 @@
 package sintef.android.controller.sensor;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.os.Handler;
-import android.os.PowerManager;
-import android.util.Log;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -17,12 +12,8 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.GravityData;
-import sintef.android.controller.sensor.data.GyroscopeData;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
-import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
 /**
@@ -33,33 +24,10 @@ public class SensorManager implements SensorEventListener {
     private EventBus mEventBus;
 
     private android.hardware.SensorManager mSensorManager;
-
     private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
-
     private RemoteSensorManager mRemoteSensorManager;
 
     private static SensorManager instance;
-
-    public BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i("TAG", "onReceive(" + intent + ")");
-
-            if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                return;
-            }
-
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    Log.i("TAG", "Runnable executing.");
-                    /*unregisterListener();
-                    registerListener();*/
-                }
-            };
-
-            new Handler().postDelayed(runnable, 500);
-        }
-    };
 
     public static synchronized SensorManager getInstance(Context context) {
         if (instance == null) {
@@ -73,21 +41,11 @@ public class SensorManager implements SensorEventListener {
         mEventBus = EventBus.getDefault();
         mEventBus.registerSticky(this);
 
-
-        PowerManager manager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        /*mWakeLock = manager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TAG");
-
-        context.registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));*/
-
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         mRemoteSensorManager = RemoteSensorManager.getInstance(context);
         mRemoteSensorManager.filterBySensorId(Constants.ALL_SENSORS_FILTER);
 
-        // addSensorToSystem("phone:gravity", Sensor.TYPE_GRAVITY, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
-        // addSensorToSystem("phone:accelerometer", Sensor.TYPE_ACCELEROMETER, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
-        // addSensorToSystem("phone:gyroscope", Sensor.TYPE_GYROSCOPE, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
-        // addSensorToSystem("phone:rotation_vector", Sensor.TYPE_ROTATION_VECTOR, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:magnetic_field", Sensor.TYPE_MAGNETIC_FIELD, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:linear_acceleration", Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
 
@@ -101,25 +59,18 @@ public class SensorManager implements SensorEventListener {
     public void onEvent(EventTypes eventType) {
         switch (eventType) {
             case ONRESUME:
-                mSensorManager.unregisterListener(this);
-
-                for (int type : mSensorGroup.keySet()) {
-                    mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
-                }
                 mRemoteSensorManager.startMeasurement();
                 mRemoteSensorManager.setMode(ClientPaths.MODE_PUSH);
-                break;
-            case ONDESTROY:
-                mSensorManager.unregisterListener(this);
-                mRemoteSensorManager.stopMeasurement();
-                // mWakeLock.release();
-                break;
             case RESET_SENSOR_LISTENERS:
                 mSensorManager.unregisterListener(this);
 
                 for (int type : mSensorGroup.keySet()) {
                     mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
                 }
+                break;
+            case ONDESTROY:
+                mSensorManager.unregisterListener(this);
+                mRemoteSensorManager.stopMeasurement();
                 break;
         }
     }
@@ -133,18 +84,6 @@ public class SensorManager implements SensorEventListener {
     public final void onSensorChanged(final SensorEvent event) {
         SensorDataObject sensorDataObject = null;
         switch (event.sensor.getType()) {
-            case Sensor.TYPE_GRAVITY:
-                sensorDataObject = new GravityData(event.values.clone());
-                break;
-            case Sensor.TYPE_ACCELEROMETER:
-                sensorDataObject = new AccelerometerData(event.values.clone());
-                break;
-            case Sensor.TYPE_GYROSCOPE:
-                sensorDataObject = new GyroscopeData(event.values.clone());
-                break;
-            case Sensor.TYPE_ROTATION_VECTOR:
-                sensorDataObject = new RotationVectorData(event.values.clone());
-                break;
             case Sensor.TYPE_MAGNETIC_FIELD:
                 sensorDataObject = new MagneticFieldData(event.values.clone());
                 break;
@@ -153,8 +92,7 @@ public class SensorManager implements SensorEventListener {
                 break;
         }
         if (sensorDataObject != null)  {
-            // sensor event timestamps are time since system boot...wtf indeed
-//            long timestamp = TimeUnit.NANOSECONDS.toMillis(event.timestamp);
+            // sensor event timestamps are time since system boot...wtf indeed long timestamp = TimeUnit.NANOSECONDS.toMillis(event.timestamp);
             long timestamp = (new Date()).getTime() + (event.timestamp - System.nanoTime()) / 1000000L;
             mEventBus.post(new SensorData(mSensorGroup.get(event.sensor.getType()), sensorDataObject, timestamp));
         }

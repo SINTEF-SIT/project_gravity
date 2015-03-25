@@ -28,6 +28,15 @@ public class AdvancedFragment extends Fragment {
     @InjectView(R.id.act_edit)          EditText mACTEdit;
     @InjectView(R.id.act_reset)         Button mACTSave;
     @InjectView(R.id.act_save)          Button mACTReset;
+    @InjectView(R.id.it_edit)           EditText mITEdit;
+    @InjectView(R.id.it_reset)          Button mITReset;
+    @InjectView(R.id.it_save)           Button mITSave;
+    @InjectView(R.id.pre_it_edit)       EditText mPrITEdit;
+    @InjectView(R.id.pre_it_reset)      Button mPrITReset;
+    @InjectView(R.id.pre_it_save)       Button mPrITSave;
+    @InjectView(R.id.post_it_edit)      EditText mPoITEdit;
+    @InjectView(R.id.post_it_reset)     Button mPoITSave;
+    @InjectView(R.id.post_it_save)      Button mPoITReset;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,6 +57,9 @@ public class AdvancedFragment extends Fragment {
         mTATEdit.setText(String.valueOf(AlgorithmPhone.getTotAccThreshold()));
         mVATEdit.setText(String.valueOf(AlgorithmPhone.getVerticalAccThreshold()));
         mACTEdit.setText(String.valueOf(AlgorithmPhone.getAccComparisonThreshold()));
+        mITEdit.setText(String.valueOf(AlgorithmPhone.getImpactThreshold()));
+        mPrITEdit.setText(String.valueOf(AlgorithmPhone.getPreImpactThreshold()));
+        mPoITEdit.setText(String.valueOf(AlgorithmPhone.getPostImpactThreshold()));
 
         mTATSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +106,54 @@ public class AdvancedFragment extends Fragment {
                 float def_value = (float) AlgorithmPhone.default_accComparisonThreshold;
                 PreferencesHelper.putFloat(AlgorithmPhone.ACCELEROMETER_COMPARISON_THRESHOLD, def_value);
                 mACTEdit.setText(String.valueOf(def_value));
+            }
+        });
+
+        mITSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PreferencesHelper.putFloat(AlgorithmPhone.IMPACT_THRESHOLD, Float.valueOf(mITEdit.getText().toString()));
+            }
+        });
+
+        mITReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float def_value = (float) AlgorithmPhone.default_impactThreshold;
+                PreferencesHelper.putFloat(AlgorithmPhone.IMPACT_THRESHOLD, def_value);
+                mITEdit.setText(String.valueOf(def_value));
+            }
+        });
+
+        mPrITSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PreferencesHelper.putFloat(AlgorithmPhone.PRE_IMPACT_THRESHOLD, Float.valueOf(mPrITEdit.getText().toString()));
+            }
+        });
+
+        mPrITReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float def_value = (float) AlgorithmPhone.default_preimpactThreshold;
+                PreferencesHelper.putFloat(AlgorithmPhone.PRE_IMPACT_THRESHOLD, def_value);
+                mPrITEdit.setText(String.valueOf(def_value));
+            }
+        });
+
+        mPoITSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PreferencesHelper.putFloat(AlgorithmPhone.POST_IMPACT_THRESHOLD, Float.valueOf(mPoITEdit.getText().toString()));
+            }
+        });
+
+        mPoITReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float def_value = (float) AlgorithmPhone.default_postImpactThreshold;
+                PreferencesHelper.putFloat(AlgorithmPhone.POST_IMPACT_THRESHOLD, def_value);
+                mPoITEdit.setText(String.valueOf(def_value));
             }
         });
     }

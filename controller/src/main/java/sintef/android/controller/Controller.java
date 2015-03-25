@@ -1,8 +1,6 @@
 package sintef.android.controller;
 
 import android.content.Context;
-import android.hardware.Sensor;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,8 +70,8 @@ public class Controller {
         return sController;
     }
 
-    private static long time = System.currentTimeMillis();
-    private static int times_in_sek = 0;
+    // private static long time = System.currentTimeMillis();
+    // private static int times_in_sek = 0;
 
     public synchronized void onEvent(SensorData data) {
         //if (true) return; /*** DELETE ***/
@@ -81,13 +79,15 @@ public class Controller {
         if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
         Map<SensorSession, List<SensorData>> sensorData = allData.get(0);
 
-        if (data.getSensorSession().getSensorType() == Sensor.TYPE_ACCELEROMETER) times_in_sek += 1;
+        /*
+        if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION) times_in_sek += 1;
         if (time + 1000 <= System.currentTimeMillis() ) {
             Log.wtf("SDPS", String.format("%d @ %d", times_in_sek, time));
 
             time = System.currentTimeMillis();
             times_in_sek = 0;
         }
+        */
 
         if (data.getSensorSession() == null) return;
         if (!sensorData.containsKey(data.getSensorSession())) {

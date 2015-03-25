@@ -3,8 +3,6 @@ package sintef.android.controller.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 
-import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.data.AccelerometerData;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 
 /**
@@ -123,6 +121,7 @@ public class AlgorithmWatch
         return false;
     }
 }
+
 class FallIndexValues
 {
     private double fallData;

@@ -1,6 +1,6 @@
 package sintef.android.controller.algorithm;
-import android.util.Log;
 import java.util.List;
+
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.utils.PreferencesHelper;
 /**
@@ -11,13 +11,19 @@ public class AlgorithmPhone
     public static final String TOTAL_ACCELEROMETER_THRESHOLD = "tot_acc_thr";
     public static final String VERTICAL_ACCELEROMETER_THRESHOLD = "ver_acc_thr";
     public static final String ACCELEROMETER_COMPARISON_THRESHOLD = "acc_comp_thr";
-    public static final double default_totAccThreshold = 6;
-    public static final double default_verticalAccThreshold = 5;
-    public static final double default_accComparisonThreshold = 0.5;
-    private static double angleThreshold = 30;
-    private static double impactThreshold = 3;
-    private static double preimpactThreshold = 3;
-    private static double postImpactThreshold = 10;
+    public static final String IMPACT_THRESHOLD = "impact_thr";
+    public static final String PRE_IMPACT_THRESHOLD = "pre_impact_thr";
+    public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";
+
+    public static final double default_totAccThreshold = 4;
+    public static final double default_verticalAccThreshold = 2;
+    public static final double default_accComparisonThreshold = 0.1;
+    public static final double default_impactThreshold = 1;
+    public static final double default_preimpactThreshold = 1;
+    public static final double default_postImpactThreshold = 15;
+
+    // private static double angleThreshold = 30;
+
     public static boolean isFall(double x, double y, double z, double tetaY, double tetaZ)
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
@@ -105,7 +111,7 @@ public class AlgorithmPhone
 //iterating from toppoint to see if there is a big deacceleration after it.
         for (int i = index+1; i <= index+iterations; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getY());
-            if (currentAcceleration*impactThreshold <= maxAcceleration){
+            if (currentAcceleration*getImpactThreshold() <= maxAcceleration){
                 return true;
             }
         }
@@ -151,7 +157,7 @@ public class AlgorithmPhone
         if (endLoop < 0){endLoop = 0;}
         for (int i = index-1; i >= endLoop; i--){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
-            if (currentAcceleration*preimpactThreshold < maxAcceleration){return true;}
+            if (currentAcceleration*getPreImpactThreshold() < maxAcceleration){return true;}
         }
         return false;
     }
@@ -186,7 +192,7 @@ public class AlgorithmPhone
             for (int i = index; i < listSize; i++){
                 sumOfAccelerations += accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
             }
-            if(sumOfAccelerations/(accelerometerData.size()-index) < postImpactThreshold){
+            if(sumOfAccelerations/(accelerometerData.size()-index) < getPostImpactThreshold()){
                 return true;
             }
         }
@@ -235,5 +241,14 @@ public class AlgorithmPhone
         double value = PreferencesHelper.getFloat(ACCELEROMETER_COMPARISON_THRESHOLD, (float) default_accComparisonThreshold);
 // Log.wtf("AlgPhone", "ACCELEROMETER_COMPARISON_THRESHOLD: " + value);
         return value;
+    }
+    public static double getImpactThreshold() {
+        return PreferencesHelper.getFloat(IMPACT_THRESHOLD, (float) default_impactThreshold);
+    }
+    public static double getPreImpactThreshold() {
+        return PreferencesHelper.getFloat(PRE_IMPACT_THRESHOLD, (float) default_preimpactThreshold);
+    }
+    public static double getPostImpactThreshold() {
+        return PreferencesHelper.getFloat(POST_IMPACT_THRESHOLD, (float) default_postImpactThreshold);
     }
 }
