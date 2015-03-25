@@ -5,6 +5,8 @@ import android.hardware.Sensor;
 import java.util.HashMap;
 import java.util.Map;
 
+import sintef.android.controller.sensor.SensorLocation;
+
 /**
  * Created by iver on 06.02.15.
  */
@@ -26,12 +28,17 @@ public class Constants {
     public static final int SENSOR_BATCHING_DELAY = 10; // in seconds
 
     public static final Map<Integer, String> SENSORS_WEAR;
+//    static {
+//        SENSORS_WEAR = new HashMap<>();
+//        SENSORS_WEAR.put(Sensor.TYPE_ACCELEROMETER, "accelerometer");
+//        SENSORS_WEAR.put(Sensor.TYPE_GYROSCOPE, "gyroscope");
+//        SENSORS_WEAR.put(Sensor.TYPE_ROTATION_VECTOR, "rotation_vector");
+//    }
     static {
         SENSORS_WEAR = new HashMap<>();
-        SENSORS_WEAR.put(Sensor.TYPE_ACCELEROMETER, "accelerometer");
-        SENSORS_WEAR.put(Sensor.TYPE_GYROSCOPE, "gyroscope");
-        SENSORS_WEAR.put(Sensor.TYPE_ROTATION_VECTOR, "rotation_vector");
+        SENSORS_WEAR.put(Sensor.TYPE_LINEAR_ACCELERATION, "linear_acceleration");
     }
+    public static final SensorLocation WEAR_SENSOR_LOCATION = SensorLocation.RIGHT_ARM;
 
     public static final long[] ALARM_VIBRATION_PATTERN_ON_WATCH = {0, 100, 1000};
 

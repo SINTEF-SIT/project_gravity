@@ -63,7 +63,7 @@ public class SensorService extends Service implements SensorEventListener {
         mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
 
         for (int key : Constants.SENSORS_WEAR.keySet()) {
-            addSensorToSystem("watch:" + Constants.SENSORS_WEAR.get(key), key, SensorDevice.WATCH, SensorLocation.RIGHT_ARM);
+            addSensorToSystem("watch:" + Constants.SENSORS_WEAR.get(key), key, SensorDevice.WATCH, Constants.WEAR_SENSOR_LOCATION);
         }
     }
 
