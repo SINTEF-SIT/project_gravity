@@ -106,7 +106,7 @@ public class AlgorithmMain {
     public void onEvent(SensorAlgorithmPack pack)
     {
         //TODO: better way to check if the watch is connected or not
-        boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
+        boolean hasWatch = RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> magneticFieldData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();

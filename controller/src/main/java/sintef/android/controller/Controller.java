@@ -28,7 +28,6 @@ public class Controller {
     private Context mContext;
     private RemoteSensorManager mRemoteSensorManager;
 
-//    private static Map<SensorSession, List<SensorData>> mAllSensorData = new ConcurrentHashMap<>();
     private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<Map<SensorSession, List<SensorData>>>();
 
     public static void initializeController(Context context) {
@@ -48,7 +47,7 @@ public class Controller {
             @Override
             public void run() {
 
-                //mRemoteSensorManager.getBuffer();
+                mRemoteSensorManager.getBuffer();
 
                 SensorAlgorithmPack pack;
                 allData.add(0, new HashMap<SensorSession, List<SensorData>>());

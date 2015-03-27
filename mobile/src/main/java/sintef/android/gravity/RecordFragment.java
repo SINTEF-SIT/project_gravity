@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.RecordEvent;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
@@ -159,6 +160,12 @@ public class RecordFragment extends Fragment {
         }*/
 
         mRecordedData.get(data.getSensorSession()).add(data);
+    }
+
+    private List<RecordEvent> mEvents = new ArrayList<>();
+
+    public void onEvent(RecordEvent event) {
+        mEvents.add(event);
     }
 
     public void onEvent(EventTypes type) {
@@ -292,6 +299,19 @@ public class RecordFragment extends Fragment {
                 }
 
                 recordings.add("sensor_data", sensorData);
+
+                /*
+                JsonArray recordEvents = new JsonArray();
+
+                for (RecordEvent event : mEvents) {
+                    JsonObject accelerometerObject = new JsonObject();
+                    accelerometerObject.addProperty("vertical_acceleration", event.mVerAcc);
+                    accelerometerObject.addProperty("total_acceleration", event.mTotAcc);
+                    recordEvents.add(accelerometerObject);
+                }
+
+                recordings.add("record_data", recordEvents);
+                */
 
                 JsonArray fallDetectedArray = new JsonArray();
                 for (Long time : mFallDetectedAtTimes) {

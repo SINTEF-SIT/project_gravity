@@ -28,6 +28,8 @@ public class AlgorithmPhone
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
+        /*EventBus.getDefault().post(new RecordEvent(verticalAcceleration, totalAcceleration));*/
+
         if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold())
         {
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold())

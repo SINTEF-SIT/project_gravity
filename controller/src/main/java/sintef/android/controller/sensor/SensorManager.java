@@ -62,7 +62,7 @@ public class SensorManager implements SensorEventListener {
         switch (eventType) {
             case ONRESUME:
                 mRemoteSensorManager.startMeasurement();
-                mRemoteSensorManager.setMode(ClientPaths.MODE_PUSH);
+                mRemoteSensorManager.setMode(ClientPaths.MODE_PULL);
             case RESET_SENSOR_LISTENERS:
                 mSensorManager.unregisterListener(this);
 
