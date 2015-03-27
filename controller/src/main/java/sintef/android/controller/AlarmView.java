@@ -59,7 +59,10 @@ public class AlarmView extends RelativeLayout {
 
     private void init(int layout_id) {
         inflate(getContext(), layout_id == -1 ? R.layout.alarm_view : layout_id, this);
+        init();
+    }
 
+    private void init() {
         mAlarmText = (TextView) findViewById(R.id.alarm_text);
         mAlarmProgress = (DonutProgress) findViewById(R.id.alarm_progress);
         mAlarmProgressBackground = findViewById(R.id.alarm_progress_background);
@@ -157,6 +160,7 @@ public class AlarmView extends RelativeLayout {
             public void run() {
                 if (mCurrentAlarmTask != null) return;
                 mCorrectIndex = -1;
+                init();
                 mCurrentAlarmTask = new AsyncTask<Void, Integer, Void>() {
                     @Override
                     protected Void doInBackground(Void... voids) {
