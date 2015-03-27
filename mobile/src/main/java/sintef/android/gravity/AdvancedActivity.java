@@ -94,6 +94,8 @@ public class AdvancedActivity extends ActionBarActivity {
             }
         });
 
+
+
         return super.onPrepareOptionsMenu(menu);
     }
 
