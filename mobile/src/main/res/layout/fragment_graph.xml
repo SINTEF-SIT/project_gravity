@@ -23,21 +23,21 @@
             android:id="@+id/zoom_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOOM IN"
+            android:text="@string/fragment_graph_zoom_in"
             android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/zoom_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOOM RESET"
+            android:text="@string/fragment_graph_zoom_reset"
             android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/zoom_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOOM OUT"
+            android:text="@string/fragment_graph_zoom_out"
             android:textColor="@android:color/white"/>
     </LinearLayout>
 

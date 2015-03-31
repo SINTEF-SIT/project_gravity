@@ -1,19 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Fall Alarm</string>
 
     <string name="action_advanced">Avansert</string>
-    <string name="action_ken">Pårørende</string
-        >
+    <string name="action_advanced_remove">Fjern avansert meny</string>
+    <string name="action_help">Hjelp</string>
+    <string name="action_about">Om</string>
+    <string name="action_ken">Pårørende</string>
+
     <string name="advanced_activity">Avansert</string>
+    <string name="advanced_activity_detection_switch">Alarm</string>
 
     <string name="fragment_graph">Graf</string>
-    <string name="fragment_advanced">Avansert</string>
+    <string name="fragment_graph_zoom_in">Zoom in</string>
+    <string name="fragment_graph_zoom_out">Zoom ut</string>
+    <string name="fragment_graph_zoom_reset">Tilbakestill</string>
+
+    <string name="fragment_thresholds">Terskler</string>
+    <string name="fragment_thresholds_total_acc">Total akselerometer terskel</string>
+    <string name="fragment_thresholds_vertical_acc">Vertikal akselerometer terskel</string>
+    <string name="fragment_thresholds_acc_comp">Akselerometer sammenligningsterskel</string>
+    <string name="fragment_thresholds_impact">Innvirkningsterskel</string>
+    <string name="fragment_thresholds_post_impact">Etter-innvirkningsterskel</string>
+    <string name="fragment_thresholds_pre_impact">Før-innvirkningsterskel</string>
+
+    <string name="fragment_record">Opptak</string>
+    <string name="fragment_record_history">Opptakshistorikk</string>
 
     <string name="alarm_progress_disabled">Ingen\nalarm</string>
     <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>
     <string name="alarm_progress_cancelled">Alarm er\nstoppet</string>
     <string name="alarm_progress_done">Alarm er\nsendt</string>
     <string name="alarm_start_button">Start\nalarm</string>
+
+    <string name="wizard_activity">Veiviser</string>
+    <string name="wizard_intro_welcome_text">Velkommen til\nFall Alarm</string>
+    <string name="wizard_intro_welcome_sub_text">Vi er her for å passe på deg, slik at du føler deg trygg og beskyttet.</string>
+    <string name="wizard_notification_header">Alltid påslått</string>
+    <string name="wizard_notification_explanation_text">Dette symbolet viser at applikasjonen er aktivert.</string>
+    <string name="wizard_alarm_header">Vi hjelper deg</string>
+    <string name="wizard_alarm_explanation_text">Hvis du mot formodning skulle være uheldig å falle, vil din kontaktperson og pårørende få beskjed.</string>
+    <string name="wizard_false_alarm_header">Falsk alarm</string>
+    <string name="wizard_false_alarm_explanation_text">Hvis du føler deg bra etter fallet, kan du stoppe alarmen innen 1 min.</string>
+    <string name="wizard_next_of_kin_header">Pårørende</string>
+    <string name="wizard_next_of_kin_name">Navn</string>
+    <string name="wizard_next_of_kin_name_not_empty">Må ha et navn</string>
+    <string name="wizard_next_of_kin_telephone">Telefon nummer</string>
+    <string name="wizard_next_of_kin_telephone_not_empty">Må ha et telefon nummer</string>
+
+    <string name="next">Neste</string>
+    <string name="prev">Forrige</string>
+    <string name="finish">Ferdig</string>
+    <string name="skip">Hopp over</string>
+    <string name="cancel">Avbryt</string>
+    <string name="ok">OK</string>
+    <string name="send">Send</string>
+    <string name="save">Lagre</string>
+    <string name="reset">Tilbakestill</string>
+
+    <string name="record_test_id">Test ID</string>
+    <string name="record_server_ip">Server IP</string>
+    <string name="record_server_port">Server PORT</string>
+    <string name="record_header">Ta opp sensor data</string>
+
+    <string name="watch_notification_title">Fall Alarm</string>
+    <string name="watch_notification_text">Aktivert</string>
+
+    <string name="phone_notification_detecting">Lytter</string>
+    <string name="phone_notification_waiting">Venter med å sende alarm…</string>
+    <string name="phone_notification_sent">Alarm sendt</string>
+    <string name="phone_notification_cancelled">Alarm kansellert</string>
+
 </resources>

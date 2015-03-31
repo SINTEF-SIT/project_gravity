@@ -7,7 +7,7 @@
         android:id="@+id/switch_toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detection"
+        android:text="@string/advanced_activity_detection_switch"
         android:layout_centerVertical="true"/>
 
 </RelativeLayout>

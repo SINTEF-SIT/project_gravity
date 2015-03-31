@@ -29,7 +29,7 @@ public class SoundHelper {
             soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 
             soundPoolMap = new SparseIntArray();
-            soundPoolMap.put(ALARM, soundPool.load(a, R.raw.beeper_alarm, 1));
+            soundPoolMap.put(ALARM, soundPool.load(a, R.raw.alarm, 1));
         }
     }
 

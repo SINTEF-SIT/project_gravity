@@ -64,19 +64,13 @@ public class RemoteSensorService extends WearableListenerService {
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-//        Log.d(TAG, "onDataChanged()");
-
         for (DataEvent dataEvent : dataEvents) {
-//            Log.d(TAG, "dataevent: " + dataEvent);
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem dataItem = dataEvent.getDataItem();
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
-//                Log.d(TAG, "path: " + path);
                 if (path.startsWith(Constants.DATA_MAP_PATH)) {
-//                    Log.d(TAG, "unpacking data");
                     unpackSensorData(
-                            /*Integer.parseInt(uri.getLastPathSegment()),*/
                             DataMapItem.fromDataItem(dataItem).getDataMap()
                     );
                 }

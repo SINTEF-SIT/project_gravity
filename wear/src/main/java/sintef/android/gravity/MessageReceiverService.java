@@ -29,9 +29,7 @@ public class MessageReceiverService extends WearableListenerService {
 
     private static final String TAG = "SensorDashboard/MessageReceiverService";
     private DeviceClient deviceClient;
-    private Intent alarm;
     private EventBus mEventBus;
-    private Intent mIntent;
 
     @Override
     public void onCreate() {
@@ -39,8 +37,7 @@ public class MessageReceiverService extends WearableListenerService {
 
         mEventBus = EventBus.getDefault();
         deviceClient = DeviceClient.getInstance(this);
-        mIntent = new Intent(this, SensorService.class);
-        startService(mIntent);
+        startService(new Intent(this, SensorService.class));
     }
 
     @Override
@@ -100,7 +97,7 @@ public class MessageReceiverService extends WearableListenerService {
     }
 
     private synchronized void changeAlarm(boolean keep) {
-        alarm = new Intent(this, AlarmActivity.class);
+        Intent alarm = new Intent(this, AlarmActivity.class);
         alarm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         alarm.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

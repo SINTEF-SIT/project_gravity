@@ -57,7 +57,7 @@ public class MainService extends Service {
     private int max = seconds * resolution_multiplier;
     private int second = 1000;
     private int resolution_second = second / resolution_multiplier;
-    private int update_frequency = resolution_multiplier * 2;
+    private int update_frequency = resolution_multiplier * 4;
 
     @Override
     public void onCreate() {
@@ -76,7 +76,7 @@ public class MainService extends Service {
 
         mNotificationBuilder = new Notification.Builder(getApplicationContext())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentTitle("Detecting")
+                .setContentTitle(getString(R.string.phone_notification_detecting))
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_stat_on);
@@ -118,7 +118,7 @@ public class MainService extends Service {
 
                 PendingIntent start_app_pending_intent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
 
-                mNotificationBuilder.setContentTitle("Waiting to send alarm");
+                mNotificationBuilder.setContentTitle(getString(R.string.phone_notification_waiting));
                 // mNotificationBuilder.addAction(android.R.drawable.presence_busy, "Cancel", stopIntent);
                 mNotificationBuilder.setContentIntent(start_app_pending_intent);
                 mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
@@ -187,7 +187,7 @@ public class MainService extends Service {
             private void updateTaskState(boolean alarm) {
                 mNotificationBuilder = new Notification.Builder(getApplicationContext())
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentTitle(alarm ? "Alarm sent" : "Alarm cancelled")
+                        .setContentTitle(alarm ? getString(R.string.phone_notification_sent) : getString(R.string.phone_notification_cancelled))
                         .setAutoCancel(false)
                         .setOngoing(true)
                         .setSmallIcon(R.drawable.ic_stat_on);
@@ -213,7 +213,7 @@ public class MainService extends Service {
 
         mNotificationBuilder = new Notification.Builder(getApplicationContext())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentTitle("Detecting")
+                .setContentTitle(getString(R.string.phone_notification_detecting))
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_stat_on);

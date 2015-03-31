@@ -37,6 +37,8 @@ public class AlarmView extends RelativeLayout {
     private int second = 1000;
     private int resolution_second = second / resolution_multiplier;
 
+    private float mStrokeWidth = 30;
+
     public AlarmView(Activity activity, int layout_id) {
         super(activity);
         init(layout_id);
@@ -67,6 +69,8 @@ public class AlarmView extends RelativeLayout {
         mAlarmProgress = (DonutProgress) findViewById(R.id.alarm_progress);
         mAlarmProgressBackground = findViewById(R.id.alarm_progress_background);
 
+        setStrokeWidth(mStrokeWidth);
+
         OnClickListener clickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +85,10 @@ public class AlarmView extends RelativeLayout {
         resetAlarmProgress();
     }
 
+    public void setStrokeWidth(float width) {
+        mStrokeWidth = width;
+    }
+
     private void resetAlarmProgress() {
         mAlarmText.setText(R.string.alarm_progress_disabled);
         mAlarmText.setTextColor(Color.WHITE);
@@ -88,7 +96,6 @@ public class AlarmView extends RelativeLayout {
         mAlarmProgressBackground.setVisibility(View.VISIBLE);
         mAlarmProgressBackground.setBackgroundResource(R.drawable.circle_disabled);
         mAlarmProgress.setUnfinishedStrokeColor(Color.parseColor("#EEEEEE"));
-        mAlarmProgress.setUnfinishedStrokeWidth(30);
         mAlarmProgress.setProgress(0);
     }
 
@@ -99,9 +106,7 @@ public class AlarmView extends RelativeLayout {
         mAlarmProgressBackground.setVisibility(View.VISIBLE);
         mAlarmProgressBackground.setBackgroundResource(R.drawable.circle);
         mAlarmProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.red_stroke));
-        mAlarmProgress.setUnfinishedStrokeWidth(30);
         mAlarmProgress.setFinishedStrokeColor(getResources().getColor(R.color.orange));
-        mAlarmProgress.setFinishedStrokeWidth(30);
         mAlarmProgress.setProgress(0);
     }
 

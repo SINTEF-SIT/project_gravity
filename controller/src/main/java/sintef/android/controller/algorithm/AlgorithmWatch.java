@@ -11,8 +11,8 @@ import sintef.android.controller.sensor.data.LinearAccelerationData;
 public class AlgorithmWatch
 {
     //TODO: get data to make the thresholds better.
-    private static final double thresholdFall = 20;
-    private static final double thresholdStill = 5;
+    private static final double thresholdFall = 1; //20
+    private static final double thresholdStill = 500; //5
     private static final double atleastReadings = 10;
 
     //Calculate the acceleration.

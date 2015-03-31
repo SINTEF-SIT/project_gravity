@@ -69,6 +69,10 @@ public class Controller {
         return sController;
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     // private static long time = System.currentTimeMillis();
     // private static int times_in_sek = 0;
 

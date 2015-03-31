@@ -17,7 +17,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 /**
  * Created by samyboy89 on 23/02/15.
  */
-public class AdvancedFragment extends Fragment {
+public class ThresholdsFragment extends Fragment {
 
     @InjectView(R.id.tat_edit)          EditText mTATEdit;
     @InjectView(R.id.tat_reset)         Button mTATReset;
@@ -40,7 +40,7 @@ public class AdvancedFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_advanced, container, false);
+        return inflater.inflate(R.layout.fragment_thresholds, container, false);
     }
 
     @Override

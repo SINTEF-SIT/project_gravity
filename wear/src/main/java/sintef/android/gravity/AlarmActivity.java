@@ -26,24 +26,7 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mEventBus = EventBus.getDefault();
-        mEventBus.register(this);
-        mRemoteSensorManager = mRemoteSensorManager.getInstance(this);
-        mAlarmView = new AlarmView(this, R.layout.show_alarm);
-        mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
-            @Override
-            public void onStop() {
-                mRemoteSensorManager.stopAlarm();
-                stopAlarmActivity();
-            }
-        });
-        mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
-            @Override
-            public void onAlarm() {
-                if (mVibrator != null) mVibrator.cancel();
-            }
-        });
+        startService(new Intent(this, MessageReceiverService.class));
     }
 
     public void showAlarm() {
@@ -60,8 +43,31 @@ public class AlarmActivity extends Activity {
     protected void onResume() {
         super.onResume();
         intent = this.getIntent();
+        if (intent.getExtras() == null) return;
+
         keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
         if (keep) {
+
+            mEventBus = EventBus.getDefault();
+            mEventBus.unregister(this);
+            mEventBus.register(this);
+            mRemoteSensorManager = mRemoteSensorManager.getInstance(this);
+            mAlarmView = new AlarmView(this, R.layout.show_alarm);
+            mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
+                @Override
+                public void onStop() {
+                    mRemoteSensorManager.stopAlarm();
+                    stopAlarmActivity();
+                }
+            });
+            mAlarmView.setStrokeWidth(14);
+            mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
+                @Override
+                public void onAlarm() {
+                    if (mVibrator != null) mVibrator.cancel();
+                }
+            });
+
             showAlarm();
         } else {
             stopAlarmActivity();

@@ -32,7 +32,7 @@ public class AlgorithmMain {
     private Context mContext;
 
     private static final String TAG = "ALG";
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     public static void initializeAlgorithmMaster(Context context)
     {
@@ -63,11 +63,12 @@ public class AlgorithmMain {
             tetaZ = degs[0];
             if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ))
             {
-                if (DEBUG) Log.wtf(TAG, "possible fall, checking pattern recognition");
+                if (DEBUG) Log.wtf(TAG, "POSSIBLE FALL: possible fall, checking pattern recognition");
                 if (patternRecognition(accData))
                 {
-                    if (DEBUG) Log.wtf(TAG, "pattern recognition said it was a fall");
+                    if (DEBUG) Log.wtf(TAG, "FALL: pattern recognition said it was a fall");
                     if (hasWatch) {
+                        if (DEBUG) Log.wtf(TAG, "WATCH: enabling watch");
                         RemoteSensorManager mRemoteSensorManager = RemoteSensorManager.getInstance(mContext);
                         mRemoteSensorManager.getBuffer();
                         //might have to change this, but for now this is the idea of how it should work
@@ -75,7 +76,7 @@ public class AlgorithmMain {
                     }
                     return true;
                 }
-                if (DEBUG) Log.wtf(TAG, "pattern recognition said it was not a fall");
+                if (DEBUG) Log.wtf(TAG, "NO FALL: pattern recognition said it was not a fall");
                 return false;
             }
         }
@@ -106,7 +107,7 @@ public class AlgorithmMain {
     public void onEvent(SensorAlgorithmPack pack)
     {
         //TODO: better way to check if the watch is connected or not
-        boolean hasWatch = RemoteSensorManager.getInstance(this.mContext).validateConnection();
+        boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> magneticFieldData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();
@@ -150,16 +151,16 @@ public class AlgorithmMain {
         boolean isFall;
         if (!accDataWatch.isEmpty() && hasWatch)
         {
-            if (DEBUG) Log.w(TAG, "checking watch algorithm");
+            if (DEBUG) Log.w(TAG, "WATCH: checking watch algorithm");
             isFall = watchAlgorithm(accDataWatch);
         }
         else
         {
-            if (DEBUG) Log.w(TAG, "checking phone algorithm");
+            if (DEBUG) Log.w(TAG, "PHONE: checking phone algorithm");
             isFall = phoneAlgorithm(linearAccelerationData, rotationVectorData, magneticFieldData, hasWatch);
         }
 
-        if (DEBUG) Log.w(TAG, "is fall = " + isFall);
+        if (DEBUG) Log.w(TAG, "?FALL?: is fall = " + String.valueOf(isFall).toUpperCase());
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
                 EventBus.getDefault().post(EventTypes.FALL_DETECTED);

@@ -38,8 +38,8 @@ public class SensorService extends Service implements SensorEventListener {
         client = DeviceClient.getInstance(this);
 
         Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Project Gravity");
-        builder.setContentText("Collecting sensor data..");
+        builder.setContentTitle(getString(R.string.watch_notification_title));
+        builder.setContentText(getString(R.string.watch_notification_text));
         builder.setSmallIcon(R.drawable.ic_launcher);
 
         startForeground(1, builder.build());

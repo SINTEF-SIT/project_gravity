@@ -1,7 +1,5 @@
 package sintef.android.gravity;
 
-import android.hardware.SensorEvent;
-
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;

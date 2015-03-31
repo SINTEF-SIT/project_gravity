@@ -10,16 +10,28 @@
     <string name="action_ken">Next of kin</string
         >
     <string name="advanced_activity">Advanced</string>
+    <string name="advanced_activity_detection_switch">Alarm</string>
 
     <string name="fragment_graph">Graph</string>
-    <string name="fragment_advanced">Advanced</string>
+    <string name="fragment_graph_zoom_in">Zoom in</string>
+    <string name="fragment_graph_zoom_out">Zoom out</string>
+    <string name="fragment_graph_zoom_reset">Reset zoom</string>
+
+    <string name="fragment_thresholds">Thresholds</string>
+    <string name="fragment_thresholds_total_acc">Total accelerometer threshold</string>
+    <string name="fragment_thresholds_vertical_acc">Vertical accelerometer threshold</string>
+    <string name="fragment_thresholds_acc_comp">Accelerometer comparison threshold</string>
+    <string name="fragment_thresholds_impact">Impact threshold</string>
+    <string name="fragment_thresholds_post_impact">Post-Impact threshold</string>
+    <string name="fragment_thresholds_pre_impact">Pre-Impact threshold</string>
+
     <string name="fragment_record">Record</string>
     <string name="fragment_record_history">Record history</string>
 
-    <string name="alarm_progress_disabled">Ingen\nalarm</string>
-    <string name="alarm_progress_running">Trykk for\nå stoppe\nalarm</string>
-    <string name="alarm_progress_cancelled">Alarm er\nstoppet</string>
-    <string name="alarm_progress_done">Alarm er\nsendt</string>
+    <string name="alarm_progress_disabled">No\nalarm</string>
+    <string name="alarm_progress_running">Press to\nstop alarm</string>
+    <string name="alarm_progress_cancelled">Alarm is\nstopped</string>
+    <string name="alarm_progress_done">Alarm is\nsent</string>
     <string name="alarm_start_button">Start\nalarm</string>
 
     <string name="wizard_activity">Wizard</string>
@@ -27,10 +39,10 @@
     <string name="wizard_intro_welcome_sub_text">We\'re here to help you feel safe and protected.</string>
     <string name="wizard_notification_header">Always turned on</string>
     <string name="wizard_notification_explanation_text">This icon means that fall detection is turned on.</string>
-    <string name="wizard_alarm_header">We give you help</string>
+    <string name="wizard_alarm_header">We help you</string>
     <string name="wizard_alarm_explanation_text">If you\'re unlucky enough to have fallen, an alarm will notify your caretaker and next of kin.</string>
     <string name="wizard_false_alarm_header">False alarm</string>
-    <string name="wizard_false_alarm_explanation_text">If you are okay after a fall, you can stop the alarm within 2 min.</string>
+    <string name="wizard_false_alarm_explanation_text">If you are okay after a fall, you can stop the alarm within 1 min.</string>
     <string name="wizard_next_of_kin_header">Next of kin</string>
     <string name="wizard_next_of_kin_name">Name</string>
     <string name="wizard_next_of_kin_name_not_empty">Must have a name</string>
@@ -42,13 +54,21 @@
     <string name="finish">Finish</string>
     <string name="skip">Skip</string>
     <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="send">Send</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
 
     <string name="record_test_id">Test ID</string>
     <string name="record_server_ip">Server IP</string>
     <string name="record_server_port">Server PORT</string>
     <string name="record_header">Record sensor data</string>
 
+    <string name="watch_notification_title">Fall Alarm</string>
+    <string name="watch_notification_text">Enabled</string>
 
+    <string name="phone_notification_detecting">Detecting</string>
+    <string name="phone_notification_waiting">Waiting to send alarm…</string>
+    <string name="phone_notification_sent">Alarm sent</string>
+    <string name="phone_notification_cancelled">Alarm cancelled</string>
 </resources>

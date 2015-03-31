@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            android:text="Total accelerometer threshold"/>
+            android:text="@string/fragment_thresholds_total_acc"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,13 +37,13 @@
                 android:id="@+id/tat_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/tat_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset" />
+                android:text="@string/reset" />
 
             </LinearLayout>
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            android:text="Vertical accelerometer threshold"
+            android:text="@string/fragment_thresholds_vertical_acc"
             android:layout_marginTop="20dp"/>
 
         <LinearLayout
@@ -72,13 +72,13 @@
                 android:id="@+id/vat_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/vat_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset"/>
+                android:text="@string/reset"/>
 
         </LinearLayout>
 
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            android:text="Accelerometer comparison threshold"
+            android:text="@string/fragment_thresholds_acc_comp"
             android:layout_marginTop="20dp"/>
 
         <LinearLayout
@@ -107,13 +107,13 @@
                 android:id="@+id/act_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/act_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset"/>
+                android:text="@string/reset"/>
 
         </LinearLayout>
 
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            android:text="Impact threshold"
+            android:text="@string/fragment_thresholds_impact"
             android:layout_marginTop="20dp"/>
 
         <LinearLayout
@@ -142,13 +142,13 @@
                 android:id="@+id/it_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/it_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset"/>
+                android:text="@string/reset"/>
 
         </LinearLayout>
 
@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            android:text="Pre-Impact threshold"
+            android:text="@string/fragment_thresholds_pre_impact"
             android:layout_marginTop="20dp"/>
 
         <LinearLayout
@@ -177,13 +177,13 @@
                 android:id="@+id/pre_it_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/pre_it_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset"/>
+                android:text="@string/reset"/>
 
         </LinearLayout>
 
@@ -192,7 +192,7 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white"
-            android:text="Post-Impact threshold"
+            android:text="@string/fragment_thresholds_post_impact"
             android:layout_marginTop="20dp"/>
 
         <LinearLayout
@@ -212,13 +212,13 @@
                 android:id="@+id/post_it_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save" />
+                android:text="@string/save" />
 
             <Button
                 android:id="@+id/post_it_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reset"/>
+                android:text="@string/reset"/>
 
         </LinearLayout>
     </LinearLayout>

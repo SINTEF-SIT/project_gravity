@@ -1,6 +1,9 @@
 package sintef.android.gravity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +14,8 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmEvent;
 import sintef.android.controller.AlarmView;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.common.Constants;
+import sintef.android.controller.utils.SoundHelper;
 
 /**
  * Created by samyboy89 on 23/02/15.
@@ -18,6 +23,7 @@ import sintef.android.controller.EventTypes;
 public class NormalFragment extends Fragment {
 
     private AlarmView mAlarmView;
+    private static Vibrator mVibrator;
 
     public NormalFragment() { }
 
@@ -27,6 +33,12 @@ public class NormalFragment extends Fragment {
         bundle.putBoolean(MainService.ALARM_STARTED, start_alarm);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -40,6 +52,13 @@ public class NormalFragment extends Fragment {
         if (getView() == null) return;
 
         mAlarmView = (AlarmView) getView().findViewById(R.id.alarm_view);
+        mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
+            @Override
+            public void onStop() {
+                if (mVibrator != null) mVibrator.cancel();
+                EventBus.getDefault().post(EventTypes.ALARM_STOPPED);
+            }
+        });
 
         EventBus.getDefault().register(this);
 
@@ -51,14 +70,17 @@ public class NormalFragment extends Fragment {
     public void onEvent(EventTypes type) {
         switch (type) {
             case START_ALARM:
+                mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
                 mAlarmView.startAlarm();
                 break;
             case STOP_ALARM:
+                if (mVibrator != null) mVibrator.cancel();
                 mAlarmView.stopAlarmWithoutNotify();
                 break;
         }
     }
     public void onEvent(AlarmEvent event) {
+        SoundHelper.playAlarmSound();
         mAlarmView.setAlarmProgress(event.progress);
     }
 }

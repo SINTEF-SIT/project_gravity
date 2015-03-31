@@ -123,7 +123,7 @@ public class AdvancedActivity extends ActionBarActivity {
                 case 0:
                     return new GraphFragment();
                 case 1:
-                    return new AdvancedFragment();
+                    return new ThresholdsFragment();
                 case 2:
                     return new RecordFragment();
                 case 3:
@@ -138,7 +138,7 @@ public class AdvancedActivity extends ActionBarActivity {
                 case 0:
                     return getString(R.string.fragment_graph);
                 case 1:
-                    return getString(R.string.fragment_advanced);
+                    return getString(R.string.fragment_thresholds);
                 case 2:
                     return getString(R.string.fragment_record);
                 case 3:
