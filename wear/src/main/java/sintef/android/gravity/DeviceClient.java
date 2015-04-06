@@ -70,6 +70,10 @@ public class DeviceClient {
         this.mode = mode;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
     public void pushData() {
         if (mode.equals(ClientPaths.MODE_PULL)) {
             for (Object data : mSensorEventBuffer.getBufferAsArray()) {
@@ -109,12 +113,17 @@ public class DeviceClient {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                sendSensorDataInBackground(session, sensorType, accuracy, timestamp, values);
+                Log.w("DC", "started thread");
+                try {
+                    sendSensorDataInBackground(session, sensorType, accuracy, timestamp, values);
+                } catch (Exception e) {
+                    Log.w("DC", e);
+                }
             }
         });
     }
 
-    private void sendSensorDataInBackground(String session, int sensorType, int accuracy, long timestamp, float[] values) {
+    private synchronized void sendSensorDataInBackground(String session, int sensorType, int accuracy, long timestamp, float[] values) {
         PutDataMapRequest dataMap = PutDataMapRequest.create(Constants.DATA_MAP_PATH + sensorType);
 
         dataMap.getDataMap().putString(Constants.SESSION, session);
@@ -136,7 +145,7 @@ public class DeviceClient {
         return result.isSuccess();
     }
 
-    private void send(PutDataRequest putDataRequest) {
+    private synchronized void send(PutDataRequest putDataRequest) {
         if (validateConnection()) {
             Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
                 @Override
