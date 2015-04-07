@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.Vibrator;
 
 import de.greenrobot.event.EventBus;
@@ -15,22 +16,25 @@ public class AlarmActivity extends Activity {
 
     private AlarmView mAlarmView;
 
+    private static PowerManager.WakeLock mWakeLock;
     private static Vibrator mVibrator;
     private RemoteSensorManager mRemoteSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startService(new Intent(this, MessageReceiverService.class));
+        // startService(new Intent(this, MessageReceiverService.class));
     }
 
     public void showAlarm() {
+        mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
+        mWakeLock.acquire();
+
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
 
         setContentView(mAlarmView);
         mAlarmView.startAlarm();
-
     }
 
     @Override
@@ -76,14 +80,17 @@ public class AlarmActivity extends Activity {
 
     private void stopAlarmActivity() {
         if (mVibrator != null) mVibrator.cancel();
-        AlarmActivity.this.finish();
+        if (mWakeLock != null) mWakeLock.release();
         EventBus.getDefault().unregister(this);
+
+        AlarmActivity.this.finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (mVibrator != null) mVibrator.cancel();
+        if (mWakeLock != null) mWakeLock.release();
         EventBus.getDefault().unregister(this);
     }
 
@@ -91,6 +98,7 @@ public class AlarmActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         if (mVibrator != null) mVibrator.cancel();
+        if (mWakeLock != null) mWakeLock.release();
         EventBus.getDefault().unregister(this);
     }
 
