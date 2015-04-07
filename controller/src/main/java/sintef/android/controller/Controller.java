@@ -83,7 +83,6 @@ public class Controller {
         if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
         Map<SensorSession, List<SensorData>> sensorData = allData.get(0);
 
-
         if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION) times_in_sek += 1;
         if (time + 1000 <= System.currentTimeMillis() ) {
             // Log.wtf("SDPS", String.format("%d @ %d", times_in_sek, time));

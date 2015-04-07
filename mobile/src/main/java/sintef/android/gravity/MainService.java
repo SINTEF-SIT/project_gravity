@@ -17,7 +17,10 @@ import android.util.Log;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmEvent;
+import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.controller.utils.SoundHelper;
 
 /**
  * Created by samyboy89 on 03/02/15.
@@ -61,12 +64,18 @@ public class MainService extends Service {
     public void onCreate() {
         EventBus.getDefault().registerSticky(this);
 
+        Controller.initializeController(this);
+        SoundHelper.initializeSoundsHelper(this);
+        PreferencesHelper.initializePreferences(this);
+
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainService.class.getName());
 
         registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        EventBus.getDefault().post(EventTypes.ONRESUME);
     }
 
     @Override

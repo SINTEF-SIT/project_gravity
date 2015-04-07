@@ -19,6 +19,7 @@ import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.controller.utils.SoundHelper;
+import sintef.android.controller.utils.Utils;
 import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
@@ -41,7 +42,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startDetector();
+        if (!Utils.isServiceRunning(this, MainService.class)) startDetector();
 
         SoundHelper.initializeSoundsHelper(this);
         PreferencesHelper.initializePreferences(this);

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
@@ -21,7 +20,6 @@ import com.google.android.gms.wearable.WearableListenerService;
 import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.AlarmEvent;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 
@@ -59,6 +57,11 @@ public class MessageReceiverService extends WearableListenerService {
                 }
             }
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
     @Override
