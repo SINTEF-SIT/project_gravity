@@ -41,17 +41,10 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAlarmView != null) {
-            mRemoteSensorManager.stopAlarm();
-            stopAlarmActivity();
-            return;
-        }
-
         if (getIntent().getExtras() == null) return;
 
         boolean keep = getIntent().getExtras().containsKey("keep") && getIntent().getExtras().getBoolean("keep");
-        if (keep) {
-
+        if (keep && mAlarmView == null) {
             EventBus.getDefault().register(this);
             mRemoteSensorManager = RemoteSensorManager.getInstance(this);
             mAlarmView = new AlarmView(this, R.layout.show_alarm);
@@ -90,8 +83,8 @@ public class AlarmActivity extends Activity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         if (mVibrator != null) mVibrator.cancel();
         if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
