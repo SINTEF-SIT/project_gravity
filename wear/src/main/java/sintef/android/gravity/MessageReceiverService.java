@@ -30,14 +30,16 @@ public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "SensorDashboard/MessageReceiverService";
     private DeviceClient deviceClient;
     private EventBus mEventBus;
+    private SensorRecorder mSensorRecorder;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.w("MRS", "started mrs");
         mEventBus = EventBus.getDefault();
         deviceClient = DeviceClient.getInstance(this);
-        startService(new Intent(this, SensorService.class));
+        deviceClient.setMode(ClientPaths.MODE_PULL);
+        mSensorRecorder = SensorRecorder.getInstance(this);
     }
 
     @Override
@@ -69,10 +71,8 @@ public class MessageReceiverService extends WearableListenerService {
 
         switch("/" + message[1]) {
             case ClientPaths.START_MEASUREMENT:
-//                startService(new Intent(this, SensorService.class));
                 break;
             case ClientPaths.STOP_MEASUREMENT:
-//                stopService(new Intent(this, SensorService.class));
                 break;
             case ClientPaths.MODE_PULL:
                 deviceClient.setMode(messageEvent.getPath());
