@@ -102,5 +102,4 @@ public class SensorManager implements SensorEventListener {
             mEventBus.post(new SensorData(mSensorGroup.get(event.sensor.getType()), sensorDataObject, timestamp));
         }
     }
-
 }

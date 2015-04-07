@@ -40,13 +40,11 @@ public class MainService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) return;
-
             Runnable runnable = new Runnable() {
                 public void run() {
                     EventBus.getDefault().post(EventTypes.RESET_SENSOR_LISTENERS);
                 }
             };
-
             new Handler().postDelayed(runnable, SCREEN_OFF_RECEIVER_DELAY);
         }
     };
