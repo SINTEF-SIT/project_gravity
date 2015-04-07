@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
+import android.util.Log;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
@@ -23,10 +24,14 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.wtf("onCreate", "New Task?");
+
         // startService(new Intent(this, MessageReceiverService.class));
     }
 
     public void showAlarm() {
+        Log.wtf("showAlarm", "New Task?");
+
         mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
         mWakeLock.acquire();
 
@@ -40,6 +45,8 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.wtf("onResume", "New Task?");
+
         if (getIntent().getExtras() == null) return;
 
         boolean keep = getIntent().getExtras().containsKey("keep") && getIntent().getExtras().getBoolean("keep");
@@ -72,6 +79,8 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.wtf("onNewIntent", "New Task?");
+
         boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
         if (!keep) {
             stopAlarmActivity();
