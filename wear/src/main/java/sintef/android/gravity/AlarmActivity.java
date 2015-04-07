@@ -44,26 +44,28 @@ public class AlarmActivity extends Activity {
         if (getIntent().getExtras() == null) return;
 
         boolean keep = getIntent().getExtras().containsKey("keep") && getIntent().getExtras().getBoolean("keep");
-        if (keep && mAlarmView == null) {
-            EventBus.getDefault().register(this);
-            mRemoteSensorManager = RemoteSensorManager.getInstance(this);
-            mAlarmView = new AlarmView(this, R.layout.show_alarm);
-            mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
-                @Override
-                public void onStop() {
-                    mRemoteSensorManager.stopAlarm();
-                    stopAlarmActivity();
-                }
-            });
-            mAlarmView.setStrokeWidth(14);
-            mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
-                @Override
-                public void onAlarm() {
-                    if (mVibrator != null) mVibrator.cancel();
-                }
-            });
+        if (keep) {
+            if (mAlarmView == null) {
+                EventBus.getDefault().register(this);
+                mRemoteSensorManager = RemoteSensorManager.getInstance(this);
+                mAlarmView = new AlarmView(this, R.layout.show_alarm);
+                mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
+                    @Override
+                    public void onStop() {
+                        mRemoteSensorManager.stopAlarm();
+                        stopAlarmActivity();
+                    }
+                });
+                mAlarmView.setStrokeWidth(14);
+                mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
+                    @Override
+                    public void onAlarm() {
+                        if (mVibrator != null) mVibrator.cancel();
+                    }
+                });
 
-            showAlarm();
+                showAlarm();
+            }
         } else {
             stopAlarmActivity();
         }
@@ -72,10 +74,7 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
-        if (!keep) {
-            stopAlarmActivity();
-        }
+        setIntent(intent);
     }
 
     private void stopAlarmActivity() {
