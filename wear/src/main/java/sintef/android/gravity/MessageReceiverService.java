@@ -94,7 +94,6 @@ public class MessageReceiverService extends WearableListenerService {
                 break;
             case ClientPaths.ALARM_PROGRESS:
                 updateAlarmProgress(Integer.valueOf(message[2]));
-            default:
                 break;
         }
     }
@@ -102,8 +101,7 @@ public class MessageReceiverService extends WearableListenerService {
     private synchronized void changeAlarm(boolean keep) {
         Intent alarm = new Intent(this, AlarmActivity.class);
         alarm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        alarm.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         alarm.putExtra("keep", keep);
         Log.w("MRS", "starting activity alarm");
         startActivity(alarm);
