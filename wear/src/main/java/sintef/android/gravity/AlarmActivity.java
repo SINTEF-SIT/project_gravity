@@ -23,6 +23,7 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // startService(new Intent(this, MessageReceiverService.class));
     }
 
@@ -40,21 +41,17 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (mAlarmView != null) {
+            mRemoteSensorManager.stopAlarm();
+            stopAlarmActivity();
+            return;
+        }
+
         if (getIntent().getExtras() == null) return;
 
         boolean keep = getIntent().getExtras().containsKey("keep") && getIntent().getExtras().getBoolean("keep");
-        if (!keep) {
-            stopAlarmActivity();
-        }
-    }
+        if (keep) {
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
-        if (!keep) {
-            stopAlarmActivity();
-        } else {
             EventBus.getDefault().register(this);
             mRemoteSensorManager = RemoteSensorManager.getInstance(this);
             mAlarmView = new AlarmView(this, R.layout.show_alarm);
@@ -74,6 +71,17 @@ public class AlarmActivity extends Activity {
             });
 
             showAlarm();
+        } else {
+            stopAlarmActivity();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
+        if (!keep) {
+            stopAlarmActivity();
         }
     }
 
@@ -87,7 +95,6 @@ public class AlarmActivity extends Activity {
         if (mVibrator != null) mVibrator.cancel();
         if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
-        mAlarmView = null;
     }
 
     @Override
@@ -96,7 +103,6 @@ public class AlarmActivity extends Activity {
         if (mVibrator != null) mVibrator.cancel();
         if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
-        mAlarmView = null;
     }
 
     public void onEvent(int progress) {
