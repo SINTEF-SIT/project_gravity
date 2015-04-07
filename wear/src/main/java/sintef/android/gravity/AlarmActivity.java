@@ -30,8 +30,6 @@ public class AlarmActivity extends Activity {
     }
 
     public void showAlarm() {
-        Log.wtf("showAlarm", "New Task?");
-
         mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
         mWakeLock.acquire();
 
@@ -45,7 +43,11 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.wtf("onResume", "New Task?");
+        if (mAlarmView != null) {
+            mRemoteSensorManager.stopAlarm();
+            stopAlarmActivity();
+            return;
+        }
 
         if (getIntent().getExtras() == null) return;
 
@@ -79,8 +81,6 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.wtf("onNewIntent", "New Task?");
-
         boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
         if (!keep) {
             stopAlarmActivity();
@@ -88,11 +88,7 @@ public class AlarmActivity extends Activity {
     }
 
     private void stopAlarmActivity() {
-        if (mVibrator != null) mVibrator.cancel();
-        if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
-        EventBus.getDefault().unregister(this);
-
-        AlarmActivity.this.finish();
+        finish();
     }
 
     @Override
@@ -101,6 +97,7 @@ public class AlarmActivity extends Activity {
         if (mVibrator != null) mVibrator.cancel();
         if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
+        mAlarmView = null;
     }
 
     @Override
@@ -109,6 +106,7 @@ public class AlarmActivity extends Activity {
         if (mVibrator != null) mVibrator.cancel();
         if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
+        mAlarmView = null;
     }
 
     public void onEvent(int progress) {
