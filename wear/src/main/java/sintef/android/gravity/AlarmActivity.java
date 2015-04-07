@@ -16,12 +16,8 @@ public class AlarmActivity extends Activity {
 
     private AlarmView mAlarmView;
 
-    private boolean keep;
-    private Intent intent;
     private static Vibrator mVibrator;
     private RemoteSensorManager mRemoteSensorManager;
-    private EventBus mEventBus;
-    private static PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +26,12 @@ public class AlarmActivity extends Activity {
     }
 
     public void showAlarm() {
-        mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
-        mWakeLock.acquire(1000);
+        PowerManager.WakeLock wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
+        wakeLock.acquire(1000);
+
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
+
         setContentView(mAlarmView);
         mAlarmView.startAlarm();
 
@@ -42,16 +40,13 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        intent = this.getIntent();
-        if (intent.getExtras() == null) return;
+        if (getIntent().getExtras() == null) return;
 
-        keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
+        boolean keep = getIntent().getExtras().containsKey("keep") && getIntent().getExtras().getBoolean("keep");
         if (keep) {
 
-            mEventBus = EventBus.getDefault();
-            mEventBus.unregister(this);
-            mEventBus.register(this);
-            mRemoteSensorManager = mRemoteSensorManager.getInstance(this);
+            EventBus.getDefault().register(this);
+            mRemoteSensorManager = RemoteSensorManager.getInstance(this);
             mAlarmView = new AlarmView(this, R.layout.show_alarm);
             mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
                 @Override
@@ -77,7 +72,7 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
+        boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
         if (!keep) {
             stopAlarmActivity();
         }
@@ -86,18 +81,21 @@ public class AlarmActivity extends Activity {
     private void stopAlarmActivity() {
         if (mVibrator != null) mVibrator.cancel();
         AlarmActivity.this.finish();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (mVibrator != null) mVibrator.cancel();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mVibrator != null) mVibrator.cancel();
+        EventBus.getDefault().unregister(this);
     }
 
     public void onEvent(int progress) {
