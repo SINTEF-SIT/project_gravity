@@ -20,6 +20,7 @@ import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.controller.utils.SoundHelper;
 import sintef.android.controller.utils.Utils;
+import sintef.android.gravity.advanced.AdvancedActivity;
 import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {
@@ -72,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.fragment_placeholder, NormalFragment.newInstance(alarm_started));
+        ft.replace(R.id.fragment_placeholder, AlarmFragment.newInstance(alarm_started));
         ft.commit();
 
         findViewById(R.id.fragment_placeholder).setOnClickListener(new View.OnClickListener() {
@@ -112,7 +113,7 @@ public class MainActivity extends ActionBarActivity {
         startService(new Intent(this, MainService.class));
     }
 
-    private void openActionActivity() {
+    private void openAdvancedActivity() {
         startActivity(new Intent(this, AdvancedActivity.class));
     }
 
@@ -177,7 +178,7 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(new Intent(this, WizardMain.class));
                 return true;
             case R.id.action_advanced:
-                openActionActivity();
+                openAdvancedActivity();
                 return true;
             case R.id.action_advanced_remove:
                 PreferencesHelper.putBoolean(ADVANCED_MENU_AVAILABLE, false);

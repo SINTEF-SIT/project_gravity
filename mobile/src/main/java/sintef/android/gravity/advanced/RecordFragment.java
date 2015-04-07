@@ -1,4 +1,4 @@
-package sintef.android.gravity;
+package sintef.android.gravity.advanced;
 
 import android.hardware.Sensor;
 import android.os.AsyncTask;
@@ -43,6 +43,7 @@ import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.gravity.R;
 import sintef.android.gravity.wizard.FloatingHintEditText;
 
 /**

@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".AdvancedActivity"
+            android:name=".advanced.AdvancedActivity"
             android:label="@string/advanced_activity"
             android:screenOrientation="sensorPortrait"/>
 
@@ -39,11 +39,6 @@
             android:name=".wizard.WizardMain"
             android:label="@string/wizard_activity"
             android:screenOrientation="sensorPortrait"/>
-
-        <activity
-            android:name=".NotificationActivity"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"/>
 
         <service android:enabled="true" android:name=".MainService" />
 
@@ -55,8 +50,7 @@
 
         <service android:name=".RemoteSensorService">
             <intent-filter>
-                <action
-                    android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
             </intent-filter>
         </service>
 

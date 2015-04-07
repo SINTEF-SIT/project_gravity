@@ -1,4 +1,4 @@
-package sintef.android.gravity;
+package sintef.android.gravity.advanced;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import sintef.android.controller.algorithm.AlgorithmPhone;
 import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.gravity.R;
 
 /**
  * Created by samyboy89 on 23/02/15.

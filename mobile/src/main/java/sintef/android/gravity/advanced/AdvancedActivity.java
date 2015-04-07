@@ -1,4 +1,4 @@
-package sintef.android.gravity;
+package sintef.android.gravity.advanced;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import com.astuetz.PagerSlidingTabStrip;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.gravity.AlarmFragment;
+import sintef.android.gravity.R;
 
 /**
  * Created by samyboy89 on 23/02/15.
@@ -129,7 +131,7 @@ public class AdvancedActivity extends ActionBarActivity {
                 case 3:
                     return new RecordHistoryFragment();
             }
-            return new NormalFragment();
+            return new AlarmFragment();
         }
 
         @Override

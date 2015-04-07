@@ -20,15 +20,15 @@ import sintef.android.controller.utils.SoundHelper;
 /**
  * Created by samyboy89 on 23/02/15.
  */
-public class NormalFragment extends Fragment {
+public class AlarmFragment extends Fragment {
 
     private AlarmView mAlarmView;
     private static Vibrator mVibrator;
 
-    public NormalFragment() { }
+    public AlarmFragment() { }
 
-    public static NormalFragment newInstance(boolean start_alarm) {
-        NormalFragment fragment = new NormalFragment();
+    public static AlarmFragment newInstance(boolean start_alarm) {
+        AlarmFragment fragment = new AlarmFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(MainService.ALARM_STARTED, start_alarm);
         fragment.setArguments(bundle);
@@ -43,7 +43,7 @@ public class NormalFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_normal, container, false);
+        return inflater.inflate(R.layout.fragment_alarm, container, false);
     }
 
     @Override

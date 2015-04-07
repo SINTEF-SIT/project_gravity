@@ -15,16 +15,13 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         Locale locale = getResources().getConfiguration().locale;
-        locale = new Locale("no","NO");
-        Configuration config = new Configuration();
-        config.locale = locale;
-        Resources res = getBaseContext().getResources();
-        res.updateConfiguration(config, res.getDisplayMetrics());
-        /*
-        if (locale.getLanguage().equals("no") || locale.getLanguage().equals("nb") || locale.getLanguage().equals("nn")){
+        if (locale.getLanguage().equals("no") || locale.getLanguage().equals("nb") || locale.getLanguage().equals("nn")) {
+            locale = new Locale("no","NO");
+            Configuration config = new Configuration();
+            config.locale = locale;
+            Resources res = getBaseContext().getResources();
+            res.updateConfiguration(config, res.getDisplayMetrics());
         }
-        */
     }
 }

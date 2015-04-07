@@ -1,4 +1,4 @@
-package sintef.android.gravity;
+package sintef.android.gravity.advanced;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -22,6 +22,7 @@ import java.util.Random;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.sensor.SensorData;
+import sintef.android.gravity.R;
 
 /**
  * Created by samyboy89 on 29/01/15.
