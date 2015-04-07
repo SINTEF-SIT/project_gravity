@@ -80,7 +80,7 @@ public class AlarmActivity extends Activity {
 
     private void stopAlarmActivity() {
         if (mVibrator != null) mVibrator.cancel();
-        if (mWakeLock != null) mWakeLock.release();
+        if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
 
         AlarmActivity.this.finish();
@@ -90,7 +90,7 @@ public class AlarmActivity extends Activity {
     protected void onPause() {
         super.onPause();
         if (mVibrator != null) mVibrator.cancel();
-        if (mWakeLock != null) mWakeLock.release();
+        if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
     }
 
@@ -98,7 +98,7 @@ public class AlarmActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         if (mVibrator != null) mVibrator.cancel();
-        if (mWakeLock != null) mWakeLock.release();
+        if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
     }
 
