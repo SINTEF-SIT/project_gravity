@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.util.Log;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
@@ -24,8 +23,6 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.wtf("onCreate", "New Task?");
-
         // startService(new Intent(this, MessageReceiverService.class));
     }
 
@@ -43,17 +40,21 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mAlarmView != null) {
-            mRemoteSensorManager.stopAlarm();
-            stopAlarmActivity();
-            return;
-        }
-
         if (getIntent().getExtras() == null) return;
 
         boolean keep = getIntent().getExtras().containsKey("keep") && getIntent().getExtras().getBoolean("keep");
-        if (keep) {
+        if (!keep) {
+            stopAlarmActivity();
+        }
+    }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
+        if (!keep) {
+            stopAlarmActivity();
+        } else {
             EventBus.getDefault().register(this);
             mRemoteSensorManager = RemoteSensorManager.getInstance(this);
             mAlarmView = new AlarmView(this, R.layout.show_alarm);
@@ -73,17 +74,6 @@ public class AlarmActivity extends Activity {
             });
 
             showAlarm();
-        } else {
-            stopAlarmActivity();
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        boolean keep = intent.getExtras().containsKey("keep") && intent.getExtras().getBoolean("keep");
-        if (!keep) {
-            stopAlarmActivity();
         }
     }
 
