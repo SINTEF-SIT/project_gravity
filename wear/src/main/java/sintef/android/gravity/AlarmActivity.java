@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
+import android.view.WindowManager;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
@@ -26,8 +27,7 @@ public class AlarmActivity extends Activity {
     }
 
     public void showAlarm() {
-        mWakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Clock");
-        mWakeLock.acquire();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
@@ -83,7 +83,6 @@ public class AlarmActivity extends Activity {
     protected void onStop() {
         super.onStop();
         if (mVibrator != null) mVibrator.cancel();
-        if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
     }
 
@@ -91,7 +90,6 @@ public class AlarmActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         if (mVibrator != null) mVibrator.cancel();
-        if (mWakeLock != null && mWakeLock.isHeld()) mWakeLock.release();
         EventBus.getDefault().unregister(this);
     }
 

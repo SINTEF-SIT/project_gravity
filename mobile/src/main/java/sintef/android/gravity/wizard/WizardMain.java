@@ -1,6 +1,5 @@
 package sintef.android.gravity.wizard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
-import sintef.android.gravity.MainActivity;
 import sintef.android.gravity.R;
 
 /**
@@ -95,7 +93,6 @@ public class WizardMain extends ActionBarActivity {
                     PreferencesHelper.putString(Constants.PREFS_NEXT_OF_KIN_TELEPHONE, mTelephoneEdit.getText().toString());
                     PreferencesHelper.putBoolean(Constants.PREFS_FIRST_START, false);
 
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 }
                 mPager.setCurrentItem(mPager.getCurrentItem() + 1);
@@ -179,5 +176,11 @@ public class WizardMain extends ActionBarActivity {
         public int getCount() {
             return 5;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferencesHelper.putBoolean(PreferencesHelper.FALL_DETECTION_ENABLED, true);
     }
 }

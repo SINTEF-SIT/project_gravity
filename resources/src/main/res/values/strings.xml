@@ -30,7 +30,7 @@
 
     <string name="alarm_progress_disabled">No\nalarm</string>
     <string name="alarm_progress_running">Press to\nstop alarm</string>
-    <string name="alarm_progress_cancelled">Alarm is\nstopped</string>
+    <string name="alarm_progress_cancelled">Alarm \nstopped</string>
     <string name="alarm_progress_done">Alarm is\nsent</string>
     <string name="alarm_start_button">Start\nalarm</string>
 
