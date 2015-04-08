@@ -109,7 +109,7 @@ public class AlgorithmMain {
         }
         return accData;
     }
-*/
+    */
     public void onEvent(SensorAlgorithmPack pack)
     {
         boolean isFall;
