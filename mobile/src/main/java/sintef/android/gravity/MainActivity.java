@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
@@ -45,13 +46,13 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         if (!Utils.isServiceRunning(this, MainService.class)) startDetector();
 
+        EventBus.getDefault().register(this);
         SoundHelper.initializeSoundsHelper(this);
         PreferencesHelper.initializePreferences(this);
 
         if (PreferencesHelper.getBoolean(Constants.PREFS_FIRST_START, true)) {
+            PreferencesHelper.putBoolean(PreferencesHelper.FALL_DETECTION_ENABLED, false);
             startActivity(new Intent(this, WizardMain.class));
-            // finish();
-            return;
         }
 
         Controller.initializeController(getApplicationContext());
@@ -69,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
         boolean alarm_started = false;
         if (getIntent().getExtras() != null) {
             if (getIntent().getExtras().containsKey(MainService.ALARM_STARTED)) alarm_started = true;
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
         FragmentManager fm = getSupportFragmentManager();
@@ -102,6 +104,14 @@ public class MainActivity extends ActionBarActivity {
             }
             sToast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
             sToast.show();
+        }
+    }
+
+    public void onEvent(EventTypes types) {
+        switch (types) {
+            case ALARM_STOPPED:
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                break;
         }
     }
 

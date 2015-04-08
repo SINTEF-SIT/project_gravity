@@ -211,7 +211,7 @@ public class AlarmView extends RelativeLayout {
                         mCurrentAlarmTask = null;
                         setAlarm(false);
                     }
-                };
+                    };
                 runAlarmProgress();
                 mCurrentAlarmTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }

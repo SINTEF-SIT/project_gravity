@@ -60,6 +60,9 @@ public class Controller {
                     return;
                 }
                 sEventBus.post(pack);
+
+                allData.remove(2);
+
             }
         }, 0, Constants.ALGORITHM_SEND_FREQUENCY);
 
