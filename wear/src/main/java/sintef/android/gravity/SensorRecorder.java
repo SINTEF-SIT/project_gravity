@@ -45,14 +45,6 @@ public class SensorRecorder implements SensorEventListener {
         for (int key : Constants.SENSORS_WEAR.keySet()) {
             addSensorToSystem("watch:" + Constants.SENSORS_WEAR.get(key), key, SensorDevice.WATCH, Constants.WEAR_SENSOR_LOCATION);
         }
-
-        /*
-        Notification.Builder builder = new Notification.Builder(context);
-        builder.setContentTitle(getString(R.string.watch_notification_title));
-        builder.setContentText(getString(R.string.watch_notification_text));
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        startForeground(1, builder.build());
-        */
     }
 
     private void addSensorToSystem(String id, int type, SensorDevice device, SensorLocation location) {
@@ -61,7 +53,7 @@ public class SensorRecorder implements SensorEventListener {
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
     }
 
-    private void stopMeasurement() {
+    public void stopMeasurement() {
         if (mSensorManager != null)
             mSensorManager.unregisterListener(this);
     }

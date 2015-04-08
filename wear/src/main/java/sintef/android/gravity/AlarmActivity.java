@@ -23,8 +23,6 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // startService(new Intent(this, MessageReceiverService.class));
     }
 
     public void showAlarm() {

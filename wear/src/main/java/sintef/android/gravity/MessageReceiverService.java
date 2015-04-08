@@ -5,8 +5,10 @@ package sintef.android.gravity;
  * Such copy. Very paste.
  */
 
+import android.app.Notification;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.wearable.view.CardFragment;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataEvent;
@@ -36,8 +38,20 @@ public class MessageReceiverService extends WearableListenerService {
         Log.w("MRS", "started mrs");
         mEventBus = EventBus.getDefault();
         deviceClient = DeviceClient.getInstance(this);
-        deviceClient.setMode(ClientPaths.MODE_PULL);
+        deviceClient.setMode(ClientPaths.MODE_DEFAULT);
         mSensorRecorder = SensorRecorder.getInstance(this);
+
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(getString(R.string.watch_notification_title));
+        builder.setContentText(getString(R.string.watch_notification_text));
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        startForeground(1, builder.build());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSensorRecorder.stopMeasurement();
     }
 
     @Override

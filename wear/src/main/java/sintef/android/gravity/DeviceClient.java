@@ -113,7 +113,6 @@ public class DeviceClient {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                Log.w("DC", "started thread");
                 try {
                     sendSensorDataInBackground(session, sensorType, accuracy, timestamp, values);
                 } catch (Exception e) {
