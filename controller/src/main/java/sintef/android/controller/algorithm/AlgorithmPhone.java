@@ -1,8 +1,13 @@
 package sintef.android.controller.algorithm;
+import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import sintef.android.controller.sensor.SensorData;
+import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
@@ -10,7 +15,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 /**
  * Created by Andreas on 10.02.2015.
  */
-public class AlgorithmPhone
+public class AlgorithmPhone implements AlgorithmInterface
 {
     public static final String TOTAL_ACCELEROMETER_THRESHOLD = "tot_acc_thr";
     public static final String VERTICAL_ACCELEROMETER_THRESHOLD = "ver_acc_thr";
@@ -23,13 +28,55 @@ public class AlgorithmPhone
     public static final double default_totAccThreshold = 4; //12, 13, 14
     public static final double default_verticalAccThreshold = 2; //Litt under tot_acc tipper jeg
     public static final double default_accComparisonThreshold = 0.1; //tot_acc / vertical_acc
-    public static final double default_impactThreshold = 1; //fra topp til bunn
+    /*public static final double default_impactThreshold = 1; //fra topp til bunn
     public static final double default_preimpactThreshold = 1; //fra bunn til topp
-    public static final double default_postImpactThreshold = 15; //average maa vaere under denne verdien.
+    public static final double default_postImpactThreshold = 15; //average maa vaere under denne verdien.*/
+;
 
-    // private static double angleThreshold = 30;
+    public boolean isFall(SensorAlgorithmPack pack){
+        //BEGIN Unpacking sensorpack
+        List<RotationVectorData> rotData = new ArrayList<>();
+        List<MagneticFieldData> geoRotVecData = new ArrayList<>();
+        List<LinearAccelerationData> accData = new ArrayList<>();
+        //List<LinearAccelerationData> accDataWatch = new ArrayList<>();
+        for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
+            switch (entry.getKey().getSensorDevice()) {
+                case PHONE:
+                    switch (entry.getKey().getSensorType()) {
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++)
+                            {
+                                accData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                        case Sensor.TYPE_ROTATION_VECTOR:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                rotData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                        case Sensor.TYPE_MAGNETIC_FIELD:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                geoRotVecData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                    }
+                    break;
+                /*case WATCH:
+                    switch (entry.getKey().getSensorType()){
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                accDataWatch.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                    }
+                    break;
+                case OTHER:
+                    break;*/
+            }
 
-    public static boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
+        }
+        //END Unpacking sensorpack
+
         int numberOfIterations;
         float[] degs = new float[3];
         float[] rotationMatrix = new float[9];

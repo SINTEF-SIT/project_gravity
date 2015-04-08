@@ -1,8 +1,16 @@
 package sintef.android.controller.algorithm;
 
-import java.util.List;
+import android.hardware.Sensor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import sintef.android.controller.sensor.SensorData;
+import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
+import sintef.android.controller.sensor.data.MagneticFieldData;
+import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
 /**
@@ -33,7 +41,23 @@ public class PatternRecognitionPhone {
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     Main pattern recognition method*/
-    public static boolean isFall(List<LinearAccelerationData> accelerometerData){
+    public static boolean isFall(SensorAlgorithmPack pack){
+        //BEGIN unpacking sensorpack
+        List<LinearAccelerationData> accelerometerData = new ArrayList<>();
+        for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
+            switch (entry.getKey().getSensorDevice()) {
+                case PHONE:
+                    switch (entry.getKey().getSensorType()) {
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                accelerometerData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                    }
+            }
+        }
+        //END unpacking sensorpack
+
         double maxAcceleration = 0;
         double currentAcceleration;
         int index = 0;
