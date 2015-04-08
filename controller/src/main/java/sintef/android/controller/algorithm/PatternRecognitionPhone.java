@@ -44,19 +44,36 @@ public class PatternRecognitionPhone {
     public static boolean isFall(SensorAlgorithmPack pack){
         //BEGIN unpacking sensorpack
         List<LinearAccelerationData> accelerometerData = new ArrayList<>();
+        List<RotationVectorData> rotData = new ArrayList<>();
+        List<MagneticFieldData> geoRotVecData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
             switch (entry.getKey().getSensorDevice()) {
                 case PHONE:
                     switch (entry.getKey().getSensorType()) {
                         case Sensor.TYPE_LINEAR_ACCELERATION:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
+                            for (int i = 0; i < entry.getValue().size(); i++)
+                            {
                                 accelerometerData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
                             }
                             break;
+                        case Sensor.TYPE_ROTATION_VECTOR:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                rotData.add((RotationVectorData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
+                        case Sensor.TYPE_MAGNETIC_FIELD:
+                            for (int i = 0; i < entry.getValue().size(); i++) {
+                                geoRotVecData.add((MagneticFieldData) entry.getValue().get(i).getSensorData());
+                            }
+                            break;
                     }
+                    break;
             }
         }
         //END unpacking sensorpack
+
+        //Hvis threshold algoritme sier det ikke er fall, kalles ikke patternRecognition
+        if (!AlgorithmPhone.isFall(accelerometerData, rotData, geoRotVecData) ){return false;}
 
         double maxAcceleration = 0;
         double currentAcceleration;

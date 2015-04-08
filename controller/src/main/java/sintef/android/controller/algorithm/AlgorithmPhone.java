@@ -61,22 +61,18 @@ public class AlgorithmPhone implements AlgorithmInterface
                             break;
                     }
                     break;
-                /*case WATCH:
-                    switch (entry.getKey().getSensorType()){
-                        case Sensor.TYPE_LINEAR_ACCELERATION:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                accDataWatch.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
-                            }
-                            break;
-                    }
-                    break;
-                case OTHER:
-                    break;*/
             }
-
         }
         //END Unpacking sensorpack
 
+        return ThresholdAlgorithm(accData, rotData, geoRotVecData);
+    }
+
+    public static boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
+        return ThresholdAlgorithm(accData, rotData, geoRotVecData);
+    }
+
+    private static boolean ThresholdAlgorithm(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
         int numberOfIterations;
         float[] degs = new float[3];
         float[] rotationMatrix = new float[9];
@@ -92,12 +88,12 @@ public class AlgorithmPhone implements AlgorithmInterface
             tetaY = degs[2];
             tetaZ = degs[0];
 
-            return isThresholdFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ);
+            return calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ);
         }
         return false;
     }
 
-    public static boolean isThresholdFall(double x, double y, double z, double tetaY, double tetaZ)
+    private static boolean calculateThresholdAlgorithm(double x, double y, double z, double tetaY, double tetaZ)
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
@@ -114,6 +110,7 @@ public class AlgorithmPhone implements AlgorithmInterface
         }
         return false;
     }
+
     public static boolean isThresholdFall(double x, double y, double z, double tetaY, double tetaZ, double testtotAccThreshold, double testverticalAccThreshold, double testaccComparisonThreshold)
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
