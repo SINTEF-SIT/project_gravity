@@ -112,8 +112,18 @@ public class AlgorithmMain {
 */
     public void onEvent(SensorAlgorithmPack pack)
     {
+        boolean isFall;
+        AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
+
+        if(algorithmChoice == AlgorithmsToChoose.All){isFall = PatternRecognitionPhone.isFall(pack);}
+        else if(algorithmChoice == AlgorithmsToChoose.PhonePatternRecognition){isFall = PatternRecognitionPhone.isFall(pack);}
+        //else if(algorithmChoice == AlgorithmsToChoose.PhoneThreshold){isFall = AlgorithmPhone.isFall(pack);}
+
+
         //TODO: better way to check if the watch is connected or not
-        boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
+
+
+        /*boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> magneticFieldData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();
@@ -173,7 +183,7 @@ public class AlgorithmMain {
             }
 
             EventBus.getDefault().post(EventTypes.FALL_DETECTED_FOR_RECORDING);
-        }
+        }*/
     }
 
     public static AlgorithmMain getsAlgorithmMain() {

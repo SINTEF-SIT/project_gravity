@@ -68,7 +68,7 @@ public class AlgorithmPhone implements AlgorithmInterface
         return ThresholdAlgorithm(accData, rotData, geoRotVecData);
     }
 
-    public static boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
+    public boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
         return ThresholdAlgorithm(accData, rotData, geoRotVecData);
     }
 
