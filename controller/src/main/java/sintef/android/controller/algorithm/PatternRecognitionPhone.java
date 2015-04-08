@@ -1,89 +1,22 @@
 package sintef.android.controller.algorithm;
-import android.hardware.SensorManager;
 
 import java.util.List;
 
 import sintef.android.controller.sensor.data.LinearAccelerationData;
-import sintef.android.controller.sensor.data.MagneticFieldData;
-import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
+
 /**
- * Created by Andreas on 10.02.2015.
+ * Created by Andreas on 08.04.2015.
  */
-public class AlgorithmPhone
-{
-    public static final String TOTAL_ACCELEROMETER_THRESHOLD = "tot_acc_thr";
-    public static final String VERTICAL_ACCELEROMETER_THRESHOLD = "ver_acc_thr";
-    public static final String ACCELEROMETER_COMPARISON_THRESHOLD = "acc_comp_thr";
-
-    /*public static final String IMPACT_THRESHOLD = "impact_thr";
+public class PatternRecognitionPhone {
+    public static final String IMPACT_THRESHOLD = "impact_thr";
     public static final String PRE_IMPACT_THRESHOLD = "pre_impact_thr";
-    public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";*/
+    public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";
 
-    public static final double default_totAccThreshold = 4; //12, 13, 14
-    public static final double default_verticalAccThreshold = 2; //Litt under tot_acc tipper jeg
-    public static final double default_accComparisonThreshold = 0.1; //tot_acc / vertical_acc
     public static final double default_impactThreshold = 1; //fra topp til bunn
     public static final double default_preimpactThreshold = 1; //fra bunn til topp
     public static final double default_postImpactThreshold = 15; //average maa vaere under denne verdien.
-
-    // private static double angleThreshold = 30;
-
-    public static boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
-        int numberOfIterations;
-        float[] degs = new float[3];
-        float[] rotationMatrix = new float[9];
-        double tetaY;
-        double tetaZ;
-
-        if (accData.size() <= rotData.size() && accData.size() <= geoRotVecData.size()) numberOfIterations = accData.size();
-        else if (geoRotVecData.size() <= accData.size() && geoRotVecData.size() <= rotData.size()) numberOfIterations = geoRotVecData.size();
-        else numberOfIterations = rotData.size();
-        for (int i=0; i < numberOfIterations; i++) {
-            SensorManager.getRotationMatrix(rotationMatrix, null, rotData.get(i).getValues(), geoRotVecData.get(i).getValues());
-            SensorManager.getOrientation(rotationMatrix, degs);
-            tetaY = degs[2];
-            tetaZ = degs[0];
-
-            return isThresholdFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ);
-        }
-        return false;
-    }
-
-    public static boolean isThresholdFall(double x, double y, double z, double tetaY, double tetaZ)
-    {
-        double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
-        double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
-        //System.out.println(totalAcceleration + "was here" + "total");
-        System.out.println(verticalAcceleration + "was here" + "vertical");
-        /*EventBus.getDefault().post(new RecordEvent(verticalAcceleration, totalAcceleration));*/
-
-        if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold())
-        {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold())
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    public static boolean isThresholdFall(double x, double y, double z, double tetaY, double tetaZ, double testtotAccThreshold, double testverticalAccThreshold, double testaccComparisonThreshold)
-    {
-        double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
-        double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
-        if (totalAcceleration >= testtotAccThreshold && verticalAcceleration >= testverticalAccThreshold)
-        {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= testaccComparisonThreshold)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /*
-    Test values == TRUE
+    /* Test values == TRUE
     x = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
@@ -99,8 +32,8 @@ public class AlgorithmPhone
     x = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
-    Main pattern recognition method
-    public static boolean patternRecognition(List<LinearAccelerationData> accelerometerData){
+    Main pattern recognition method*/
+    public static boolean isFall(List<LinearAccelerationData> accelerometerData){
         double maxAcceleration = 0;
         double currentAcceleration;
         int index = 0;
@@ -139,6 +72,7 @@ public class AlgorithmPhone
     iterations = 5
     maxAcceleration = 10.39
     TESTimpactThreshold = 3
+    */
     private static boolean impactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
 //iterating from toppoint to see if there is a big deacceleration after it.
@@ -183,6 +117,7 @@ public class AlgorithmPhone
     iterations = 5
     maxAcceleration = 10,39
     TESTpreimpactThreshold = 3
+    */
     private static boolean preImpactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
         int endLoop = index-iterations;
@@ -218,7 +153,7 @@ public class AlgorithmPhone
     z = [0, 0, 5, 6]
     index = 2
     TESTPostImpactThreshold = 5
-
+    */
     private static boolean postImpactPattern(List<LinearAccelerationData> accelerometerData, int index){
         double sumOfAccelerations = 0;
         double listSize = accelerometerData.size();
@@ -242,45 +177,15 @@ public class AlgorithmPhone
             return true;
         }
         return false;
-    }*/
-
-
-    public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
-    {
-        return postAngle - priorAngle >= angleThreshold;
     }
-    private static double verticalComparedToTotal(double vertical, double total)
-    {
-        return vertical/total;
-    }
-    //Calculates total acceleration at one point
+
     private static double accelerationTotal(double x, double y, double z)
     {
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
     }
-    //calculates vertical acceleration at one point
-    private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
-    {
-        return Math.abs(x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ));
-    }
-    public static double getTotAccThreshold() {
-        double value = PreferencesHelper.getFloat(TOTAL_ACCELEROMETER_THRESHOLD, (float) default_totAccThreshold);
-// Log.wtf("AlgPhone", "TOTAL_ACCELEROMETER_THRESHOLD: " + value);
-        return value;
-    }
-    public static double getVerticalAccThreshold() {
-        double value = PreferencesHelper.getFloat(VERTICAL_ACCELEROMETER_THRESHOLD, (float) default_verticalAccThreshold);
-// Log.wtf("AlgPhone", "VERTICAL_ACCELEROMETER_THRESHOLD: " + value);
-        return value;
-    }
-    public static double getAccComparisonThreshold() {
-        double value = PreferencesHelper.getFloat(ACCELEROMETER_COMPARISON_THRESHOLD, (float) default_accComparisonThreshold);
-// Log.wtf("AlgPhone", "ACCELEROMETER_COMPARISON_THRESHOLD: " + value);
-        return value;
-    }
 
 
-    /*public static double getImpactThreshold() {
+    public static double getImpactThreshold() {
         return PreferencesHelper.getFloat(IMPACT_THRESHOLD, (float) default_impactThreshold);
     }
     public static double getPreImpactThreshold() {
@@ -288,5 +193,5 @@ public class AlgorithmPhone
     }
     public static double getPostImpactThreshold() {
         return PreferencesHelper.getFloat(POST_IMPACT_THRESHOLD, (float) default_postImpactThreshold);
-    }*/
+    }
 }
