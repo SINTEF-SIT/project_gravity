@@ -89,12 +89,6 @@ public class AlgorithmMain {
         return false;*/
     }
 
-    private boolean watchAlgorithm(List<LinearAccelerationData> accData)
-    {
-        return AlgorithmWatch.patternRecognition(accData);
-    }
-
-
     /*private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
         List<AccelerometerData> accData = new ArrayList<>();
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {

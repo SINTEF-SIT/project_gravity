@@ -11,15 +11,18 @@ import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 
 /**
- * Created by araneae on 09.02.15.
+ * Created by araneae on 09.04.15.
  */
-public class AlgorithmWatch implements AlgorithmInterface
+public class PatternRecognitionWatch implements AlgorithmInterface
 {
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 1; //20
+    private static final double thresholdStill = 500; //5
+    private static final double atleastReadings = 10;
+    private static int movementThreshold = 50;
 
     //Calculate the acceleration.
-    private static double fallIndex(List<LinearAccelerationData> sensors, int startList)
+    private static FallIndexValues fallIndex(List<LinearAccelerationData> sensors, int startList)
     {
 
         List <Double> x = new ArrayList<>();
@@ -41,27 +44,44 @@ public class AlgorithmWatch implements AlgorithmInterface
 
         double directionAcceleration = 0;
         double totAcceleration = 0;
+        //double result;
 
         for (int i = 0; i < sensorData.size(); i++)
         {
             for (int j = startValue; j < sensorData.get(i).size(); j++)
             {
                 directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
+                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > movementThreshold && startList < j)
+                {
+                    startList = j;
+                }
             }
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
         }
-        return Math.sqrt(totAcceleration);
+        return new FallIndexValues (Math.sqrt(totAcceleration), startList);
     }
-    //Recognize fall pattern, and decide if there is a fall or not
-    public static boolean thresholdAlgorithmWatch(List<LinearAccelerationData> sensors)
-    {
-        double accelerationData;
-        int startList = 1;
 
+    private static double stillPattern(List<LinearAccelerationData> sensors, int startList)
+    {
+        return fallIndex(sensors, startList).getFallData();
+    }
+
+
+    //Recognize fall pattern, and decide if there is a fall or not
+    public static boolean patternRecognition(List<LinearAccelerationData> sensors)
+    {
+        FallIndexValues accelerationData;
+        double afterFallData;
+        int startList = 1;
         accelerationData = fallIndex(sensors, startList);
 
-        return accelerationData >= thresholdFall;
+        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > atleastReadings)
+        {
+            afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
+            return afterFallData <= thresholdStill;
+        }
+        return false;
     }
 
     @Override
@@ -82,6 +102,27 @@ public class AlgorithmWatch implements AlgorithmInterface
             }
 
         }
-        return thresholdAlgorithmWatch(accDataWatch);
+        return patternRecognition(accDataWatch);
+    }
+
+    private static class FallIndexValues
+    {
+        private double fallData;
+        private int startIndex;
+        private final int layingDownCount = 10; //number of readings to skip when checking if the person is laying still, so that it will not check the fall again and therefor say that the person is not laying still
+
+        FallIndexValues(double fallData, int startIndex)
+        {
+            this.fallData = fallData;
+            this.startIndex = startIndex+layingDownCount;
+        }
+
+        public int getStartIndex() {
+            return startIndex;
+        }
+
+        public double getFallData() {
+            return fallData;
+        }
     }
 }
