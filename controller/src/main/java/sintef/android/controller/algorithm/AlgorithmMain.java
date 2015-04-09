@@ -34,25 +34,22 @@ public class AlgorithmMain {
     private static final String TAG = "ALG";
     public static final boolean DEBUG = true;
 
-    public static void initializeAlgorithmMaster(Context context)
-    {
+    public static void initializeAlgorithmMaster(Context context){
         sAlgorithmMain = new AlgorithmMain(context);
     }
 
-    private AlgorithmMain(Context context)
-    {
+    private AlgorithmMain(Context context){
         mContext = context;
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, boolean hasWatch)
+    /*private boolean phoneAlgorithm(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, boolean hasWatch)
     {
-        /*if ( AlgorithmPhone.isFall(accData, rotData, geoRotVecData) ){
+        if ( AlgorithmPhone.isFall(accData, rotData, geoRotVecData) ){
             if (PatternRecognitionPhone.isFall(accData)){
                 return true;
             }
         }*/
-        return false;
         /*int numberOfIterations;
         float[] degs = new float[3];
         float[] rotationMatrix = new float[9];
@@ -86,8 +83,8 @@ public class AlgorithmMain {
                 return false;
             }
         }
-        return false;*/
-    }
+        return false;
+    }*/
 
     /*private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
         List<AccelerometerData> accData = new ArrayList<>();
@@ -104,8 +101,7 @@ public class AlgorithmMain {
         return accData;
     }
     */
-    public void onEvent(SensorAlgorithmPack pack)
-    {
+    public void onEvent(SensorAlgorithmPack pack){
         boolean isFall;
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
 
