@@ -19,7 +19,7 @@ import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
-import static sintef.android.controller.algorithm.AlgorithmPhone.patternRecognition;
+//import static sintef.android.controller.algorithm.AlgorithmPhone.patternRecognition;
 
 //import org.apache.commons.collections.bag.SynchronizedSortedBag;
 
@@ -34,25 +34,28 @@ public class AlgorithmMain {
     private static final String TAG = "ALG";
     public static final boolean DEBUG = true;
 
-    public static void initializeAlgorithmMaster(Context context)
-    {
+    public static void initializeAlgorithmMaster(Context context){
         sAlgorithmMain = new AlgorithmMain(context);
     }
 
-    private AlgorithmMain(Context context)
-    {
+    private AlgorithmMain(Context context){
         mContext = context;
         EventBus.getDefault().registerSticky(this);
     }
 
-    private boolean phoneAlgorithm(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, boolean hasWatch)
+    /*private boolean phoneAlgorithm(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData, boolean hasWatch)
     {
-        int numberOfIterations;
+        if ( AlgorithmPhone.isFall(accData, rotData, geoRotVecData) ){
+            if (PatternRecognitionPhone.isFall(accData)){
+                return true;
+            }
+        }*/
+        /*int numberOfIterations;
         float[] degs = new float[3];
         float[] rotationMatrix = new float[9];
         double tetaY;
         double tetaZ;
-        //System.out.println(rotData.size() + " " + geoRotVecData.size() + " was here");
+
         if (accData.size() <= rotData.size() && accData.size() <= geoRotVecData.size()) numberOfIterations = accData.size();
         else if (geoRotVecData.size() <= accData.size() && geoRotVecData.size() <= rotData.size()) numberOfIterations = geoRotVecData.size();
         else numberOfIterations = rotData.size();
@@ -64,7 +67,7 @@ public class AlgorithmMain {
             if (AlgorithmPhone.isFall(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ))
             {
                 if (DEBUG) Log.wtf(TAG, "POSSIBLE FALL: possible fall, checking pattern recognition");
-                if (patternRecognition(accData))
+                if (PatternRecognitionPhone.isFall(accData))
                 {
                     if (DEBUG) Log.wtf(TAG, "FALL: pattern recognition said it was a fall");
                     if (hasWatch) {
@@ -81,13 +84,7 @@ public class AlgorithmMain {
             }
         }
         return false;
-    }
-
-    private boolean watchAlgorithm(List<LinearAccelerationData> accData)
-    {
-        return AlgorithmWatch.patternRecognition(accData);
-    }
-
+    }*/
 
     /*private List <AccelerometerData> getWatchData (SensorAlgorithmPack pack) {
         List<AccelerometerData> accData = new ArrayList<>();
@@ -103,11 +100,24 @@ public class AlgorithmMain {
         }
         return accData;
     }
-*/
-    public void onEvent(SensorAlgorithmPack pack)
-    {
+    */
+    public void onEvent(SensorAlgorithmPack pack){
+        boolean isFall = false;
+        AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
+
+        if(algorithmChoice == AlgorithmsToChoose.All){
+            PatternRecognitionPhone patternPhone = new PatternRecognitionPhone();
+            PatternRecognitionWatch patternWatch = new PatternRecognitionWatch();
+            isFall = patternPhone.isFall(pack) && patternWatch.isFall(pack);
+        }
+        else if(algorithmChoice == AlgorithmsToChoose.PhonePatternRecognition){isFall = PatternRecognitionPhone.isFall(pack);}
+        //else if(algorithmChoice == AlgorithmsToChoose.PhoneThreshold){isFall = AlgorithmPhone.isFall(pack);}
+
+
         //TODO: better way to check if the watch is connected or not
-        boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
+
+
+        /*boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> magneticFieldData = new ArrayList<>();
         List<LinearAccelerationData> linearAccelerationData = new ArrayList<>();
@@ -161,6 +171,7 @@ public class AlgorithmMain {
         }
 
         if (DEBUG) Log.w(TAG, "?FALL?: is fall = " + String.valueOf(isFall).toUpperCase());
+        */
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
                 EventBus.getDefault().post(EventTypes.FALL_DETECTED);

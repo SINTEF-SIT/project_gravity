@@ -12,6 +12,7 @@ import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import sintef.android.controller.algorithm.AlgorithmPhone;
+import sintef.android.controller.algorithm.PatternRecognitionPhone;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.R;
 
@@ -58,9 +59,9 @@ public class ThresholdsFragment extends Fragment {
         mTATEdit.setText(String.valueOf(AlgorithmPhone.getTotAccThreshold()));
         mVATEdit.setText(String.valueOf(AlgorithmPhone.getVerticalAccThreshold()));
         mACTEdit.setText(String.valueOf(AlgorithmPhone.getAccComparisonThreshold()));
-        mITEdit.setText(String.valueOf(AlgorithmPhone.getImpactThreshold()));
-        mPrITEdit.setText(String.valueOf(AlgorithmPhone.getPreImpactThreshold()));
-        mPoITEdit.setText(String.valueOf(AlgorithmPhone.getPostImpactThreshold()));
+        mITEdit.setText(String.valueOf(PatternRecognitionPhone.getImpactThreshold()));
+        mPrITEdit.setText(String.valueOf(PatternRecognitionPhone.getPreImpactThreshold()));
+        mPoITEdit.setText(String.valueOf(PatternRecognitionPhone.getPostImpactThreshold()));
 
         mTATSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,15 +114,15 @@ public class ThresholdsFragment extends Fragment {
         mITSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferencesHelper.putFloat(AlgorithmPhone.IMPACT_THRESHOLD, Float.valueOf(mITEdit.getText().toString()));
+                PreferencesHelper.putFloat(PatternRecognitionPhone.IMPACT_THRESHOLD, Float.valueOf(mITEdit.getText().toString()));
             }
         });
 
         mITReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float def_value = (float) AlgorithmPhone.default_impactThreshold;
-                PreferencesHelper.putFloat(AlgorithmPhone.IMPACT_THRESHOLD, def_value);
+                float def_value = (float) PatternRecognitionPhone.default_impactThreshold;
+                PreferencesHelper.putFloat(PatternRecognitionPhone.IMPACT_THRESHOLD, def_value);
                 mITEdit.setText(String.valueOf(def_value));
             }
         });
@@ -129,15 +130,15 @@ public class ThresholdsFragment extends Fragment {
         mPrITSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferencesHelper.putFloat(AlgorithmPhone.PRE_IMPACT_THRESHOLD, Float.valueOf(mPrITEdit.getText().toString()));
+                PreferencesHelper.putFloat(PatternRecognitionPhone.PRE_IMPACT_THRESHOLD, Float.valueOf(mPrITEdit.getText().toString()));
             }
         });
 
         mPrITReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float def_value = (float) AlgorithmPhone.default_preimpactThreshold;
-                PreferencesHelper.putFloat(AlgorithmPhone.PRE_IMPACT_THRESHOLD, def_value);
+                float def_value = (float) PatternRecognitionPhone.default_preimpactThreshold;
+                PreferencesHelper.putFloat(PatternRecognitionPhone.PRE_IMPACT_THRESHOLD, def_value);
                 mPrITEdit.setText(String.valueOf(def_value));
             }
         });
@@ -145,15 +146,15 @@ public class ThresholdsFragment extends Fragment {
         mPoITSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferencesHelper.putFloat(AlgorithmPhone.POST_IMPACT_THRESHOLD, Float.valueOf(mPoITEdit.getText().toString()));
+                PreferencesHelper.putFloat(PatternRecognitionPhone.POST_IMPACT_THRESHOLD, Float.valueOf(mPoITEdit.getText().toString()));
             }
         });
 
         mPoITReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float def_value = (float) AlgorithmPhone.default_postImpactThreshold;
-                PreferencesHelper.putFloat(AlgorithmPhone.POST_IMPACT_THRESHOLD, def_value);
+                float def_value = (float) PatternRecognitionPhone.default_postImpactThreshold;
+                PreferencesHelper.putFloat(PatternRecognitionPhone.POST_IMPACT_THRESHOLD, def_value);
                 mPoITEdit.setText(String.valueOf(def_value));
             }
         });
