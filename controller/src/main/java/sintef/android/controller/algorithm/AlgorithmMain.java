@@ -106,12 +106,12 @@ public class AlgorithmMain {
     */
     public void onEvent(SensorAlgorithmPack pack)
     {
-        boolean isFall;
+        boolean isFall = false;
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
 
         if(algorithmChoice == AlgorithmsToChoose.All){isFall = PatternRecognitionPhone.isFall(pack);}
         else if(algorithmChoice == AlgorithmsToChoose.PhonePatternRecognition){isFall = PatternRecognitionPhone.isFall(pack);}
-        //else if(algorithmChoice == AlgorithmsToChoose.PhoneThreshold){isFall = AlgorithmPhone.isFall(pack);}
+        else if(algorithmChoice == AlgorithmsToChoose.PhoneThreshold){isFall = AlgorithmPhone.isFall(pack);}
 
 
         //TODO: better way to check if the watch is connected or not
@@ -171,13 +171,14 @@ public class AlgorithmMain {
         }
 
         if (DEBUG) Log.w(TAG, "?FALL?: is fall = " + String.valueOf(isFall).toUpperCase());
+        */
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
                 EventBus.getDefault().post(EventTypes.FALL_DETECTED);
             }
 
             EventBus.getDefault().post(EventTypes.FALL_DETECTED_FOR_RECORDING);
-        }*/
+        }
     }
 
     public static AlgorithmMain getsAlgorithmMain() {

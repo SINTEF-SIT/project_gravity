@@ -15,8 +15,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 /**
  * Created by Andreas on 10.02.2015.
  */
-public class AlgorithmPhone implements AlgorithmInterface
-{
+public class AlgorithmPhone implements AlgorithmInterface{
     public static final String TOTAL_ACCELEROMETER_THRESHOLD = "tot_acc_thr";
     public static final String VERTICAL_ACCELEROMETER_THRESHOLD = "ver_acc_thr";
     public static final String ACCELEROMETER_COMPARISON_THRESHOLD = "acc_comp_thr";
@@ -43,11 +42,10 @@ public class AlgorithmPhone implements AlgorithmInterface
             switch (entry.getKey().getSensorDevice()) {
                 case PHONE:
                     switch (entry.getKey().getSensorType()) {
-                        case Sensor.TYPE_LINEAR_ACCELERATION:
-                            for (int i = 0; i < entry.getValue().size(); i++)
-                            {
-                                accData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
-                            }
+                        case Sensor.TYPE_LINEAR_ACCELERATION:{
+                            accData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                        }
+                        for (int i = 0; i < entry.getValue().size(); i++)
                             break;
                         case Sensor.TYPE_ROTATION_VECTOR:
                             for (int i = 0; i < entry.getValue().size(); i++) {
@@ -68,7 +66,7 @@ public class AlgorithmPhone implements AlgorithmInterface
         return ThresholdAlgorithm(accData, rotData, geoRotVecData);
     }
 
-    public boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
+    public static boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
         return ThresholdAlgorithm(accData, rotData, geoRotVecData);
     }
 
@@ -87,7 +85,7 @@ public class AlgorithmPhone implements AlgorithmInterface
             SensorManager.getOrientation(rotationMatrix, degs);
             tetaY = degs[2];
             tetaZ = degs[0];
-            
+
             if (calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ)){
                 return true;
             }
@@ -95,18 +93,15 @@ public class AlgorithmPhone implements AlgorithmInterface
         return false;
     }
 
-    private static boolean calculateThresholdAlgorithm(double x, double y, double z, double tetaY, double tetaZ)
-    {
+    private static boolean calculateThresholdAlgorithm(double x, double y, double z, double tetaY, double tetaZ){
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
         //System.out.println(totalAcceleration + "was here" + "total");
         System.out.println(verticalAcceleration + "was here" + "vertical");
         /*EventBus.getDefault().post(new RecordEvent(verticalAcceleration, totalAcceleration));*/
 
-        if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold())
-        {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold())
-            {
+        if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold()){
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold()){
                 return true;
             }
         }
@@ -117,12 +112,8 @@ public class AlgorithmPhone implements AlgorithmInterface
     {
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
-        if (totalAcceleration >= testtotAccThreshold && verticalAcceleration >= testverticalAccThreshold)
-        {
-            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= testaccComparisonThreshold)
-            {
-                return true;
-            }
+        if (totalAcceleration >= testtotAccThreshold && verticalAcceleration >= testverticalAccThreshold){
+            if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= testaccComparisonThreshold) {return true;}
         }
         return false;
     }
@@ -291,22 +282,18 @@ public class AlgorithmPhone implements AlgorithmInterface
     }*/
 
 
-    public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold)
-    {
+    public static boolean isPhoneVertical(double priorAngle, double postAngle, double angleThreshold){
         return postAngle - priorAngle >= angleThreshold;
     }
-    private static double verticalComparedToTotal(double vertical, double total)
-    {
+    private static double verticalComparedToTotal(double vertical, double total){
         return vertical/total;
     }
     //Calculates total acceleration at one point
-    private static double accelerationTotal(double x, double y, double z)
-    {
+    private static double accelerationTotal(double x, double y, double z){
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
     }
     //calculates vertical acceleration at one point
-    private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ)
-    {
+    private static double verticalAcceleration(double x, double y, double z, double tetaY, double tetaZ){
         return Math.abs(x*Math.sin(tetaZ) + y*Math.sin(tetaY) - z*Math.cos(tetaY)*Math.cos(tetaZ));
     }
     public static double getTotAccThreshold() {

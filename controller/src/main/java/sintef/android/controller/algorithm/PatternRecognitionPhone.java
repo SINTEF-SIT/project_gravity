@@ -51,8 +51,7 @@ public class PatternRecognitionPhone {
                 case PHONE:
                     switch (entry.getKey().getSensorType()) {
                         case Sensor.TYPE_LINEAR_ACCELERATION:
-                            for (int i = 0; i < entry.getValue().size(); i++)
-                            {
+                            for (int i = 0; i < entry.getValue().size(); i++){
                                 accelerometerData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
                             }
                             break;
@@ -116,7 +115,7 @@ public class PatternRecognitionPhone {
     */
     private static boolean impactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration){
         double currentAcceleration;
-//iterating from toppoint to see if there is a big deacceleration after it.
+        //iterating from toppoint to see if there is a big deacceleration after it.
         for (int i = index+1; i <= index+iterations; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
             if (currentAcceleration*getImpactThreshold() <= maxAcceleration){
@@ -128,7 +127,7 @@ public class PatternRecognitionPhone {
     //FOR TESTING PURPOSES
     public static boolean impactPattern(List<LinearAccelerationData> accelerometerData, int index, int iterations,double maxAcceleration, double TESTimpactThreshold){
         double currentAcceleration;
-//iterating from toppoint to see if there is a big deacceleration after it.
+        //iterating from toppoint to see if there is a big deacceleration after it.
         for (int i = index+1; i <= index+iterations; i++){
             currentAcceleration = accelerationTotal(accelerometerData.get(i).getX(), accelerometerData.get(i).getY(), accelerometerData.get(i).getZ());
             if (currentAcceleration*TESTimpactThreshold <= maxAcceleration){
@@ -220,8 +219,7 @@ public class PatternRecognitionPhone {
         return false;
     }
 
-    private static double accelerationTotal(double x, double y, double z)
-    {
+    private static double accelerationTotal(double x, double y, double z){
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
     }
 
