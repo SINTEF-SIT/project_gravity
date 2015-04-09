@@ -42,10 +42,10 @@ public class AlgorithmPhone implements AlgorithmInterface{
             switch (entry.getKey().getSensorDevice()) {
                 case PHONE:
                     switch (entry.getKey().getSensorType()) {
-                        case Sensor.TYPE_LINEAR_ACCELERATION:{
-                            accData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
-                        }
-                        for (int i = 0; i < entry.getValue().size(); i++)
+                        case Sensor.TYPE_LINEAR_ACCELERATION:
+                            for (int i = 0; i < entry.getValue().size(); i++){
+                                accData.add((LinearAccelerationData) entry.getValue().get(i).getSensorData());
+                            }
                             break;
                         case Sensor.TYPE_ROTATION_VECTOR:
                             for (int i = 0; i < entry.getValue().size(); i++) {
