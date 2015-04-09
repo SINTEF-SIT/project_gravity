@@ -13,22 +13,19 @@ import sintef.android.controller.sensor.data.LinearAccelerationData;
 /**
  * Created by araneae on 09.02.15.
  */
-public class AlgorithmWatch implements AlgorithmInterface
-{
+public class AlgorithmWatch implements AlgorithmInterface{
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 1; //20
 
     //Calculate the acceleration.
-    private static double fallIndex(List<LinearAccelerationData> sensors, int startList)
-    {
+    private static double fallIndex(List<LinearAccelerationData> sensors, int startList){
 
         List <Double> x = new ArrayList<>();
         List <Double> y = new ArrayList<>();
         List <Double> z = new ArrayList<>();
         int startValue = startList;
 
-        for (LinearAccelerationData xyz : sensors)
-        {
+        for (LinearAccelerationData xyz : sensors){
             x.add((double) xyz.getX());
             y.add((double) xyz.getY());
             z.add((double) xyz.getZ());
@@ -42,10 +39,8 @@ public class AlgorithmWatch implements AlgorithmInterface
         double directionAcceleration = 0;
         double totAcceleration = 0;
 
-        for (int i = 0; i < sensorData.size(); i++)
-        {
-            for (int j = startValue; j < sensorData.get(i).size(); j++)
-            {
+        for (int i = 0; i < sensorData.size(); i++){
+            for (int j = startValue; j < sensorData.get(i).size(); j++){
                 directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
             }
             totAcceleration += directionAcceleration;
@@ -54,8 +49,9 @@ public class AlgorithmWatch implements AlgorithmInterface
         return Math.sqrt(totAcceleration);
     }
     //Recognize fall pattern, and decide if there is a fall or not
-    public static boolean thresholdAlgorithmWatch(List<LinearAccelerationData> sensors)
-    {
+    public static boolean thresholdAlgorithmWatch(List<LinearAccelerationData> sensors){
+        if (sensors.size() == 0) {return true;}
+
         double accelerationData;
         int startList = 1;
 

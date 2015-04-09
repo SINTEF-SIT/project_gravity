@@ -109,7 +109,7 @@ public class AlgorithmMain {
         boolean isFall;
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
 
-        if(algorithmChoice == AlgorithmsToChoose.All){isFall = PatternRecognitionPhone.isFall(pack);}
+        if(algorithmChoice == AlgorithmsToChoose.All){isFall = PatternRecognitionPhone.isFall(pack) && PatternRecognitionWatch.isFall(pack);}
         else if(algorithmChoice == AlgorithmsToChoose.PhonePatternRecognition){isFall = PatternRecognitionPhone.isFall(pack);}
         //else if(algorithmChoice == AlgorithmsToChoose.PhoneThreshold){isFall = AlgorithmPhone.isFall(pack);}
 
