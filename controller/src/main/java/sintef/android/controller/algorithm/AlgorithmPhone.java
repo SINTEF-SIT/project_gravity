@@ -87,8 +87,10 @@ public class AlgorithmPhone implements AlgorithmInterface
             SensorManager.getOrientation(rotationMatrix, degs);
             tetaY = degs[2];
             tetaZ = degs[0];
-
-            return calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ);
+            
+            if (calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ)){
+                return true;
+            }
         }
         return false;
     }
