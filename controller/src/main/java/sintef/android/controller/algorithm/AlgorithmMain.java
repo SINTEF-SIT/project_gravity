@@ -102,7 +102,7 @@ public class AlgorithmMain {
     }
     */
     public void onEvent(SensorAlgorithmPack pack){
-        boolean isFall;
+        boolean isFall = false;
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
 
         if(algorithmChoice == AlgorithmsToChoose.All){
@@ -171,13 +171,14 @@ public class AlgorithmMain {
         }
 
         if (DEBUG) Log.w(TAG, "?FALL?: is fall = " + String.valueOf(isFall).toUpperCase());
+        */
         if (isFall) {
             if (PreferencesHelper.isFallDetectionEnabled()) {
                 EventBus.getDefault().post(EventTypes.FALL_DETECTED);
             }
 
             EventBus.getDefault().post(EventTypes.FALL_DETECTED_FOR_RECORDING);
-        }*/
+        }
     }
 
     public static AlgorithmMain getsAlgorithmMain() {
