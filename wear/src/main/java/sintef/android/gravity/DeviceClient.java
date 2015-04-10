@@ -96,6 +96,7 @@ public class DeviceClient {
                 break;
             case ClientPaths.MODE_PUSH:
                 sendSensorData(session, sensorType, accuracy, timestamp, values);
+                Log.w(TAG, "Pushing sensor data");
                 break;
             default:
                 break;
@@ -114,6 +115,7 @@ public class DeviceClient {
             @Override
             public void run() {
                 try {
+                    Log.w(TAG, "executing thread to send sensor data");
                     sendSensorDataInBackground(session, sensorType, accuracy, timestamp, values);
                 } catch (Exception e) {
                     Log.w("DC", e);
@@ -132,6 +134,7 @@ public class DeviceClient {
 
         PutDataRequest putDataRequest = dataMap.asPutDataRequest();
         send(putDataRequest);
+        Log.w(TAG, "Starting to send sensor data");
     }
 
     private boolean validateConnection() {
