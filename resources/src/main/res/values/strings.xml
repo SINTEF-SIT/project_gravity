@@ -10,8 +10,9 @@
     <string name="action_ken">Next of kin</string
         >
     <string name="advanced_activity">Advanced</string>
-    <string name="advanced_became">Advanced mode enabled. Access it using the overflow menu on the top right</string>
-    <string name="advanced_away_from">You're %d steps away from advanced mode</string>
+    <string name="advanced_became">Advanced mode enabled. Access it using the overflow menu on the top right.</string>
+    <string name="advanced_away_from">You\'re %d steps away from advanced mode.</string>
+    <string name="advanced_removed">Advanced mode removed.</string>
     <string name="advanced_activity_detection_switch">Alarm</string>
 
     <string name="fragment_graph">Graph</string>

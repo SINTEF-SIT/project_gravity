@@ -187,6 +187,10 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_advanced_remove:
                 PreferencesHelper.putBoolean(ADVANCED_MENU_AVAILABLE, false);
                 invalidateOptionsMenu();
+
+                if (sToast != null) sToast.cancel();
+                sToast = Toast.makeText(getApplicationContext(), R.string.advanced_removed, Toast.LENGTH_SHORT);
+                sToast.show();
                 return true;
             case R.id.action_about:
                 return true;
