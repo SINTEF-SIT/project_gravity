@@ -2,9 +2,7 @@ package sintef.android.gravity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.Vibrator;
 import android.view.WindowManager;
 
@@ -17,13 +15,20 @@ public class AlarmActivity extends Activity {
 
     private AlarmView mAlarmView;
 
-    private static PowerManager.WakeLock mWakeLock;
     private static Vibrator mVibrator;
     private RemoteSensorManager mRemoteSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getExtras() == null) return;
+
+        boolean runAlarm = getIntent().getExtras().containsKey(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM) && getIntent().getExtras().getBoolean(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM);
+
+        if (!runAlarm) {
+            finish();
+            return;
+        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -39,7 +44,7 @@ public class AlarmActivity extends Activity {
             @Override
             public void onStop() {
                 mRemoteSensorManager.stopAlarm();
-                stopAlarmActivity();
+                finish();
             }
         });
         mAlarmView.setStrokeWidth(14);
@@ -56,31 +61,11 @@ public class AlarmActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (getIntent().getExtras() == null) return;
-
-        boolean runAlarm = getIntent().getExtras().containsKey(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM) && getIntent().getExtras().getBoolean(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM);
-        if (!runAlarm) {
-            stopAlarmActivity();
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-    }
-
-    private void stopAlarmActivity() {
-        finish();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         if (mVibrator != null) mVibrator.cancel();
         EventBus.getDefault().unregister(this);
+        mAlarmView = null;
     }
 
     @Override
@@ -88,6 +73,7 @@ public class AlarmActivity extends Activity {
         super.onDestroy();
         if (mVibrator != null) mVibrator.cancel();
         EventBus.getDefault().unregister(this);
+        mAlarmView = null;
     }
 
     public void onEvent(int progress) {
