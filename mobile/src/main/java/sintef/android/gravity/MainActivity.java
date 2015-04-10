@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -96,11 +95,11 @@ public class MainActivity extends ActionBarActivity {
             if (sToast != null) sToast.cancel();
             String message = "";
             if (mClickCount >= ADVANCED_MENU_CLICK_MAX) {
-                message = "Advanced mode enabled. Access it using the overflow menu on the top right.";
+                message = getString(R.string.advanced_became);
                 PreferencesHelper.putBoolean(ADVANCED_MENU_AVAILABLE, true);
                 invalidateOptionsMenu();
             } else {
-                message = "You're " + (ADVANCED_MENU_CLICK_MAX -mClickCount) + " steps away from advanced mode";
+                message = String.format(getString(R.string.advanced_away_from), ADVANCED_MENU_CLICK_MAX - mClickCount);
             }
             sToast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
             sToast.show();
@@ -130,28 +129,24 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.wtf("MAIN ACTIVITY", "onResume");
         EventBus.getDefault().post(EventTypes.ONRESUME);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.wtf("MAIN ACTIVITY", "onPause");
         EventBus.getDefault().post(EventTypes.ONPAUSE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.wtf("MAIN ACTIVITY", "onStop");
         EventBus.getDefault().post(EventTypes.ONSTOP);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.wtf("MAIN ACTIVITY", "onDestroy");
         EventBus.getDefault().post(EventTypes.ONDESTROY);
 
         startActivity(new Intent(this, this.getClass()));
@@ -160,7 +155,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void finish() {
         super.finish();
-        Log.wtf("MAIN ACTIVITY", "finish");
         EventBus.getDefault().post(EventTypes.FINISH);
     }
 

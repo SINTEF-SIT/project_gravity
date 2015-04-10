@@ -10,6 +10,8 @@
     <string name="action_ken">Next of kin</string
         >
     <string name="advanced_activity">Advanced</string>
+    <string name="advanced_became">Advanced mode enabled. Access it using the overflow menu on the top right</string>
+    <string name="advanced_away_from">You're %d steps away from advanced mode</string>
     <string name="advanced_activity_detection_switch">Alarm</string>
 
     <string name="fragment_graph">Graph</string>
@@ -29,11 +31,13 @@
     <string name="fragment_record">Record</string>
     <string name="fragment_record_history">Record history</string>
 
+    <string name="fragment_alarm_algorithm">Algorithm: %s</string>
+    <string name="fragment_alarm_start_button">Start alarm</string>
+
     <string name="alarm_progress_disabled">No\nalarm</string>
     <string name="alarm_progress_running">Press to\nstop alarm</string>
     <string name="alarm_progress_cancelled">Alarm \nstopped</string>
     <string name="alarm_progress_done">Alarm is\nsent</string>
-    <string name="alarm_start_button">Start\nalarm</string>
 
     <string name="wizard_activity">Wizard</string>
     <string name="wizard_intro_welcome_text">Welcome to\nFall Alarm</string>
