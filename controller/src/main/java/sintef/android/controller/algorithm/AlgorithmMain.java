@@ -102,7 +102,6 @@ public class AlgorithmMain {
 
         //TODO: better way to check if the watch is connected or not
 
-
         /*boolean hasWatch = false; //RemoteSensorManager.getInstance(this.mContext).validateConnection();
         List<RotationVectorData> rotationVectorData = new ArrayList<>();
         List<MagneticFieldData> magneticFieldData = new ArrayList<>();

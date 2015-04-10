@@ -8,7 +8,6 @@ package sintef.android.gravity;
 import android.app.Notification;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.wearable.view.CardFragment;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataEvent;
@@ -101,10 +100,10 @@ public class MessageReceiverService extends WearableListenerService {
                 deviceClient.pushData();
                 break;
             case ClientPaths.START_ALARM:
-                changeAlarm(true);
+                startAlarm(true);
                 break;
             case ClientPaths.STOP_ALARM:
-                changeAlarm(false);
+                startAlarm(false);
                 break;
             case ClientPaths.ALARM_PROGRESS:
                 updateAlarmProgress(Integer.valueOf(message[2]));
@@ -112,11 +111,17 @@ public class MessageReceiverService extends WearableListenerService {
         }
     }
 
-    private synchronized void changeAlarm(boolean keep) {
+    /**
+     * Starts the AlarmActivity.class.
+     * If true, the alarm will start. If false, the alarm will stop
+     * 
+     * @param runAlarm
+     */
+    private synchronized void startAlarm(boolean runAlarm) {
         Intent alarm = new Intent(this, AlarmActivity.class);
         alarm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        alarm.putExtra("keep", keep);
+        alarm.putExtra(AlarmActivity.RUN_ALARM, runAlarm);
         Log.w("MRS", "starting activity alarm");
         startActivity(alarm);
     }
