@@ -24,7 +24,20 @@ public class SensorEventBuffer {
     }
 
     private SensorEventBuffer() {
-        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(Constants.WEAR_BUFFER_SIZE * 150));
+        /*
+        The buffer needs to hold at least two seconds worth of sensor events.
+        The frequency is set to around 25Hz as we were not able to set it any higher.
+        Therefor the size of the buffer is set to 3 * 25
+         */
+        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(3 * 25));
+    }
+
+    private SensorEventBuffer(int frequency) {
+        /*
+        Planned for the future: Get the actual maximum frequency of sensor events and
+        use this value to instantiated the buffer.
+         */
+        fifo = BufferUtils.synchronizedBuffer(new CircularFifoBuffer(3 * frequency));
     }
 
     public void addSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
