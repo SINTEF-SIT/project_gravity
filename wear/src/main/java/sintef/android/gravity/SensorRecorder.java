@@ -13,6 +13,8 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.SensorDevice;
 import sintef.android.controller.sensor.SensorLocation;
@@ -25,6 +27,9 @@ public class SensorRecorder implements SensorEventListener {
     private SensorManager mSensorManager;
     private DeviceClient client;
     private static SensorRecorder instance;
+
+    private static long time = System.currentTimeMillis();
+    private static int times_in_sek = 0;
 
     public static synchronized SensorRecorder getInstance(Context context) {
         if (instance == null) {
@@ -60,6 +65,14 @@ public class SensorRecorder implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) times_in_sek += 1;
+        if (time + 1000 <= System.currentTimeMillis() ) {
+            Log.wtf("SR", String.format("%d @ %d", times_in_sek, time));
+
+
+            time = System.currentTimeMillis();
+            times_in_sek = 0;
+        }
         client.addSensorData(mSensorGroup.get(event.sensor.getType()).getStringFromSession(), event.sensor.getType(), event.accuracy, event.timestamp, event.values);
     }
 
