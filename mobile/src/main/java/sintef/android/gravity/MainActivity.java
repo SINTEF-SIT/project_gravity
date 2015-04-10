@@ -97,6 +97,7 @@ public class MainActivity extends ActionBarActivity {
             if (mClickCount >= ADVANCED_MENU_CLICK_MAX) {
                 message = getString(R.string.advanced_became);
                 PreferencesHelper.putBoolean(ADVANCED_MENU_AVAILABLE, true);
+                EventBus.getDefault().post(EventTypes.ADVANCED_MODE_CHANGED);
                 invalidateOptionsMenu();
             } else {
                 message = String.format(getString(R.string.advanced_away_from), ADVANCED_MENU_CLICK_MAX - mClickCount);
@@ -186,6 +187,7 @@ public class MainActivity extends ActionBarActivity {
                 return true;
             case R.id.action_advanced_remove:
                 PreferencesHelper.putBoolean(ADVANCED_MENU_AVAILABLE, false);
+                EventBus.getDefault().post(EventTypes.ADVANCED_MODE_CHANGED);
                 invalidateOptionsMenu();
 
                 if (sToast != null) sToast.cancel();

@@ -26,7 +26,7 @@ import sintef.android.controller.common.Constants;
 
 public class MessageReceiverService extends WearableListenerService {
 
-    private static final String TAG = "SensorDashboard/MessageReceiverService";
+    private static final String TAG = "MessageReceiverService";
     private DeviceClient deviceClient;
     private EventBus mEventBus;
     private SensorRecorder mSensorRecorder;
@@ -43,7 +43,7 @@ public class MessageReceiverService extends WearableListenerService {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(getString(R.string.watch_notification_title));
         builder.setContentText(getString(R.string.watch_notification_text));
-        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setSmallIcon(R.drawable.ic_stat_on_blue);
         startForeground(1, builder.build());
     }
 

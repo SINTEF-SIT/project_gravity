@@ -82,7 +82,10 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateAdvancedModeElements();
+    }
 
+    private void updateAdvancedModeElements() {
         boolean advancedMenuAvailable = PreferencesHelper.getBoolean(MainActivity.ADVANCED_MENU_AVAILABLE, false);
         if (advancedMenuAvailable) {
             mAdvancedView.setVisibility(View.VISIBLE);
@@ -108,6 +111,9 @@ public class AlarmFragment extends Fragment {
             case STOP_ALARM:
                 if (mVibrator != null) mVibrator.cancel();
                 mAlarmView.stopAlarmWithoutNotify();
+                break;
+            case ADVANCED_MODE_CHANGED:
+                updateAdvancedModeElements();
                 break;
         }
     }
