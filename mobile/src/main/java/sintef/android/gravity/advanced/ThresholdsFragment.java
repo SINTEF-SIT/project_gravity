@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import sintef.android.controller.algorithm.AlgorithmPhone;
+import sintef.android.controller.algorithm.ThresholdPhone;
 import sintef.android.controller.algorithm.PatternRecognitionPhone;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.R;
@@ -56,9 +56,9 @@ public class ThresholdsFragment extends Fragment {
     }
 
     private void init() {
-        mTATEdit.setText(String.valueOf(AlgorithmPhone.getTotAccThreshold()));
-        mVATEdit.setText(String.valueOf(AlgorithmPhone.getVerticalAccThreshold()));
-        mACTEdit.setText(String.valueOf(AlgorithmPhone.getAccComparisonThreshold()));
+        mTATEdit.setText(String.valueOf(ThresholdPhone.getTotAccThreshold()));
+        mVATEdit.setText(String.valueOf(ThresholdPhone.getVerticalAccThreshold()));
+        mACTEdit.setText(String.valueOf(ThresholdPhone.getAccComparisonThreshold()));
         mITEdit.setText(String.valueOf(PatternRecognitionPhone.getImpactThreshold()));
         mPrITEdit.setText(String.valueOf(PatternRecognitionPhone.getPreImpactThreshold()));
         mPoITEdit.setText(String.valueOf(PatternRecognitionPhone.getPostImpactThreshold()));
@@ -66,15 +66,15 @@ public class ThresholdsFragment extends Fragment {
         mTATSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferencesHelper.putFloat(AlgorithmPhone.TOTAL_ACCELEROMETER_THRESHOLD, Float.valueOf(mTATEdit.getText().toString()));
+                PreferencesHelper.putFloat(ThresholdPhone.TOTAL_ACCELEROMETER_THRESHOLD, Float.valueOf(mTATEdit.getText().toString()));
             }
         });
 
         mTATReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float def_value = (float) AlgorithmPhone.default_totAccThreshold;
-                PreferencesHelper.putFloat(AlgorithmPhone.TOTAL_ACCELEROMETER_THRESHOLD, def_value);
+                float def_value = (float) ThresholdPhone.default_totAccThreshold;
+                PreferencesHelper.putFloat(ThresholdPhone.TOTAL_ACCELEROMETER_THRESHOLD, def_value);
                 mTATEdit.setText(String.valueOf(def_value));
             }
         });
@@ -82,15 +82,15 @@ public class ThresholdsFragment extends Fragment {
         mVATSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferencesHelper.putFloat(AlgorithmPhone.VERTICAL_ACCELEROMETER_THRESHOLD, Float.valueOf(mVATEdit.getText().toString()));
+                PreferencesHelper.putFloat(ThresholdPhone.VERTICAL_ACCELEROMETER_THRESHOLD, Float.valueOf(mVATEdit.getText().toString()));
             }
         });
 
         mVATReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float def_value = (float) AlgorithmPhone.default_verticalAccThreshold;
-                PreferencesHelper.putFloat(AlgorithmPhone.VERTICAL_ACCELEROMETER_THRESHOLD, def_value);
+                float def_value = (float) ThresholdPhone.default_verticalAccThreshold;
+                PreferencesHelper.putFloat(ThresholdPhone.VERTICAL_ACCELEROMETER_THRESHOLD, def_value);
                 mVATEdit.setText(String.valueOf(def_value));
             }
         });
@@ -98,15 +98,15 @@ public class ThresholdsFragment extends Fragment {
         mACTSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreferencesHelper.putFloat(AlgorithmPhone.ACCELEROMETER_COMPARISON_THRESHOLD, Float.valueOf(mACTEdit.getText().toString()));
+                PreferencesHelper.putFloat(ThresholdPhone.ACCELEROMETER_COMPARISON_THRESHOLD, Float.valueOf(mACTEdit.getText().toString()));
             }
         });
 
         mACTReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float def_value = (float) AlgorithmPhone.default_accComparisonThreshold;
-                PreferencesHelper.putFloat(AlgorithmPhone.ACCELEROMETER_COMPARISON_THRESHOLD, def_value);
+                float def_value = (float) ThresholdPhone.default_accComparisonThreshold;
+                PreferencesHelper.putFloat(ThresholdPhone.ACCELEROMETER_COMPARISON_THRESHOLD, def_value);
                 mACTEdit.setText(String.valueOf(def_value));
             }
         });

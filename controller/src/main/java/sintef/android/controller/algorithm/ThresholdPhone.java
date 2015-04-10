@@ -15,7 +15,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 /**
  * Created by Andreas on 10.02.2015.
  */
-public class AlgorithmPhone implements AlgorithmInterface{
+public class ThresholdPhone implements AlgorithmInterface {
     public static final String TOTAL_ACCELEROMETER_THRESHOLD = "tot_acc_thr";
     public static final String VERTICAL_ACCELEROMETER_THRESHOLD = "ver_acc_thr";
     public static final String ACCELEROMETER_COMPARISON_THRESHOLD = "acc_comp_thr";

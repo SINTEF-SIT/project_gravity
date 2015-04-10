@@ -1,22 +1,9 @@
 package sintef.android.controller.algorithm;
 
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.sensor.RemoteSensorManager;
-import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorSession;
-import sintef.android.controller.sensor.data.LinearAccelerationData;
-import sintef.android.controller.sensor.data.MagneticFieldData;
-import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
 //import static sintef.android.controller.algorithm.AlgorithmPhone.patternRecognition;
@@ -101,17 +88,16 @@ public class AlgorithmMain {
         return accData;
     }
     */
+
     public void onEvent(SensorAlgorithmPack pack){
         boolean isFall = false;
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
 
-        if(algorithmChoice == AlgorithmsToChoose.All){
-            PatternRecognitionPhone patternPhone = new PatternRecognitionPhone();
-            PatternRecognitionWatch patternWatch = new PatternRecognitionWatch();
-            isFall = patternPhone.isFall(pack) && patternWatch.isFall(pack);
+        for (AlgorithmInterface algorithm : algorithmChoice.getClasses()) {
+            isFall = algorithm.isFall(pack);
+
+            if (!isFall) break;
         }
-        else if(algorithmChoice == AlgorithmsToChoose.PhonePatternRecognition){isFall = PatternRecognitionPhone.isFall(pack);}
-        //else if(algorithmChoice == AlgorithmsToChoose.PhoneThreshold){isFall = AlgorithmPhone.isFall(pack);}
 
 
         //TODO: better way to check if the watch is connected or not

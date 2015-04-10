@@ -13,7 +13,7 @@ import sintef.android.controller.sensor.data.LinearAccelerationData;
 /**
  * Created by araneae on 09.02.15.
  */
-public class AlgorithmWatch implements AlgorithmInterface{
+public class ThresholdWatch implements AlgorithmInterface{
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 1; //20
 

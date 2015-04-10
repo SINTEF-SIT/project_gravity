@@ -3,15 +3,7 @@ package sintef.android.controller.tests;
 import android.test.InstrumentationTestCase;
 import java.lang.Math;
 
-import junit.framework.TestCase;
-
-import sintef.android.controller.algorithm.AlgorithmPhone;
-import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorDevice;
-import sintef.android.controller.sensor.SensorLocation;
-import sintef.android.controller.sensor.SensorSession;
-import sintef.android.controller.sensor.data.GravityData;
-import sintef.android.controller.sensor.data.SensorDataObject;
+import sintef.android.controller.algorithm.ThresholdPhone;
 
 /**
  * Created by Ole on 23.02.2015.
@@ -24,11 +16,11 @@ public class AlgorithmPhoneTest extends InstrumentationTestCase {
     }
 
     public void testAngleOfPhoneTrue (){
-        assertTrue(AlgorithmPhone.isPhoneVertical(15,90,45));
+        assertTrue(ThresholdPhone.isPhoneVertical(15, 90, 45));
     }
 
     public void testAngleOfPhoneFalse (){
-        assertFalse(AlgorithmPhone.isPhoneVertical(15,45,45));
+        assertFalse(ThresholdPhone.isPhoneVertical(15, 45, 45));
     }
 
     public void testIsFallTestTrue(){

@@ -16,7 +16,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 /**
  * Created by Andreas on 08.04.2015.
  */
-public class PatternRecognitionPhone {
+public class PatternRecognitionPhone implements AlgorithmInterface {
     public static final String IMPACT_THRESHOLD = "impact_thr";
     public static final String PRE_IMPACT_THRESHOLD = "pre_impact_thr";
     public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";
@@ -41,7 +41,7 @@ public class PatternRecognitionPhone {
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     Main pattern recognition method*/
-    public static boolean isFall(SensorAlgorithmPack pack){
+    public boolean isFall(SensorAlgorithmPack pack){
         //BEGIN unpacking sensorpack
         List<LinearAccelerationData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotData = new ArrayList<>();
@@ -72,7 +72,7 @@ public class PatternRecognitionPhone {
         //END unpacking sensorpack
 
         //Hvis threshold algoritme sier det ikke er fall, kalles ikke patternRecognition
-        if (!AlgorithmPhone.isFall(accelerometerData, rotData, geoRotVecData) ){return false;}
+        if (!ThresholdPhone.isFall(accelerometerData, rotData, geoRotVecData) ){return false;}
 
         double maxAcceleration = 0;
         double currentAcceleration;
