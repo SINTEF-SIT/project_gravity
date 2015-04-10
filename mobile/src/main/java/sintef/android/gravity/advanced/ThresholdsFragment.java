@@ -6,13 +6,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import sintef.android.controller.algorithm.ThresholdPhone;
+import sintef.android.controller.algorithm.AlgorithmsToChoose;
 import sintef.android.controller.algorithm.PatternRecognitionPhone;
+import sintef.android.controller.algorithm.ThresholdPhone;
+import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.R;
 
@@ -21,6 +25,8 @@ import sintef.android.gravity.R;
  */
 public class ThresholdsFragment extends Fragment {
 
+    @InjectView(R.id.algorithm_choice)  Spinner mAlgorithmChoice;
+    @InjectView(R.id.algorithm_save)    Button mAlgorithmSave;
     @InjectView(R.id.tat_edit)          EditText mTATEdit;
     @InjectView(R.id.tat_reset)         Button mTATReset;
     @InjectView(R.id.tat_save)          Button mTATSave;
@@ -56,6 +62,29 @@ public class ThresholdsFragment extends Fragment {
     }
 
     private void init() {
+        final AlgorithmsToChoose[] data = AlgorithmsToChoose.values();
+
+        int algorithm = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
+
+        int position = 0;
+        for (AlgorithmsToChoose algorithmsToChoose : data) {
+            if (algorithmsToChoose.getId() == algorithm)
+                break;
+            position++;
+        }
+
+        ArrayAdapter<AlgorithmsToChoose> dataAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_static_item, data);
+        dataAdapter.setDropDownViewResource(R.layout.spinner_dialog_item);
+        mAlgorithmChoice.setAdapter(dataAdapter);
+        mAlgorithmChoice.setSelection(position);
+
+        mAlgorithmSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, data[mAlgorithmChoice.getSelectedItemPosition()].getId());
+            }
+        });
+
         mTATEdit.setText(String.valueOf(ThresholdPhone.getTotAccThreshold()));
         mVATEdit.setText(String.valueOf(ThresholdPhone.getVerticalAccThreshold()));
         mACTEdit.setText(String.valueOf(ThresholdPhone.getAccComparisonThreshold()));
