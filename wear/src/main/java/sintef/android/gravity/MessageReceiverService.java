@@ -114,14 +114,14 @@ public class MessageReceiverService extends WearableListenerService {
     /**
      * Starts the AlarmActivity.class.
      * If true, the alarm will start. If false, the alarm will stop
-     * 
+     *
      * @param runAlarm
      */
     private synchronized void startAlarm(boolean runAlarm) {
         Intent alarm = new Intent(this, AlarmActivity.class);
         alarm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         alarm.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        alarm.putExtra(AlarmActivity.RUN_ALARM, runAlarm);
+        alarm.putExtra(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM, runAlarm);
         Log.w("MRS", "starting activity alarm");
         startActivity(alarm);
     }
