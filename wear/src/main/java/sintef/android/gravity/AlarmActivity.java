@@ -24,15 +24,34 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
 
-    public void showAlarm() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
 
+        EventBus.getDefault().register(this);
+
+        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
+
+        mAlarmView = new AlarmView(this, R.layout.show_alarm);
+        mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
+            @Override
+            public void onStop() {
+                mRemoteSensorManager.stopAlarm();
+                stopAlarmActivity();
+            }
+        });
+        mAlarmView.setStrokeWidth(14);
+        mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
+            @Override
+            public void onAlarm() {
+                if (mVibrator != null) mVibrator.cancel();
+            }
+        });
+
         setContentView(mAlarmView);
+
         mAlarmView.startAlarm();
     }
 
@@ -42,29 +61,7 @@ public class AlarmActivity extends Activity {
         if (getIntent().getExtras() == null) return;
 
         boolean runAlarm = getIntent().getExtras().containsKey(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM) && getIntent().getExtras().getBoolean(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM);
-        if (runAlarm) {
-            if (mAlarmView == null) {
-                EventBus.getDefault().register(this);
-                mRemoteSensorManager = RemoteSensorManager.getInstance(this);
-                mAlarmView = new AlarmView(this, R.layout.show_alarm);
-                mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
-                    @Override
-                    public void onStop() {
-                        mRemoteSensorManager.stopAlarm();
-                        stopAlarmActivity();
-                    }
-                });
-                mAlarmView.setStrokeWidth(14);
-                mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
-                    @Override
-                    public void onAlarm() {
-                        if (mVibrator != null) mVibrator.cancel();
-                    }
-                });
-
-                showAlarm();
-            }
-        } else {
+        if (!runAlarm) {
             stopAlarmActivity();
         }
     }
