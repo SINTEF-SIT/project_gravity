@@ -17,6 +17,7 @@
     <string name="fragment_graph_zoom_out">Zoom out</string>
     <string name="fragment_graph_zoom_reset">Reset zoom</string>
 
+    <string name="fragment_algorithm">Algorithm</string>
     <string name="fragment_thresholds">Thresholds</string>
     <string name="fragment_thresholds_total_acc">Total accelerometer threshold</string>
     <string name="fragment_thresholds_vertical_acc">Vertical accelerometer threshold</string>

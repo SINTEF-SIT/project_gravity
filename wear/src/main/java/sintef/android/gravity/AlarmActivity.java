@@ -21,8 +21,6 @@ public class AlarmActivity extends Activity {
     private static Vibrator mVibrator;
     private RemoteSensorManager mRemoteSensorManager;
 
-    public static final String RUN_ALARM = "run_alarm";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +41,7 @@ public class AlarmActivity extends Activity {
         super.onResume();
         if (getIntent().getExtras() == null) return;
 
-        boolean runAlarm = getIntent().getExtras().containsKey(RUN_ALARM) && getIntent().getExtras().getBoolean(RUN_ALARM);
+        boolean runAlarm = getIntent().getExtras().containsKey(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM) && getIntent().getExtras().getBoolean(Constants.WATCH_ALARM_ACTIVITY_RUN_ALARM);
         if (runAlarm) {
             if (mAlarmView == null) {
                 EventBus.getDefault().register(this);

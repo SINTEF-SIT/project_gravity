@@ -4,6 +4,7 @@ import android.content.Context;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
 
 //import static sintef.android.controller.algorithm.AlgorithmPhone.patternRecognition;
@@ -91,7 +92,9 @@ public class AlgorithmMain {
 
     public void onEvent(SensorAlgorithmPack pack){
         boolean isFall = false;
-        AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.All;
+
+        int algorithmId = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
+        AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.getAlgorithm(algorithmId);
 
         for (AlgorithmInterface algorithm : algorithmChoice.getClasses()) {
             isFall = algorithm.isFall(pack);

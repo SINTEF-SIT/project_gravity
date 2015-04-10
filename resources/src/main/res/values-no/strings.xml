@@ -16,6 +16,7 @@
     <string name="fragment_graph_zoom_out">Zoom ut</string>
     <string name="fragment_graph_zoom_reset">Tilbakestill</string>
 
+    <string name="fragment_algorithm">Algoritme</string>
     <string name="fragment_thresholds">Terskler</string>
     <string name="fragment_thresholds_total_acc">Total akselerometer terskel</string>
     <string name="fragment_thresholds_vertical_acc">Vertikal akselerometer terskel</string>

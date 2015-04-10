@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import java.util.HashMap;
 import java.util.Map;
 
+import sintef.android.controller.algorithm.AlgorithmsToChoose;
 import sintef.android.controller.sensor.SensorLocation;
 
 /**
@@ -48,7 +49,14 @@ public class Constants {
     public static final int ALGORITHM_SEND_OVERLAPPING = 1000;
     public static final int ALGORITHM_SEND_AMOUNT = ALGORITHM_SEND_FREQUENCY + ALGORITHM_SEND_OVERLAPPING;
 
+
+    public static final String WATCH_ALARM_ACTIVITY_RUN_ALARM = "run_alarm";
+
     public static final String PREFS_FIRST_START = "pref_first_start";
     public static final String PREFS_NEXT_OF_KIN_NAME = "pref_next_of_kin_name";
     public static final String PREFS_NEXT_OF_KIN_TELEPHONE = "pref_next_of_kin_telephone";
+
+    public static final String PREFS_ALGORITHM = "pref_algorithm";
+    public static final int PREFS_DEFAULT_ALGORITHM = AlgorithmsToChoose.All.getId();
+
 }
