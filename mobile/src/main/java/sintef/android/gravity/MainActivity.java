@@ -59,10 +59,7 @@ public class MainActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_main);
 
-        init();
-
-        IntegrationTest test = new IntegrationTest();
-        test.runTestId1();
+        init(); 
     }
 
     private void init() {
