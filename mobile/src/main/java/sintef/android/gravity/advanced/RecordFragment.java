@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.RecordEvent;
+import sintef.android.controller.algorithm.AlgorithmsToChoose;
+import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.AccelerometerData;
@@ -113,7 +116,7 @@ public class RecordFragment extends Fragment {
     }
 
     private static Map<SensorSession, List<SensorData>> mRecordedData = new HashMap<>();
-    public List<Long> mFallDetectedAtTimes = new ArrayList<>();
+    public List<Pair<Long, String>> mFallDetectedTimeAlgorithm = new ArrayList<>();
     private Timer mTimer;
 
     private boolean mIsRecording = false;
@@ -121,11 +124,6 @@ public class RecordFragment extends Fragment {
     private boolean hasMagData = false;
     private boolean hasRotData = false;
     private boolean hasAccData = false;
-
-    private boolean thresholdPhoneTrigger;
-    private boolean patternPhoneTrigger;
-    private boolean thresholdWatchTrigger;
-    private boolean patternWatchTrigger;
 
     public void onEvent(SensorData data) {
         if (!mIsRecording) return;
@@ -176,18 +174,15 @@ public class RecordFragment extends Fragment {
 
     public void onEvent(EventTypes type) {
         if (mIsRecording && type == EventTypes.FALL_DETECTED_FOR_RECORDING) {
-            mFallDetectedAtTimes.add(System.currentTimeMillis());
+            int algorithm = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
+            String a_name = AlgorithmsToChoose.getAlgorithm(algorithm).getCorrectString();
+            mFallDetectedTimeAlgorithm.add(new Pair<Long, String>(System.currentTimeMillis(), a_name));
         }
     }
 
     private void startRecording() {
-        mFallDetectedAtTimes.clear();
+        mFallDetectedTimeAlgorithm.clear();
         mRecordedData.clear();
-
-        thresholdPhoneTrigger = false;
-        patternPhoneTrigger = false;
-        thresholdWatchTrigger = false;
-        patternWatchTrigger = false;
 
         mIsRecording = true;
         startRecordingSetViewParams();
@@ -326,10 +321,12 @@ public class RecordFragment extends Fragment {
                 */
 
                 JsonArray fallDetectedArray = new JsonArray();
-                for (Long time : mFallDetectedAtTimes) {
+                for (Pair<Long, String> pair : mFallDetectedTimeAlgorithm) {
                     JsonObject fallDetectedObject = new JsonObject();
-                    fallDetectedObject.addProperty("time", time);
+                    fallDetectedObject.addProperty("time", pair.first);
+                    fallDetectedObject.addProperty("name", pair.second);
                     fallDetectedArray.add(fallDetectedObject);
+
                 }
 
                 recordings.add("fall_detected_at_times", fallDetectedArray);
@@ -438,7 +435,7 @@ public class RecordFragment extends Fragment {
     }
 
     private void cancelRecording() {
-        mFallDetectedAtTimes.clear();
+        mFallDetectedTimeAlgorithm.clear();
         mRecordedData.clear();
         mIsRecording = false;
 
