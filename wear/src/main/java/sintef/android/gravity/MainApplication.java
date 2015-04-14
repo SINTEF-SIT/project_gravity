@@ -1,7 +1,6 @@
 package sintef.android.gravity;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 

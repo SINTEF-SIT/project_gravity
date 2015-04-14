@@ -2,6 +2,7 @@ package sintef.android.controller;
 
 import android.content.Context;
 import android.hardware.Sensor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,11 @@ import sintef.android.controller.sensor.SensorSession;
  * Created by samyboy89 on 03/02/15.
  */
 public class Controller {
+
+    public static boolean DBG = false;
+    private static boolean DBG_RATE = false;
+
+    private static String TAG = "G:CONTROLLER:C";
 
     private static Controller sController;
     private static EventBus sEventBus;
@@ -88,7 +94,7 @@ public class Controller {
 
         if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION) times_in_sek += 1;
         if (time + 1000 <= System.currentTimeMillis() ) {
-            // Log.wtf("SDPS", String.format("%d @ %d", times_in_sek, time));
+            if (DBG_RATE) Log.d(TAG, String.format("%d @ %d", times_in_sek, time));
 
             if (times_in_sek < 10) {
                 EventBus.getDefault().post(EventTypes.RESET_SENSOR_LISTENERS);

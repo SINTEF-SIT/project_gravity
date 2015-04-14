@@ -6,14 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
+import sintef.android.controller.RecordAlgorithmData;
+import sintef.android.controller.RecordEventData;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
+import sintef.android.controller.utils.PreferencesHelper;
 
 /**
  * Created by araneae on 09.02.15.
  */
-public class ThresholdWatch implements AlgorithmInterface{
+public class ThresholdWatch implements AlgorithmInterface {
+
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 1; //20
 
@@ -41,7 +47,7 @@ public class ThresholdWatch implements AlgorithmInterface{
 
         for (int i = 0; i < sensorData.size(); i++){
             for (int j = startValue; j < sensorData.get(i).size(); j++){
-                directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
+                directionAcceleration += Math.pow((Double) sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
             }
             totAcceleration += directionAcceleration;
             directionAcceleration = 0;
@@ -57,11 +63,15 @@ public class ThresholdWatch implements AlgorithmInterface{
 
         accelerationData = fallIndex(sensors, startList);
 
+        /** RECORDING - fallIndex */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_FALL_INDEX, accelerationData));
+
+
         return accelerationData >= thresholdFall;
     }
 
     @Override
-    public boolean isFall(SensorAlgorithmPack pack) {
+    public boolean isFall(long id, SensorAlgorithmPack pack) {
         List<LinearAccelerationData> accDataWatch = new ArrayList<>();
 
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
@@ -78,6 +88,12 @@ public class ThresholdWatch implements AlgorithmInterface{
             }
 
         }
-        return thresholdAlgorithmWatch(accDataWatch);
+
+        boolean isFall = thresholdAlgorithmWatch(accDataWatch);
+
+        /** RECORDING - isFall */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "watch_threshold", isFall));
+
+        return isFall;
     }
 }

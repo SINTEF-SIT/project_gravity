@@ -6,14 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
+import sintef.android.controller.RecordAlgorithmData;
+import sintef.android.controller.RecordEventData;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
+import sintef.android.controller.utils.PreferencesHelper;
 
 /**
  * Created by araneae on 09.04.15.
  */
-public class PatternRecognitionWatch implements AlgorithmInterface{
+public class PatternRecognitionWatch implements AlgorithmInterface {
+
     //TODO: get data to make the thresholds better.
     private static final double thresholdFall = 1; //20
     private static final double thresholdStill = 500; //5
@@ -46,6 +52,10 @@ public class PatternRecognitionWatch implements AlgorithmInterface{
         for (int i = 0; i < sensorData.size(); i++){
             for (int j = startValue; j < sensorData.get(i).size(); j++){
                 directionAcceleration += Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2);
+
+                /** RECORDING - directionAcceleration */
+                if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_DIRECTION_ACCELERATION, directionAcceleration));
+
                 if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > movementThreshold && startList < j){
                     startList = j;
                 }
@@ -70,15 +80,22 @@ public class PatternRecognitionWatch implements AlgorithmInterface{
         int startList = 1;
         accelerationData = fallIndex(sensors, startList);
 
+        /** RECORDING - fallIndex */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_FALL_INDEX, accelerationData.fallData));
+
         if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > atleastReadings){
             afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
+
+            /** RECORDING - stillPattern */
+            if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_AFTER_FALL, afterFallData));
+
             return afterFallData <= thresholdStill;
         }
         return false;
     }
 
     @Override
-    public boolean isFall(SensorAlgorithmPack pack) {
+    public boolean isFall(long id, SensorAlgorithmPack pack) {
         List<LinearAccelerationData> accDataWatch = new ArrayList<>();
 
         for (Map.Entry<SensorSession, List<SensorData>> entry : pack.getSensorData().entrySet()) {
@@ -95,7 +112,14 @@ public class PatternRecognitionWatch implements AlgorithmInterface{
             }
 
         }
-        return patternRecognition(accDataWatch);
+
+
+        boolean isFall = patternRecognition(accDataWatch);
+
+        /** RECORDING - isFall */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "watch_pattern_recognition", isFall));
+
+        return isFall;
     }
 
     private static class FallIndexValues{

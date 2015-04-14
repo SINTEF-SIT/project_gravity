@@ -96,8 +96,9 @@ public class AlgorithmMain {
         int algorithmId = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.getAlgorithm(algorithmId);
 
+        long id = System.currentTimeMillis();
         for (AlgorithmInterface algorithm : algorithmChoice.getClasses()) {
-            isFall = algorithm.isFall(pack);
+            isFall = algorithm.isFall(id, pack);
 
             if (!isFall) break;
         }

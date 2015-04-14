@@ -45,7 +45,6 @@ public class SensorManager implements SensorEventListener {
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         mRemoteSensorManager = RemoteSensorManager.getInstance(context);
-        mRemoteSensorManager.filterBySensorId(Constants.ALL_SENSORS_FILTER);
 
         addSensorToSystem("phone:magnetic_field", Sensor.TYPE_MAGNETIC_FIELD, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:linear_acceleration", Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
@@ -94,8 +93,9 @@ public class SensorManager implements SensorEventListener {
                 sensorDataObject = new RotationVectorData(event.values.clone());
                 break;
         }
+
         if (sensorDataObject != null)  {
-            // sensor event timestamps are time since system boot...wtf indeed long timestamp = TimeUnit.NANOSECONDS.toMillis(event.timestamp);
+            // sensor event timestamps are time since system boot
             long timestamp = (new Date()).getTime() + (event.timestamp - System.nanoTime()) / 1000000L;
             mEventBus.post(new SensorData(mSensorGroup.get(event.sensor.getType()), sensorDataObject, timestamp));
         }

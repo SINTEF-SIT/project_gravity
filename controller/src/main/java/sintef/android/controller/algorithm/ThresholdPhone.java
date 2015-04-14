@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
+import sintef.android.controller.RecordAlgorithmData;
+import sintef.android.controller.RecordEventData;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
@@ -32,7 +36,7 @@ public class ThresholdPhone implements AlgorithmInterface {
     public static final double default_postImpactThreshold = 15; //average maa vaere under denne verdien.*/
 ;
 
-    public boolean isFall(SensorAlgorithmPack pack){
+    public boolean isFall(long id, SensorAlgorithmPack pack){
         //BEGIN Unpacking sensorpack
         List<RotationVectorData> rotData = new ArrayList<>();
         List<MagneticFieldData> geoRotVecData = new ArrayList<>();
@@ -63,7 +67,12 @@ public class ThresholdPhone implements AlgorithmInterface {
         }
         //END Unpacking sensorpack
 
-        return ThresholdAlgorithm(accData, rotData, geoRotVecData);
+        boolean isFall = ThresholdAlgorithm(accData, rotData, geoRotVecData);
+
+        /** RECORDING - isFall */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "phone_threshold", isFall));
+
+        return isFall;
     }
 
     public static boolean isFall(List<LinearAccelerationData> accData, List<RotationVectorData> rotData, List<MagneticFieldData> geoRotVecData){
@@ -96,9 +105,13 @@ public class ThresholdPhone implements AlgorithmInterface {
     private static boolean calculateThresholdAlgorithm(double x, double y, double z, double tetaY, double tetaZ){
         double totalAcceleration = Math.abs(accelerationTotal(x, y, z));
         double verticalAcceleration = Math.abs(verticalAcceleration(x, y, z, tetaY, tetaZ));
-        //System.out.println(totalAcceleration + "was here" + "total");
-        System.out.println(verticalAcceleration + "was here" + "vertical");
-        /*EventBus.getDefault().post(new RecordEvent(verticalAcceleration, totalAcceleration));*/
+
+        /** RECORDING - totalAcceleration & verticalAcceleration*/
+        if (PreferencesHelper.isRecording()) {
+            EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_PHONE_TOTAL_ACCELERATION, totalAcceleration));
+            EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_PHONE_VERTICAL_ACCELERATION, verticalAcceleration));
+        }
+
 
         if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold()){
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold()){

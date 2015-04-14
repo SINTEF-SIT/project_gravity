@@ -16,6 +16,7 @@ import com.google.android.gms.wearable.WearableListenerService;
 import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
@@ -23,7 +24,8 @@ import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorSession;
 
 public class RemoteSensorService extends WearableListenerService {
-    private static final String TAG = "GRAVITY/SRS";
+
+    private static final String TAG = "G:PHONE:RSS";
 
     private RemoteSensorManager mRemoteSensorManager;
 
@@ -31,7 +33,7 @@ public class RemoteSensorService extends WearableListenerService {
     public void onCreate() {
         super.onCreate();
         mRemoteSensorManager = RemoteSensorManager.getInstance(this);
-        Wearable.MessageApi.addListener(mRemoteSensorManager.getGoogleApiClient(), this);
+        Wearable.MessageApi.addListener(mRemoteSensorManager.getWearableClient(), this);
 
     }
 
@@ -39,19 +41,19 @@ public class RemoteSensorService extends WearableListenerService {
     public void onPeerConnected(Node peer) {
         super.onPeerConnected(peer);
 
-        Log.i(TAG, "Connected: " + peer.getDisplayName() + " (" + peer.getId() + ")");
+        if (Controller.DBG) Log.i(TAG, "Connected: " + peer.getDisplayName() + " (" + peer.getId() + ")");
     }
 
     @Override
     public void onPeerDisconnected(Node peer) {
         super.onPeerDisconnected(peer);
 
-        Log.i(TAG, "Disconnected: " + peer.getDisplayName() + " (" + peer.getId() + ")");
+        if (Controller.DBG) Log.i(TAG, "Disconnected: " + peer.getDisplayName() + " (" + peer.getId() + ")");
     }
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        Log.w("MRS", "Received message: " + messageEvent.getPath());
+        if (Controller.DBG) Log.d(TAG, "Received message: " + messageEvent.getPath());
 
         switch(messageEvent.getPath()) {
             case ClientPaths.STOP_ALARM:
@@ -84,7 +86,7 @@ public class RemoteSensorService extends WearableListenerService {
         long timestamp = dataMap.getLong(Constants.TIMESTAMP);
         float[] values = dataMap.getFloatArray(Constants.VALUES);
 
-        Log.d(TAG, "Received sensor data " + session.getSensorType() + " = " + Arrays.toString(values));
+        if (Controller.DBG) Log.d(TAG, "Received sensor data " + session.getSensorType() + " = " + Arrays.toString(values));
 
         mRemoteSensorManager.addSensorData(session, accuracy, timestamp, values);
     }

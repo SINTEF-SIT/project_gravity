@@ -44,6 +44,7 @@ public class PreferencesHelper {
     }
 
     public static final String FALL_DETECTION_ENABLED = "fall_detection_enabled";
+    public static final String RECORDING_ENABLED = "recording_enabled";
 
     public static boolean isFallDetectionEnabled() {
         return PreferencesHelper.getBoolean(FALL_DETECTION_ENABLED, true);
@@ -205,5 +206,9 @@ public class PreferencesHelper {
 
     public static void unregisterOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener l) {
         preferences.unregisterOnSharedPreferenceChangeListener(l);
+    }
+
+    public static boolean isRecording() {
+        return getBoolean(RECORDING_ENABLED, false);
     }
 }

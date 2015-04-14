@@ -6,9 +6,7 @@ package sintef.android.gravity;
  */
 
 import android.content.Context;
-import android.hardware.SensorEvent;
 import android.util.Log;
-import android.util.SparseLongArray;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,20 +16,22 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import sintef.android.controller.Controller;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.data.SensorDataObject;
 
 public class DeviceClient {
-    private static final String TAG = Constants.TAG_WEAR;
-    private static final int CLIENT_CONNECTION_TIMEOUT = Constants.CLIENT_CONNECTION_TIMEOUT;
+
+    private static final String TAG = "G:WEAR:DC";
+
     private String mode = ClientPaths.MODE_PUSH;
     private SensorEventBuffer mSensorEventBuffer;
+    private GoogleApiClient mWearableClient;
+    private ExecutorService mExecutor;
 
     public static DeviceClient instance;
 
@@ -42,28 +42,10 @@ public class DeviceClient {
         return instance;
     }
 
-    private Context context;
-    private GoogleApiClient googleApiClient;
-    private ExecutorService executorService;
-    private int filterId;
-
-    private SparseLongArray lastSensorData;
-
     private DeviceClient(Context context) {
-        this.context = context;
-
-        googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
-
-        executorService = Executors.newCachedThreadPool();
-        lastSensorData = new SparseLongArray();
-
+        mWearableClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
+        mExecutor = Executors.newCachedThreadPool();
         mSensorEventBuffer = SensorEventBuffer.getInstance();
-    }
-
-    public void setSensorFilter(int filterId) {
-        Log.d(TAG, "Now filtering by sensor: " + filterId);
-
-        this.filterId = filterId;
     }
 
     public void setMode(String mode) {
@@ -96,7 +78,7 @@ public class DeviceClient {
                 break;
             case ClientPaths.MODE_PUSH:
                 sendSensorData(session, sensorType, accuracy, timestamp, values);
-                Log.w(TAG, "Pushing sensor data");
+                if (Controller.DBG) Log.w(TAG, "Pushing sensor data");
                 break;
             default:
                 break;
@@ -104,21 +86,14 @@ public class DeviceClient {
     }
 
     public void sendSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
-        long t = System.currentTimeMillis();
-
-        long lastTimestamp = lastSensorData.get(sensorType);
-        long timeAgo = t - lastTimestamp;
-
-        lastSensorData.put(sensorType, t);
-
-        executorService.submit(new Runnable() {
+        mExecutor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Log.w(TAG, "executing thread to send sensor data");
+                    if (Controller.DBG) Log.w(TAG, "executing thread to send sensor data");
                     sendSensorDataInBackground(session, sensorType, accuracy, timestamp, values);
                 } catch (Exception e) {
-                    Log.w("DC", e);
+                    e.printStackTrace();
                 }
             }
         });
@@ -134,25 +109,25 @@ public class DeviceClient {
 
         PutDataRequest putDataRequest = dataMap.asPutDataRequest();
         send(putDataRequest);
-        Log.w(TAG, "Starting to send sensor data");
+        if (Controller.DBG) Log.w(TAG, "Starting to send sensor data");
     }
 
     private boolean validateConnection() {
-        if (googleApiClient.isConnected()) {
+        if (mWearableClient.isConnected()) {
             return true;
         }
 
-        ConnectionResult result = googleApiClient.blockingConnect(CLIENT_CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
+        ConnectionResult result = mWearableClient.blockingConnect(Constants.CLIENT_CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
 
         return result.isSuccess();
     }
 
     private synchronized void send(PutDataRequest putDataRequest) {
         if (validateConnection()) {
-            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            Wearable.DataApi.putDataItem(mWearableClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
                 @Override
                 public void onResult(DataApi.DataItemResult dataItemResult) {
-                    Log.v(TAG, "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
+                    if (Controller.DBG) Log.v(TAG, "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
                 }
             });
         }

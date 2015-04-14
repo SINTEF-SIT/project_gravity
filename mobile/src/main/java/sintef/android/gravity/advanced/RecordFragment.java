@@ -1,11 +1,9 @@
 package sintef.android.gravity.advanced;
 
-import android.hardware.Sensor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,27 +22,16 @@ import com.google.gson.JsonObject;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.EventTypes;
-import sintef.android.controller.RecordEvent;
-import sintef.android.controller.algorithm.AlgorithmsToChoose;
-import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.SensorData;
-import sintef.android.controller.sensor.SensorSession;
-import sintef.android.controller.sensor.data.AccelerometerData;
-import sintef.android.controller.sensor.data.GravityData;
-import sintef.android.controller.sensor.data.GyroscopeData;
-import sintef.android.controller.sensor.data.LinearAccelerationData;
-import sintef.android.controller.sensor.data.MagneticFieldData;
-import sintef.android.controller.sensor.data.RotationVectorData;
+import sintef.android.controller.RecordAlgorithmData;
+import sintef.android.controller.RecordEventData;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.R;
 import sintef.android.gravity.wizard.FloatingHintEditText;
@@ -54,7 +41,6 @@ import sintef.android.gravity.wizard.FloatingHintEditText;
  */
 public class RecordFragment extends Fragment {
 
-    // TEST_ID, FALL_NR, DATA, TID, FALL
     @InjectView(R.id.button_bar)                LinearLayout mButtonBar;
     @InjectView(R.id.send_button)               Button mSendButton;
     @InjectView(R.id.cancel_button)             Button mCancelButton;
@@ -92,7 +78,7 @@ public class RecordFragment extends Fragment {
         mRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mIsRecording) {
+                if (!PreferencesHelper.isRecording()) {
                     startRecording();
                 } else {
                     stopRecording();
@@ -115,76 +101,29 @@ public class RecordFragment extends Fragment {
         });
     }
 
-    private static Map<SensorSession, List<SensorData>> mRecordedData = new HashMap<>();
-    public List<Pair<Long, String>> mFallDetectedTimeAlgorithm = new ArrayList<>();
     private Timer mTimer;
 
-    private boolean mIsRecording = false;
+    private List<RecordEventData> mRecordEvents = new ArrayList<>();
+    public List<RecordAlgorithmData> mRecordAlgorithm = new ArrayList<>();
 
-    private boolean hasMagData = false;
-    private boolean hasRotData = false;
-    private boolean hasAccData = false;
 
-    public void onEvent(SensorData data) {
-        if (!mIsRecording) return;
+    public void onEvent(RecordEventData recording) {
+        if (!PreferencesHelper.isRecording()) return;
+        mRecordEvents.add(recording);
 
-        if (!mRecordedData.containsKey(data.getSensorSession())) {
-            mRecordedData.put(data.getSensorSession(), new ArrayList<SensorData>());
-        }
-
-        /*
-        if (data.getSensorSession().getSensorDevice() == SensorDevice.PHONE) {
-            if (data.getSensorSession().getSensorType() == Sensor.TYPE_MAGNETIC_FIELD && !hasMagData) {
-                mRecordedData.get(data.getSensorSession()).add(data);
-                if (hasAccData && hasRotData) {
-                    hasAccData = false;
-                    hasRotData = false;
-                } else {
-                    hasMagData = true;
-                }
-            } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION && !hasAccData) {
-                mRecordedData.get(data.getSensorSession()).add(data);
-                if (hasMagData && hasRotData) {
-                    hasMagData = false;
-                    hasRotData = false;
-                } else {
-                    hasAccData = true;
-                }
-            } else if (data.getSensorSession().getSensorType() == Sensor.TYPE_ROTATION_VECTOR && !hasRotData) {
-                mRecordedData.get(data.getSensorSession()).add(data);
-                if (hasMagData && hasAccData) {
-                    hasMagData = false;
-                    hasAccData = false;
-                } else {
-                    hasRotData = true;
-                }
-            }
-        } else {
-            mRecordedData.get(data.getSensorSession()).add(data);
-        }*/
-
-        mRecordedData.get(data.getSensorSession()).add(data);
     }
 
-    private List<RecordEvent> mEvents = new ArrayList<>();
-
-    public void onEvent(RecordEvent event) {
-        mEvents.add(event);
-    }
-
-    public void onEvent(EventTypes type) {
-        if (mIsRecording && type == EventTypes.FALL_DETECTED_FOR_RECORDING) {
-            int algorithm = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
-            String a_name = AlgorithmsToChoose.getAlgorithm(algorithm).getCorrectString();
-            mFallDetectedTimeAlgorithm.add(new Pair<Long, String>(System.currentTimeMillis(), a_name));
-        }
+    public void onEvent(RecordAlgorithmData recording) {
+        if (!PreferencesHelper.isRecording()) return;
+        mRecordAlgorithm.add(recording);
     }
 
     private void startRecording() {
-        mFallDetectedTimeAlgorithm.clear();
-        mRecordedData.clear();
+        PreferencesHelper.putBoolean(PreferencesHelper.RECORDING_ENABLED, true);
 
-        mIsRecording = true;
+        mRecordEvents.clear();
+        mRecordAlgorithm.clear();
+
         startRecordingSetViewParams();
 
         if (mTimer != null) mTimer.cancel();
@@ -206,10 +145,11 @@ public class RecordFragment extends Fragment {
     }
 
     private void stopRecording() {
-        mIsRecording = false;
+        PreferencesHelper.putBoolean(PreferencesHelper.RECORDING_ENABLED, false);
         stopRecordingSetViewParams();
         mTimer.cancel();
     }
+
 
     private void sendRecording() {
         sendRecordingSetViewParams();
@@ -222,95 +162,50 @@ public class RecordFragment extends Fragment {
                 String id = mTestIdInput.getText().toString();
                 recordings.addProperty("test_id", id);
 
-                JsonObject sensorData = new JsonObject();
+                JsonObject calculations = new JsonObject();
 
-                for (Map.Entry<SensorSession, List<SensorData>> entry : mRecordedData.entrySet()) {
-                    JsonArray sensorDataArray = new JsonArray();
-                    switch (entry.getKey().getSensorType()) {
-                        case Sensor.TYPE_ACCELEROMETER:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                SensorData data = entry.getValue().get(i);
-                                AccelerometerData accData = (AccelerometerData) data.getSensorData();
-                                JsonObject accelerometerObject = new JsonObject();
-                                accelerometerObject.addProperty("time", data.getTimeCaptured());
-                                accelerometerObject.addProperty("x", accData.getX());
-                                accelerometerObject.addProperty("y", accData.getY());
-                                accelerometerObject.addProperty("z", accData.getZ());
-                                sensorDataArray.add(accelerometerObject);
-                            }
+                JsonArray phoneVerticalAcceleration = new JsonArray();
+                JsonArray phoneTotalAcceleration = new JsonArray();
+                JsonArray watchFallIndex = new JsonArray();
+                JsonArray watchDirectionAcceleration = new JsonArray();
+                JsonArray watchAfterFall = new JsonArray();
+
+                for (RecordEventData entry : mRecordEvents) {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("time", entry.time);
+                    object.addProperty("value", entry.value);
+
+                    switch (entry.type) {
+                        case RECORDING_PHONE_VERTICAL_ACCELERATION:
+                            phoneVerticalAcceleration.add(object);
                             break;
-                        case Sensor.TYPE_ROTATION_VECTOR:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                SensorData data = entry.getValue().get(i);
-                                RotationVectorData rotData = (RotationVectorData) data.getSensorData();
-                                JsonObject rotationVectorObject = new JsonObject();
-                                rotationVectorObject.addProperty("time", data.getTimeCaptured());
-                                rotationVectorObject.addProperty("x", rotData.getX());
-                                rotationVectorObject.addProperty("y", rotData.getY());
-                                rotationVectorObject.addProperty("z", rotData.getZ());
-                                rotationVectorObject.addProperty("cos", rotData.getCos());
-                                rotationVectorObject.addProperty("eha", rotData.getEstimatedHeadingAccuracy());
-                                sensorDataArray.add(rotationVectorObject);
-                            }
+                        case RECORDING_PHONE_TOTAL_ACCELERATION:
+                            phoneTotalAcceleration.add(object);
                             break;
-                        case Sensor.TYPE_MAGNETIC_FIELD:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                SensorData data = entry.getValue().get(i);
-                                MagneticFieldData magData = (MagneticFieldData) data.getSensorData();
-                                JsonObject magneticFieldObject = new JsonObject();
-                                magneticFieldObject.addProperty("time", data.getTimeCaptured());
-                                magneticFieldObject.addProperty("x", magData.getX());
-                                magneticFieldObject.addProperty("y", magData.getY());
-                                magneticFieldObject.addProperty("z", magData.getZ());
-                                sensorDataArray.add(magneticFieldObject);
-                            }
+                        case RECORDING_WATCH_FALL_INDEX:
+                            watchFallIndex.add(object);
                             break;
-                        case Sensor.TYPE_GYROSCOPE:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                SensorData data = entry.getValue().get(i);
-                                GyroscopeData gyrData = (GyroscopeData) data.getSensorData();
-                                JsonObject gyroscopeObject = new JsonObject();
-                                gyroscopeObject.addProperty("time", data.getTimeCaptured());
-                                gyroscopeObject.addProperty("x", gyrData.getX());
-                                gyroscopeObject.addProperty("y", gyrData.getY());
-                                gyroscopeObject.addProperty("z", gyrData.getZ());
-                                sensorDataArray.add(gyroscopeObject);
-                            }
+                        case RECORDING_WATCH_DIRECTION_ACCELERATION:
+                            watchDirectionAcceleration.add(object);
                             break;
-                        case Sensor.TYPE_GRAVITY:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                SensorData data = entry.getValue().get(i);
-                                GravityData graData = (GravityData) data.getSensorData();
-                                JsonObject gravityObject = new JsonObject();
-                                gravityObject.addProperty("time", data.getTimeCaptured());
-                                gravityObject.addProperty("x", graData.getX());
-                                gravityObject.addProperty("y", graData.getY());
-                                gravityObject.addProperty("z", graData.getZ());
-                                sensorDataArray.add(gravityObject);
-                            }
-                            break;
-                        case Sensor.TYPE_LINEAR_ACCELERATION:
-                            for (int i = 0; i < entry.getValue().size(); i++) {
-                                SensorData data = entry.getValue().get(i);
-                                LinearAccelerationData linearAccData = (LinearAccelerationData) data.getSensorData();
-                                JsonObject linearAccObject = new JsonObject();
-                                linearAccObject.addProperty("time", data.getTimeCaptured());
-                                linearAccObject.addProperty("x", linearAccData.getX());
-                                linearAccObject.addProperty("y", linearAccData.getY());
-                                linearAccObject.addProperty("z", linearAccData.getZ());
-                                sensorDataArray.add(linearAccObject);
-                            }
+                        case RECORDING_WATCH_AFTER_FALL:
+                            watchAfterFall.add(object);
                             break;
                     }
-                    sensorData.add(entry.getKey().getId(), sensorDataArray);
                 }
 
-                recordings.add("sensor_data", sensorData);
+                calculations.add("phone_vertical_acceleration", phoneVerticalAcceleration);
+                calculations.add("phone_total_acceleration", phoneTotalAcceleration);
+                calculations.add("watch_fall_index", watchFallIndex);
+                calculations.add("watch_direction_acceleration", watchDirectionAcceleration);
+                calculations.add("watch_after_fall", watchAfterFall);
+
+                recordings.add("calculations", calculations);
 
                 /*
                 JsonArray recordEvents = new JsonArray();
 
-                for (RecordEvent event : mEvents) {
+                for (RecordEvent event : mRecordEvents) {
                     JsonObject accelerometerObject = new JsonObject();
                     accelerometerObject.addProperty("vertical_acceleration", event.mVerAcc);
                     accelerometerObject.addProperty("total_acceleration", event.mTotAcc);
@@ -320,17 +215,17 @@ public class RecordFragment extends Fragment {
                 recordings.add("record_data", recordEvents);
                 */
 
+                Collections.sort(mRecordAlgorithm);
                 JsonArray fallDetectedArray = new JsonArray();
-                for (Pair<Long, String> pair : mFallDetectedTimeAlgorithm) {
+                for (RecordAlgorithmData algorithmData : mRecordAlgorithm) {
                     JsonObject fallDetectedObject = new JsonObject();
-                    fallDetectedObject.addProperty("time", pair.first);
-                    fallDetectedObject.addProperty("name", pair.second);
+                    fallDetectedObject.addProperty("id", algorithmData.id);
+                    fallDetectedObject.addProperty("time", algorithmData.time);
+                    fallDetectedObject.addProperty("name", algorithmData.name);
+                    fallDetectedObject.addProperty("isFall", algorithmData.isFall);
                     fallDetectedArray.add(fallDetectedObject);
-
                 }
-
-                recordings.add("fall_detected_at_times", fallDetectedArray);
-
+                recordings.add("fall_detection", fallDetectedArray);
 
                 Gson gson = new GsonBuilder().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 
@@ -363,81 +258,16 @@ public class RecordFragment extends Fragment {
                         }
                     });
                 }
-
-                /** gson.toJson(recordings) */
-
-
-        /* prints
-        {
-              "test_id": "001",
-              "fall_nr": "1",
-              "sensor_data":
-                {
-                  "accelerometer_data": [
-                    {
-                      "time": 1639543,
-                      "x": 0,
-                      "y": 0,
-                      "z": 0
-                    },
-                    ...
-                  ],
-                  "rotation_vector_data": [
-                    {
-                      "time": 1639543,
-                      "x": 0,
-                      "y": 0,
-                      "z": 0,
-                      "cos": 0,
-                      "eha": 0
-                    },
-                    ...
-                  ],
-                  "magnetic_field_data": [
-                    {
-                      "time": 1639543,
-                      "x": 0,
-                      "y": 0,
-                      "z": 0
-                    },
-                    ...
-                  ],
-                  "gyroscope_data": [
-                    {
-                      "time": 1639543,
-                      "x": 0,
-                      "y": 0,
-                      "z": 0
-                    },
-                    ...
-                  ],
-                  "gravity_data": [
-                    {
-                      "time": 1639543,
-                      "x": 0,
-                      "y": 0,
-                      "z": 0
-                    },
-                    ...
-                  ],
-                },
-              "fall_detected_at_times": [
-                  {
-                    "time": 1639543
-                  },
-                  ...
-                ],
-        }
-        */
                 return null;
             }
         }.execute();
     }
 
     private void cancelRecording() {
-        mFallDetectedTimeAlgorithm.clear();
-        mRecordedData.clear();
-        mIsRecording = false;
+        PreferencesHelper.putBoolean(PreferencesHelper.RECORDING_ENABLED, false);
+
+        mRecordEvents.clear();
+        mRecordAlgorithm.clear();
 
         sendRecordingSetViewParams();
     }

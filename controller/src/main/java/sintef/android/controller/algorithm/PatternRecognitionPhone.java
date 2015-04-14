@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.greenrobot.event.EventBus;
+import sintef.android.controller.RecordAlgorithmData;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
@@ -41,7 +43,8 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     z = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5]
     Main pattern recognition method*/
-    public boolean isFall(SensorAlgorithmPack pack){
+
+    public boolean isFall(long id, SensorAlgorithmPack pack){
         //BEGIN unpacking sensorpack
         List<LinearAccelerationData> accelerometerData = new ArrayList<>();
         List<RotationVectorData> rotData = new ArrayList<>();
@@ -72,7 +75,13 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
         //END unpacking sensorpack
 
         //Hvis threshold algoritme sier det ikke er fall, kalles ikke patternRecognition
-        if (!ThresholdPhone.isFall(accelerometerData, rotData, geoRotVecData) ){return false;}
+        if (!ThresholdPhone.isFall(accelerometerData, rotData, geoRotVecData)) {
+
+            /** RECORDING - isFall */
+            if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "phone_threshold", false));
+
+            return false;
+        }
 
         double maxAcceleration = 0;
         double currentAcceleration;
@@ -88,10 +97,12 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
             }
         }
 
-        if (preImpactPattern(accelerometerData, index, iterations,maxAcceleration) && impactPattern(accelerometerData, index, iterations,maxAcceleration) && postImpactPattern(accelerometerData, index+iterations)){
-            return true;
-        }
-        return false;
+        boolean isFall = preImpactPattern(accelerometerData, index, iterations,maxAcceleration) && impactPattern(accelerometerData, index, iterations,maxAcceleration) && postImpactPattern(accelerometerData, index+iterations);
+
+        /** RECORDING - isFall */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "phone_pattern_recognition", isFall));
+
+        return isFall;
     }
     /*
     impact pattern recognition:
