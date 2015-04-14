@@ -27,7 +27,10 @@ public abstract class WizardTemplate extends Fragment {
         T f;
         try {
             f = clazz.newInstance();
-        } catch (java.lang.InstantiationException | IllegalAccessException e) {
+        } catch (java.lang.InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
