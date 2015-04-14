@@ -17,6 +17,7 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.Constants;
+import sintef.android.controller.tests.IntegrationTest;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.controller.utils.SoundHelper;
 import sintef.android.controller.utils.Utils;
@@ -59,6 +60,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         init();
+
+        IntegrationTest test = new IntegrationTest();
+        test.runTestId1();
     }
 
     private void init() {

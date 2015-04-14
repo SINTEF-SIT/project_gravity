@@ -86,9 +86,7 @@ public class ThresholdPhone implements AlgorithmInterface {
             tetaY = degs[2];
             tetaZ = degs[0];
 
-            if (calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ)){
-                return true;
-            }
+            return calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ);
         }
         return false;
     }

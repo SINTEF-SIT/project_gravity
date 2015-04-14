@@ -1,8 +1,11 @@
 package sintef.android.controller.tests;
 
 import android.hardware.Sensor;
+import android.os.Handler;
+import android.util.Log;
 
 import de.greenrobot.event.EventBus;
+import sintef.android.controller.EventTypes;
 import sintef.android.controller.algorithm.AlgorithmsToChoose;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.SensorData;
@@ -10,6 +13,7 @@ import sintef.android.controller.sensor.SensorDevice;
 import sintef.android.controller.sensor.SensorLocation;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
+import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
 /**
@@ -17,8 +21,11 @@ import sintef.android.controller.utils.PreferencesHelper;
  */
 public class IntegrationTest {
 
-    
+    private static boolean mReceiveAnswer;
 
+    public IntegrationTest() {
+        EventBus.getDefault().register(this);
+    }
 
     /**
     |-------------------------------------------------------------------------|
@@ -34,27 +41,57 @@ public class IntegrationTest {
     |                          |  posted to Event bus                         |
     |-------------------------------------------------------------------------|
      */
-    public static final String TEST_SENSOR_ID = "test_sensor_1";
+    public static final String TEST_TAG_1 = "test_1";
+    public static final String TEST_SENSOR_1 = "test_sensor_1";
 
-    public void testId1() {
+    public void runTestId1() {
         // Store previous algorithm used, to be restored at the end of the test
-        int previousAlgorithmId = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
+        final int previousAlgorithmId = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
 
         // Force the application to use PHONE_THRESHOLD
         PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, AlgorithmsToChoose.ID_PHONE_THRESHOLD);
 
         // Create a new mock sensor session
-        SensorSession sensorSession = new SensorSession(TEST_SENSOR_ID, Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_ARM);
+        SensorSession sensorSessionAcc = new SensorSession(TEST_SENSOR_1 + ":ACC", Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_ARM);
+        SensorSession sensorSessionRot = new SensorSession(TEST_SENSOR_1 + ":ROT", Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_ARM);
 
-        // Create a new mock sensor data object
+        // Create mock sensor data objects
         LinearAccelerationData linearAccelerationData = new LinearAccelerationData(100, 100, 100);
+        RotationVectorData rotationVectorData = new RotationVectorData(new float[] {1, 1, 1, 1, 1});
+
+        // Allow to receive data
+        mReceiveAnswer = true;
 
         // Posts the mock session and data at current time
-        EventBus.getDefault().post(new SensorData(sensorSession, linearAccelerationData, System.currentTimeMillis()));
+        EventBus.getDefault().post(new SensorData(sensorSessionAcc, linearAccelerationData, System.currentTimeMillis()));
+        EventBus.getDefault().post(new SensorData(sensorSessionRot, rotationVectorData, System.currentTimeMillis()));
 
+        // Write log to console
+        Log.i(TEST_TAG_1, "Sent data");
 
-        // Restores the previous used algorithm
-        PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, previousAlgorithmId);
+        // Restores the previous used algorithm after a second, just to make sure that we're not changing it back too early
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, previousAlgorithmId);
+
+                // Disallow to receive data
+                mReceiveAnswer = false;
+            }
+        }, 4000);
+    }
+
+    public void onEvent(EventTypes types) {
+        if (mReceiveAnswer) {
+            switch (types) {
+                case TEST_FALL: // Using this because it is independent of the "Alarm" switch
+                    Log.i(TEST_TAG_1, "Is fall");
+                    break;
+                case TEST_NO_FALL: // Using this because it is independent of the "Alarm" switch
+                    Log.i(TEST_TAG_1, "Is not a fall");
+                    break;
+            }
+        }
     }
 
 

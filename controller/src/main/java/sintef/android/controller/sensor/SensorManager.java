@@ -97,7 +97,7 @@ public class SensorManager implements SensorEventListener {
         if (sensorDataObject != null)  {
             // sensor event timestamps are time since system boot...wtf indeed long timestamp = TimeUnit.NANOSECONDS.toMillis(event.timestamp);
             long timestamp = (new Date()).getTime() + (event.timestamp - System.nanoTime()) / 1000000L;
-            mEventBus.post(new SensorData(mSensorGroup.get(event.sensor.getType()), sensorDataObject, timestamp));
+            // mEventBus.post(new SensorData(mSensorGroup.get(event.sensor.getType()), sensorDataObject, timestamp));
         }
     }
 }

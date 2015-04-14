@@ -15,5 +15,8 @@ public enum EventTypes {
     START_ALARM,
     STOP_ALARM,
     ALARM_STOPPED,
-    ADVANCED_MODE_CHANGED
+    ADVANCED_MODE_CHANGED,
+
+    TEST_FALL,
+    TEST_NO_FALL
 }

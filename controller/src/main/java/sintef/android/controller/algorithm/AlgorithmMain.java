@@ -166,6 +166,9 @@ public class AlgorithmMain {
             }
 
             EventBus.getDefault().post(EventTypes.FALL_DETECTED_FOR_RECORDING);
+            EventBus.getDefault().post(EventTypes.TEST_FALL);
+        } else {
+            EventBus.getDefault().post(EventTypes.TEST_NO_FALL);
         }
     }
 
