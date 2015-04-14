@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
@@ -87,7 +86,9 @@ public class ThresholdPhone implements AlgorithmInterface {
             tetaY = degs[2];
             tetaZ = degs[0];
 
-            return calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ);
+            if (calculateThresholdAlgorithm(accData.get(i).getX(), accData.get(i).getY(), accData.get(i).getZ(), tetaY, tetaZ)) {
+                return true;
+            }
         }
         return false;
     }

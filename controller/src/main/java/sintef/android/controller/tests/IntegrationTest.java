@@ -1,7 +1,6 @@
 package sintef.android.controller.tests;
 
 import android.hardware.Sensor;
-import android.os.Handler;
 import android.util.Log;
 
 import de.greenrobot.event.EventBus;
@@ -22,6 +21,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 public class IntegrationTest {
 
     private static boolean mReceiveAnswer;
+    private static int mPreviousAlgorithmId;
 
     public IntegrationTest() {
         EventBus.getDefault().register(this);
@@ -46,7 +46,7 @@ public class IntegrationTest {
 
     public void runTestId1() {
         // Store previous algorithm used, to be restored at the end of the test
-        final int previousAlgorithmId = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
+        mPreviousAlgorithmId = PreferencesHelper.getInt(Constants.PREFS_ALGORITHM, Constants.PREFS_DEFAULT_ALGORITHM);
 
         // Force the application to use PHONE_THRESHOLD
         PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, AlgorithmsToChoose.ID_PHONE_THRESHOLD);
@@ -68,17 +68,6 @@ public class IntegrationTest {
 
         // Write log to console
         Log.i(TEST_TAG_1, "Sent data");
-
-        // Restores the previous used algorithm after a second, just to make sure that we're not changing it back too early
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, previousAlgorithmId);
-
-                // Disallow to receive data
-                mReceiveAnswer = false;
-            }
-        }, 4000);
     }
 
     public void onEvent(EventTypes types) {
@@ -91,6 +80,12 @@ public class IntegrationTest {
                     Log.i(TEST_TAG_1, "Is not a fall");
                     break;
             }
+
+            // Only allow one answer
+            mReceiveAnswer = false;
+
+            // Restores the previous used algorithm
+            PreferencesHelper.putInt(Constants.PREFS_ALGORITHM, mPreviousAlgorithmId);
         }
     }
 
