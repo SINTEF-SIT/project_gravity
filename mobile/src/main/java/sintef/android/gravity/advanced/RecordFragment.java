@@ -122,6 +122,11 @@ public class RecordFragment extends Fragment {
     private boolean hasRotData = false;
     private boolean hasAccData = false;
 
+    private boolean thresholdPhoneTrigger;
+    private boolean patternPhoneTrigger;
+    private boolean thresholdWatchTrigger;
+    private boolean patternWatchTrigger;
+
     public void onEvent(SensorData data) {
         if (!mIsRecording) return;
 
@@ -178,6 +183,12 @@ public class RecordFragment extends Fragment {
     private void startRecording() {
         mFallDetectedAtTimes.clear();
         mRecordedData.clear();
+
+        thresholdPhoneTrigger = false;
+        patternPhoneTrigger = false;
+        thresholdWatchTrigger = false;
+        patternWatchTrigger = false;
+
         mIsRecording = true;
         startRecordingSetViewParams();
 
