@@ -75,11 +75,13 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
         //END unpacking sensorpack
 
         //Hvis threshold algoritme sier det ikke er fall, kalles ikke patternRecognition
-        if (!ThresholdPhone.isFall(accelerometerData, rotData, geoRotVecData)) {
 
-            /** RECORDING - isFall */
-            if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "phone_threshold", false));
+        boolean isThresholdFall = ThresholdPhone.isFall(accelerometerData, rotData, geoRotVecData);
 
+        /** RECORDING - isFall */
+        if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "phone_threshold", isThresholdFall));
+
+        if (!isThresholdFall) {
             return false;
         }
 

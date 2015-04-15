@@ -28,7 +28,7 @@ public class DeviceClient {
 
     private static final String TAG = "G:WEAR:DC";
 
-    private String mode = ClientPaths.MODE_PUSH;
+    private final String mode = ClientPaths.MODE_PUSH;
     private SensorEventBuffer mSensorEventBuffer;
     private GoogleApiClient mWearableClient;
     private ExecutorService mExecutor;
@@ -49,7 +49,8 @@ public class DeviceClient {
     }
 
     public void setMode(String mode) {
-        this.mode = mode;
+        // REMOVE POSSIBILITY TO CHANGE MODE ATM
+        // this.mode = mode;
     }
 
     public String getMode() {
@@ -109,6 +110,7 @@ public class DeviceClient {
 
         PutDataRequest putDataRequest = dataMap.asPutDataRequest();
         send(putDataRequest);
+
         if (Controller.DBG) Log.w(TAG, "Starting to send sensor data");
     }
 

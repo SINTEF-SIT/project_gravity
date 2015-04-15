@@ -18,7 +18,7 @@ import sintef.android.controller.sensor.SensorSession;
 public class SensorRecorder implements SensorEventListener {
 
     private static final String TAG = "G:WEAR:SR";
-    private static boolean DBG_RATE = false;
+    private static boolean DBG_RATE = true;
 
     private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
     private SensorManager mSensorManager;
