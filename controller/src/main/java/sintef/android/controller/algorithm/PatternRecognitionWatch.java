@@ -145,10 +145,10 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
     }
 
     public static double getThresholdStill() {
-        return PreferencesHelper.getFloat(FALLINDEX_IMPACT, (float) default_thresholdStill);
+        return PreferencesHelper.getFloat(FALLINDEX_POST_IMPACT, (float) default_thresholdStill);
     }
 
     public static double getThresholdMovement() {
-        return PreferencesHelper.getFloat(FALLINDEX_POST_IMPACT, (float) default_movementThreshold);
+        return PreferencesHelper.getFloat(FALL_DURATION, (float) default_movementThreshold);
     }
 }
