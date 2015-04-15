@@ -18,7 +18,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import sintef.android.controller.algorithm.AlgorithmsToChoose;
 import sintef.android.controller.algorithm.PatternRecognitionPhone;
+import sintef.android.controller.algorithm.PatternRecognitionWatch;
 import sintef.android.controller.algorithm.ThresholdPhone;
+import sintef.android.controller.algorithm.ThresholdWatch;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.gravity.R;
@@ -77,28 +79,41 @@ public class ThresholdsFragment extends Fragment {
         ThresholdItem[] items = {
                 new ThresholdItem(
                         ThresholdPhone.TOTAL_ACCELEROMETER_THRESHOLD,
-                        getString(R.string.fragment_thresholds_total_acc),
+                        getString(R.string.fragment_thresholds_phone_total_acc),
                         ThresholdPhone.default_totAccThreshold),
                 new ThresholdItem(
                         ThresholdPhone.VERTICAL_ACCELEROMETER_THRESHOLD,
-                        getString(R.string.fragment_thresholds_vertical_acc),
+                        getString(R.string.fragment_thresholds_phone_vertical_acc),
                         ThresholdPhone.default_verticalAccThreshold),
                 new ThresholdItem(
                         ThresholdPhone.ACCELEROMETER_COMPARISON_THRESHOLD,
-                        getString(R.string.fragment_thresholds_acc_comp),
+                        getString(R.string.fragment_thresholds_phone_vertical_total_acc),
                         ThresholdPhone.default_accComparisonThreshold),
                 new ThresholdItem(
-                        PatternRecognitionPhone.IMPACT_THRESHOLD,
-                        getString(R.string.fragment_thresholds_impact),
-                        PatternRecognitionPhone.default_impactThreshold),
-                new ThresholdItem(
                         PatternRecognitionPhone.PRE_IMPACT_THRESHOLD,
-                        getString(R.string.fragment_thresholds_pre_impact),
+                        getString(R.string.fragment_thresholds_phone_pre_impact),
                         PatternRecognitionPhone.default_preimpactThreshold),
                 new ThresholdItem(
+                        PatternRecognitionPhone.IMPACT_THRESHOLD,
+                        getString(R.string.fragment_thresholds_phone_impact),
+                        PatternRecognitionPhone.default_impactThreshold),
+                new ThresholdItem(
                         PatternRecognitionPhone.POST_IMPACT_THRESHOLD,
-                        getString(R.string.fragment_thresholds_post_impact),
-                        PatternRecognitionPhone.default_postImpactThreshold)
+                        getString(R.string.fragment_thresholds_phone_avg_post_impact),
+                        PatternRecognitionPhone.default_postImpactThreshold),
+
+                new ThresholdItem(
+                        ThresholdWatch.FALLINDEX_IMPACT,
+                        getString(R.string.fragment_thresholds_watch_fallindex_impact),
+                        ThresholdWatch.default_thresholdFall),
+                new ThresholdItem(
+                        PatternRecognitionWatch.FALLINDEX_POST_IMPACT,
+                        getString(R.string.fragment_thresholds_watch_fallindex_post_impact),
+                        PatternRecognitionWatch.default_thresholdStill),
+                new ThresholdItem(
+                        PatternRecognitionWatch.FALL_DURATION,
+                        getString(R.string.fragment_thresholds_watch_fall_duration),
+                        PatternRecognitionWatch.default_movementThreshold)
         };
 
         ThresholdsAdapter adapter = new ThresholdsAdapter(new ArrayList<>(Arrays.asList(items)));
