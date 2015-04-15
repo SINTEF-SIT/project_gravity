@@ -20,8 +20,10 @@ import sintef.android.controller.utils.PreferencesHelper;
  */
 public class ThresholdWatch implements AlgorithmInterface {
 
+    public static final String FALLINDEX_IMPACT = "imp_thr";
+
     //TODO: get data to make the thresholds better.
-    private static final double thresholdFall = 1; //20
+    public static final double default_thresholdFall = 1; //20
 
     //Calculate the acceleration.
     private static double fallIndex(List<LinearAccelerationData> sensors, int startList){
@@ -67,7 +69,7 @@ public class ThresholdWatch implements AlgorithmInterface {
         if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_FALL_INDEX, accelerationData));
 
 
-        return accelerationData >= thresholdFall;
+        return accelerationData >= getThresholdFall();
     }
 
     @Override
@@ -95,5 +97,9 @@ public class ThresholdWatch implements AlgorithmInterface {
         if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordAlgorithmData(id, "watch_threshold", isFall));
 
         return isFall;
+    }
+
+    public static double getThresholdFall() {
+        return PreferencesHelper.getFloat(FALLINDEX_IMPACT, (float) default_thresholdFall);
     }
 }

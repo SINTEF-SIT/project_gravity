@@ -20,11 +20,14 @@ import sintef.android.controller.utils.PreferencesHelper;
  */
 public class PatternRecognitionWatch implements AlgorithmInterface {
 
+    public static final String FALLINDEX_POST_IMPACT = "post_imp_thr";
+    public static final String FALL_DURATION = "fall_dur_thr";
+
     //TODO: get data to make the thresholds better.
-    private static final double thresholdFall = 1; //20
-    private static final double thresholdStill = 500; //5
+    public static final double default_thresholdStill = 500; //5
+    public static final double default_movementThreshold = 50;
     private static final double atleastReadings = 10;
-    private static int movementThreshold = 50;
+
 
     //Calculate the acceleration.
     private static FallIndexValues fallIndex(List<LinearAccelerationData> sensors, int startList){
@@ -56,7 +59,7 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
                 /** RECORDING - directionAcceleration */
                 if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_DIRECTION_ACCELERATION, directionAcceleration));
 
-                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > movementThreshold && startList < j){
+                if (Math.pow((Double)sensorData.get(i).get(j) - (Double)sensorData.get(i).get(j - 1), 2) > getThresholdMovement() && startList < j){
                     startList = j;
                 }
             }
@@ -83,13 +86,13 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
         /** RECORDING - fallIndex */
         if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_FALL_INDEX, accelerationData.fallData));
 
-        if (accelerationData.getFallData() >= thresholdFall && sensors.size()-accelerationData.getStartIndex() > atleastReadings){
+        if (accelerationData.getFallData() >= ThresholdWatch.getThresholdFall() && sensors.size()-accelerationData.getStartIndex() > atleastReadings){
             afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
 
             /** RECORDING - stillPattern */
             if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_AFTER_FALL, afterFallData));
 
-            return afterFallData <= thresholdStill;
+            return afterFallData <= getThresholdStill();
         }
         return false;
     }
@@ -139,5 +142,13 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
         public double getFallData() {
             return fallData;
         }
+    }
+
+    public static double getThresholdStill() {
+        return PreferencesHelper.getFloat(FALLINDEX_POST_IMPACT, (float) default_thresholdStill);
+    }
+
+    public static double getThresholdMovement() {
+        return PreferencesHelper.getFloat(FALL_DURATION, (float) default_movementThreshold);
     }
 }
