@@ -7,6 +7,7 @@ package sintef.android.gravity;
 
 import android.app.Notification;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -37,7 +38,8 @@ public class MessageReceiverService extends WearableListenerService {
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(getString(R.string.watch_notification_title));
         builder.setContentText(getString(R.string.watch_notification_text));
-        builder.setSmallIcon(R.drawable.ic_stat_on_blue);
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.wear_bak));
         startForeground(1, builder.build());
     }
 

@@ -117,6 +117,7 @@ public class AlarmFragment extends Fragment {
                 break;
         }
     }
+
     public void onEvent(AlarmEvent event) {
         SoundHelper.playAlarmSound();
         mAlarmView.setAlarmProgress(event.progress);

@@ -55,8 +55,6 @@ public class RemoteSensorService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         if (Controller.DBG) Log.d(TAG, "Received message: " + messageEvent.getPath());
 
-        Log.w("TT", "Received message: " + messageEvent.getPath());
-
         switch(messageEvent.getPath()) {
             case ClientPaths.STOP_ALARM:
                 EventBus.getDefault().post(EventTypes.STOP_ALARM);

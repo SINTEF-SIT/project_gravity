@@ -112,7 +112,6 @@ public class ThresholdPhone implements AlgorithmInterface {
             EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_PHONE_VERTICAL_ACCELERATION, verticalAcceleration));
         }
 
-
         if (totalAcceleration >= getTotAccThreshold() && verticalAcceleration >= getVerticalAccThreshold()){
             if (verticalComparedToTotal(verticalAcceleration, totalAcceleration) >= getAccComparisonThreshold()){
                 return true;

@@ -4,6 +4,7 @@ package sintef.android.controller.algorithm;
  * Created by Andreas on 08.04.2015.
  */
 public enum AlgorithmsToChoose {
+
     PhoneThreshold(new ThresholdPhone()),
     PhonePatternRecognition(new PatternRecognitionPhone()),
 
@@ -26,6 +27,7 @@ public enum AlgorithmsToChoose {
     }
 
     private int mId = -1;
+
     private AlgorithmInterface[] mAlgorithms;
 
     AlgorithmsToChoose(AlgorithmInterface... algorithms) {
