@@ -23,7 +23,7 @@ public class ThresholdWatch implements AlgorithmInterface {
     public static final String FALLINDEX_IMPACT = "imp_thr";
 
     //TODO: get data to make the thresholds better.
-    public static final double default_thresholdFall = 1; //20
+    public static final double default_thresholdFall = 30; //20
 
     //Calculate the acceleration.
     private static double fallIndex(List<LinearAccelerationData> sensors, int startList){

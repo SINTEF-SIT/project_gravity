@@ -28,9 +28,9 @@ public class ThresholdPhone implements AlgorithmInterface {
     public static final String PRE_IMPACT_THRESHOLD = "pre_impact_thr";
     public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";*/
 
-    public static final double default_totAccThreshold = 4; //12, 13, 14
-    public static final double default_verticalAccThreshold = 2; //Litt under tot_acc tipper jeg
-    public static final double default_accComparisonThreshold = 0.1; //tot_acc / vertical_acc
+    public static final double default_totAccThreshold = 11; //12, 13, 14
+    public static final double default_verticalAccThreshold = 9; //Litt under tot_acc tipper jeg
+    public static final double default_accComparisonThreshold = 0.5; //tot_acc / vertical_acc
     /*public static final double default_impactThreshold = 1; //fra topp til bunn
     public static final double default_preimpactThreshold = 1; //fra bunn til topp
     public static final double default_postImpactThreshold = 15; //average maa vaere under denne verdien.*/

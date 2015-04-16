@@ -23,9 +23,9 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
     public static final String PRE_IMPACT_THRESHOLD = "pre_impact_thr";
     public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";
 
-    public static final double default_impactThreshold = 1; //fra topp til bunn
-    public static final double default_preimpactThreshold = 1; //fra bunn til topp
-    public static final double default_postImpactThreshold = 15; //average maa vaere under denne verdien.
+    public static final double default_impactThreshold = 1.5; //fra topp til bunn
+    public static final double default_preimpactThreshold = 1.5; //fra bunn til topp
+    public static final double default_postImpactThreshold = 6; //average maa vaere under denne verdien.
     /* Test values == TRUE
     x = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]

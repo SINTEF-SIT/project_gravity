@@ -24,8 +24,9 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
     public static final String FALL_DURATION = "fall_dur_thr";
 
     //TODO: get data to make the thresholds better.
-    public static final double default_thresholdStill = 500; //5
-    public static final double default_movementThreshold = 50;
+    public static final double default_thresholdStill = 20; //5
+    public static final double default_movementThreshold = 170;
+
     private static final double atleastReadings = 10;
 
 
