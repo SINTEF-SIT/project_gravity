@@ -60,6 +60,8 @@ public class AlarmActivity extends Activity {
             public void onAlarm() {
                 if (Controller.DBG) Log.d(TAG, "Alarm has gone off");
                 if (mVibrator != null) mVibrator.cancel();
+
+                finish();
             }
         });
 

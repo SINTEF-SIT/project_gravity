@@ -17,7 +17,6 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.tests.IntegrationTest;
 import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.controller.utils.SoundHelper;
 import sintef.android.controller.utils.Utils;
@@ -65,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
     private void init() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setIcon(R.drawable.ic_launcher);
+        // getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
         boolean alarm_started = false;
         if (getIntent().getExtras() != null) {
