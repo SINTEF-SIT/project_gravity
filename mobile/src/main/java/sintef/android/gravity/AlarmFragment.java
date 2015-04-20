@@ -2,10 +2,15 @@ package sintef.android.gravity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +39,11 @@ public class AlarmFragment extends Fragment {
     @InjectView(R.id.alarm_algorithm)       TextView mAlarmAlgorithm;
     @InjectView(R.id.alarm_start)           Button mAlarmButton;
 
-    private static Vibrator mVibrator;
+    private static Vibrator sVibrator;
+    private static TelephonyManager sManager;
+    private static StatePhoneReceiver sPhoneStateListener;
+    private static boolean sCallFromApp = false; // To control the call has been made from the application
+    private static boolean sCallFromOffHook = false; // To control the change to idle state is from the app call
 
     public AlarmFragment() { }
 
@@ -49,7 +58,10 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+        sVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+        sPhoneStateListener = new StatePhoneReceiver();
+        sManager = ((TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE));
+
     }
 
     @Override
@@ -67,8 +79,21 @@ public class AlarmFragment extends Fragment {
         mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
             @Override
             public void onStop() {
-                if (mVibrator != null) mVibrator.cancel();
+                if (sVibrator != null) sVibrator.cancel();
                 EventBus.getDefault().post(EventTypes.ALARM_STOPPED);
+            }
+        });
+        mAlarmView.setOnAlarmListener(new AlarmView.OnAlarmListener() {
+            @Override
+            public void onAlarm() {
+                EventBus.getDefault().post(EventTypes.STOP_ALARM);
+
+                sManager.listen(sPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+                sCallFromApp = true;
+
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + PreferencesHelper.getString(Constants.PREFS_NEXT_OF_KIN_TELEPHONE)));
+                getActivity().startActivity(intent);
             }
         });
 
@@ -105,11 +130,11 @@ public class AlarmFragment extends Fragment {
     public void onEvent(EventTypes type) {
         switch (type) {
             case START_ALARM:
-                mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
+                sVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
                 mAlarmView.startAlarm();
                 break;
             case STOP_ALARM:
-                if (mVibrator != null) mVibrator.cancel();
+                if (sVibrator != null) sVibrator.cancel();
                 mAlarmView.stopAlarmWithoutNotify();
                 break;
             case ADVANCED_MODE_CHANGED:
@@ -121,5 +146,43 @@ public class AlarmFragment extends Fragment {
     public void onEvent(AlarmEvent event) {
         SoundHelper.playAlarmSound();
         mAlarmView.setAlarmProgress(event.progress);
+    }
+
+    public class StatePhoneReceiver extends PhoneStateListener {
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+
+            switch (state) {
+
+                case TelephonyManager.CALL_STATE_OFFHOOK: //Call is established
+                    if (sCallFromApp) {
+                        sCallFromApp = false;
+                        sCallFromOffHook = true;
+
+                        try {
+                            Thread.sleep(500); // Delay 0,5 seconds to handle better turning on loudspeaker
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        //Activate loudspeaker
+                        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+                        audioManager.setMode(AudioManager.MODE_IN_CALL);
+                        audioManager.setSpeakerphoneOn(true);
+                    }
+                    break;
+
+                case TelephonyManager.CALL_STATE_IDLE: //Call is finished
+                    if (sCallFromOffHook) {
+                        sCallFromOffHook = false;
+                        AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+                        audioManager.setMode(AudioManager.MODE_NORMAL); //Deactivate loudspeaker
+                        sManager.listen(sPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+                    }
+                    break;
+            }
+        }
     }
 }
