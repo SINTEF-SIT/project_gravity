@@ -23,7 +23,7 @@ import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorSession;
 
-public class RemoteSensorService extends WearableListenerService {
+public class WearDataReceiver extends WearableListenerService {
 
     private static final String TAG = "G:PHONE:RSS";
 

@@ -1,4 +1,4 @@
-package sintef.android.gravity;
+package sintef.android.gravity.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
+import sintef.android.gravity.R;
 import sintef.android.gravity.wizard.FloatingHintEditText;
 
 /**
