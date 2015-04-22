@@ -46,7 +46,7 @@
 
         <service android:enabled="true" android:name=".MainService" />
 
-        <receiver android:name=".BootReceiverPhone">
+        <receiver android:name=".BootReceiver">
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
