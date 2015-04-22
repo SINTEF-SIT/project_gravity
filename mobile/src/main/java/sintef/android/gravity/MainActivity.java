@@ -21,6 +21,7 @@ import sintef.android.controller.utils.PreferencesHelper;
 import sintef.android.controller.utils.SoundHelper;
 import sintef.android.controller.utils.Utils;
 import sintef.android.gravity.advanced.AdvancedActivity;
+import sintef.android.gravity.utils.NextOfKinDialog;
 import sintef.android.gravity.wizard.WizardMain;
 
 public class MainActivity extends ActionBarActivity {

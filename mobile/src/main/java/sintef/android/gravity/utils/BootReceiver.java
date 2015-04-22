@@ -1,8 +1,10 @@
-package sintef.android.gravity;
+package sintef.android.gravity.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import sintef.android.gravity.MainService;
 
 public class BootReceiver extends BroadcastReceiver {
     @Override

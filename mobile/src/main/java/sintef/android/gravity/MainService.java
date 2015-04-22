@@ -53,12 +53,13 @@ public class MainService extends Service {
     };
 
     private AsyncTask<Void, Integer, Boolean> mAlarmTask;
-    private int seconds = 60;
-    private int resolution_multiplier = 4;
-    private int max = seconds * resolution_multiplier;
-    private int second = 1000;
-    private int resolution_second = second / resolution_multiplier;
-    private int update_frequency = resolution_multiplier * 4;
+
+    private final int seconds = 60;
+    private final int resolution_multiplier = 4;
+    private final int max = seconds * resolution_multiplier;
+    private final int second = 1000;
+    private final int resolution_second = second / resolution_multiplier;
+    private final int update_frequency = resolution_multiplier * 4;
 
     @Override
     public void onCreate() {
@@ -228,7 +229,7 @@ public class MainService extends Service {
         mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
     }
 
-    public static enum TimerState {
+    public enum TimerState {
         PENDING, TIMER_RUNNING, TIMER_CANCELLED, ALARM_SENT,
     }
 }
