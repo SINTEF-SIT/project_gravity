@@ -2,8 +2,8 @@
 
 ### Android ###
 # Built application files
-*.apk
 *.ap_
+*.jks
 
 # Files for the Dalvik VM
 *.dex
