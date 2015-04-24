@@ -33,7 +33,9 @@ import java.util.TimerTask;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.algorithm.AlgorithmMain;
 import sintef.android.controller.algorithm.SensorAlgorithmPack;
+import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorManager;
 import sintef.android.controller.sensor.SensorSession;
@@ -55,7 +57,7 @@ public class Controller {
         if (sController == null) sController = new Controller(context);
     }
 
-    private Controller(Context context) {
+    private Controller(final Context context) {
         EventBus.getDefault().register(this);
 
         AlgorithmMain.initializeAlgorithmMaster();
@@ -64,6 +66,8 @@ public class Controller {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+
+                RemoteSensorManager.getInstance(context).setMode(ClientPaths.MODE_DEFAULT);
 
                 SensorAlgorithmPack pack;
                 sDataStore.add(0, new HashMap<SensorSession, List<SensorData>>());
