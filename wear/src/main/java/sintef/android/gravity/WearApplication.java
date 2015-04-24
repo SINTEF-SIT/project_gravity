@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * Created by samyboy89 on 30/03/15.
  */
-public class MainApplication extends Application {
+public class WearApplication extends Application {
 
     @Override
     public void onCreate() {

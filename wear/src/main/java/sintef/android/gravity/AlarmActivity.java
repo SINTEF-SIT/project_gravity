@@ -30,7 +30,7 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
 import sintef.android.controller.Controller;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.RemoteSensorManager;
+import sintef.android.controller.WearDeviceClientMobile;
 
 public class AlarmActivity extends Activity {
 
@@ -39,7 +39,7 @@ public class AlarmActivity extends Activity {
     private AlarmView mAlarmView;
 
     private static Vibrator mVibrator;
-    private RemoteSensorManager mRemoteSensorManager;
+    private WearDeviceClientMobile mWearDeviceClientMobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +62,14 @@ public class AlarmActivity extends Activity {
         mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
 
         EventBus.getDefault().register(this);
-        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
+        mWearDeviceClientMobile = WearDeviceClientMobile.getInstance(this);
 
         mAlarmView = new AlarmView(this, R.layout.show_alarm);
         mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
             @Override
             public void onStop() {
                 if (Controller.DBG) Log.d(TAG, "Stop alarm clicked");
-                mRemoteSensorManager.stopAlarm();
+                mWearDeviceClientMobile.stopAlarm();
                 finish();
             }
         });

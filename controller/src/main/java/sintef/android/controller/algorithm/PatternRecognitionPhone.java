@@ -34,17 +34,14 @@ import sintef.android.controller.sensor.data.MagneticFieldData;
 import sintef.android.controller.sensor.data.RotationVectorData;
 import sintef.android.controller.utils.PreferencesHelper;
 
-/**
- * Created by Andreas on 08.04.2015.
- */
-public class PatternRecognitionPhone implements AlgorithmInterface {
+public class PatternRecognitionPhone implements Algorithm {
     public static final String IMPACT_THRESHOLD = "impact_thr";
     public static final String PRE_IMPACT_THRESHOLD = "pre_impact_thr";
     public static final String POST_IMPACT_THRESHOLD = "post_impact_thr";
 
-    public static final double default_impactThreshold = 1.5; //fra topp til bunn
-    public static final double default_preimpactThreshold = 1.5; //fra bunn til topp
-    public static final double default_postImpactThreshold = 6; //average maa vaere under denne verdien.
+    public static final double DEFAULT_IMPACT_THRESHOLD = 1.5; //fra topp til bunn
+    public static final double DEFAULT_PREIMPACT_THRESHOLD = 1.5; //fra bunn til topp
+    public static final double DEFAULT_POST_IMPACT_THRESHOLD = 6; //average maa vaere under denne verdien.
     /* Test values == TRUE
     x = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
     y = [0, 6, 5, 5, 2, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0]
@@ -239,6 +236,7 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
         }
         return false;
     }
+
     //For testing
     public static boolean postImpactPattern(List<LinearAccelerationData> accelerometerData, int index, double TESTPostImpactThreshold){
         double sumOfAccelerations = 0;
@@ -257,12 +255,12 @@ public class PatternRecognitionPhone implements AlgorithmInterface {
 
 
     public static double getImpactThreshold() {
-        return PreferencesHelper.getFloat(IMPACT_THRESHOLD, (float) default_impactThreshold);
+        return PreferencesHelper.getFloat(IMPACT_THRESHOLD, (float) DEFAULT_IMPACT_THRESHOLD);
     }
     public static double getPreImpactThreshold() {
-        return PreferencesHelper.getFloat(PRE_IMPACT_THRESHOLD, (float) default_preimpactThreshold);
+        return PreferencesHelper.getFloat(PRE_IMPACT_THRESHOLD, (float) DEFAULT_PREIMPACT_THRESHOLD);
     }
     public static double getPostImpactThreshold() {
-        return PreferencesHelper.getFloat(POST_IMPACT_THRESHOLD, (float) default_postImpactThreshold);
+        return PreferencesHelper.getFloat(POST_IMPACT_THRESHOLD, (float) DEFAULT_POST_IMPACT_THRESHOLD);
     }
 }

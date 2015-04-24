@@ -19,9 +19,6 @@ under the License.
 
 package sintef.android.controller.sensor.data;
 
-/**
- * Created by samyboy89 on 05/02/15.
- */
 public class AccelerometerData extends SensorDataObject {
     /**
      * <h4>{@link android.hardware.Sensor#TYPE_ACCELEROMETER Sensor.TYPE_ACCELEROMETER}:</h4>

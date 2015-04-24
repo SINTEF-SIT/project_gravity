@@ -19,11 +19,6 @@ under the License.
 
 package sintef.android.gravity;
 
-/*
- * Much based on https://github.com/pocmo/SensorDashboard
- * Such copy. Very paste.
- */
-
 import android.app.Notification;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -38,21 +33,19 @@ import sintef.android.controller.Controller;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 
-public class MessageReceiverService extends WearableListenerService {
+public class WearConnection extends WearableListenerService {
 
     private static final String TAG = "G:WEAR:MRS";
-    private DeviceClient mDeviceClient;
-    private EventBus mEventBus;
-    private SensorRecorder mSensorRecorder;
+    private WearDeviceClient mWearDeviceClient;
+    private SensorManagerWear mSensorManagerWear;
 
     @Override
     public void onCreate() {
         super.onCreate();
         if (Controller.DBG) Log.w(TAG, "started mrs");
-        mEventBus = EventBus.getDefault();
-        mDeviceClient = DeviceClient.getInstance(this);
-        mDeviceClient.setMode(ClientPaths.MODE_DEFAULT);
-        mSensorRecorder = SensorRecorder.getInstance(this);
+        mWearDeviceClient = WearDeviceClient.getInstance(this);
+        mWearDeviceClient.setMode(ClientPaths.MODE_DEFAULT);
+        mSensorManagerWear = SensorManagerWear.getInstance(this);
 
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(getString(R.string.watch_notification_title));
@@ -65,17 +58,12 @@ public class MessageReceiverService extends WearableListenerService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSensorRecorder.stopMeasurement();
+        mSensorManagerWear.stopMeasurement();
     }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         super.onDataChanged(dataEvents);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
     }
 
     @Override
@@ -85,18 +73,14 @@ public class MessageReceiverService extends WearableListenerService {
         String[] message = messageEvent.getPath().split("/");
 
         switch("/" + message[1]) {
-            case ClientPaths.START_MEASUREMENT:
-                break;
-            case ClientPaths.STOP_MEASUREMENT:
-                break;
             case ClientPaths.MODE_PULL:
-                mDeviceClient.setMode(messageEvent.getPath());
+                mWearDeviceClient.setMode(messageEvent.getPath());
                 break;
             case ClientPaths.MODE_PUSH:
-                mDeviceClient.setMode(messageEvent.getPath());
+                mWearDeviceClient.setMode(messageEvent.getPath());
                 break;
             case ClientPaths.START_PUSH:
-                mDeviceClient.pushData();
+                mWearDeviceClient.pushData();
                 break;
             case ClientPaths.START_ALARM:
                 startAlarm(true);
@@ -127,6 +111,6 @@ public class MessageReceiverService extends WearableListenerService {
     }
 
     private void updateAlarmProgress(int progress) {
-        mEventBus.post(progress);
+        EventBus.getDefault().post(progress);
     }
 }

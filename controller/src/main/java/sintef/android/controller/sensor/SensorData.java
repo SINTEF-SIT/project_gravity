@@ -21,9 +21,6 @@ package sintef.android.controller.sensor;
 
 import sintef.android.controller.sensor.data.SensorDataObject;
 
-/**
- * Created by samyboy89 on 03/02/15.
- */
 public class SensorData implements Comparable<SensorData> {
 
     private final SensorSession mSensorSession;

@@ -34,31 +34,31 @@ import sintef.android.controller.sensor.SensorDevice;
 import sintef.android.controller.sensor.SensorLocation;
 import sintef.android.controller.sensor.SensorSession;
 
-public class SensorRecorder implements SensorEventListener {
+public class SensorManagerWear implements SensorEventListener {
 
     private static final String TAG = "G:WEAR:SR";
     private static boolean DBG_RATE = false;
 
     private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
     private SensorManager mSensorManager;
-    private DeviceClient mClient;
-    private static SensorRecorder instance;
+    private WearDeviceClient mWearDeviceClient;
+    private static SensorManagerWear instance;
 
-    private static long time = System.currentTimeMillis();
-    private static int times_in_sek = 0;
+    private static long sCurrentTime = System.currentTimeMillis();
+    private static int sFrequency = 0;
 
-    public static synchronized SensorRecorder getInstance(Context context) {
+    public static synchronized SensorManagerWear getInstance(Context context) {
         if (instance == null) {
-            instance = new SensorRecorder(context.getApplicationContext());
+            instance = new SensorManagerWear(context.getApplicationContext());
         }
 
         return instance;
     }
 
-    private SensorRecorder(Context context) {
+    private SensorManagerWear(Context context) {
         if (Controller.DBG) Log.w(TAG, "Started sensor service");
 
-        mClient = DeviceClient.getInstance(context);
+        mWearDeviceClient = WearDeviceClient.getInstance(context);
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         for (int key : Constants.SENSORS_WEAR.keySet()) {
@@ -85,15 +85,15 @@ public class SensorRecorder implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (DBG_RATE) {
-            if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) times_in_sek += 1;
-            if (time + 1000 <= System.currentTimeMillis()) {
-                Log.wtf(TAG, String.format("%d @ %d", times_in_sek, time));
+            if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) sFrequency += 1;
+            if (sCurrentTime + 1000 <= System.currentTimeMillis()) {
+                Log.wtf(TAG, String.format("%d @ %d", sFrequency, sCurrentTime));
 
-                time = System.currentTimeMillis();
-                times_in_sek = 0;
+                sCurrentTime = System.currentTimeMillis();
+                sFrequency = 0;
             }
         }
 
-        mClient.addSensorData(mSensorGroup.get(event.sensor.getType()).getStringFromSession(), event.sensor.getType(), event.accuracy, event.timestamp, event.values);
+        mWearDeviceClient.addSensorData(mSensorGroup.get(event.sensor.getType()).getStringFromSession(), event.sensor.getType(), event.accuracy, event.timestamp, event.values);
     }
 }

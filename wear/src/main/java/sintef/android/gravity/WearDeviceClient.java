@@ -19,11 +19,6 @@ under the License.
 
 package sintef.android.gravity;
 
-/*
- * Much based on https://github.com/pocmo/SensorDashboard
- * Such copy. Very paste.
- */
-
 import android.content.Context;
 import android.util.Log;
 
@@ -43,41 +38,37 @@ import sintef.android.controller.Controller;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 
-public class DeviceClient {
+public class WearDeviceClient {
 
     private static final String TAG = "G:WEAR:DC";
 
-    private final String mode = ClientPaths.MODE_PUSH;
+    public static WearDeviceClient instance;
+
+    private String mMode = ClientPaths.MODE_PUSH;
     private SensorEventBuffer mSensorEventBuffer;
     private GoogleApiClient mWearableClient;
     private ExecutorService mExecutor;
 
-    public static DeviceClient instance;
 
-    public static DeviceClient getInstance(Context context) {
+    public static WearDeviceClient getInstance(Context context) {
         if (instance == null) {
-            instance = new DeviceClient(context.getApplicationContext());
+            instance = new WearDeviceClient(context.getApplicationContext());
         }
         return instance;
     }
 
-    private DeviceClient(Context context) {
+    private WearDeviceClient(Context context) {
         mWearableClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
         mExecutor = Executors.newCachedThreadPool();
         mSensorEventBuffer = SensorEventBuffer.getInstance();
     }
 
     public void setMode(String mode) {
-        // REMOVE POSSIBILITY TO CHANGE MODE ATM
-        // this.mode = mode;
-    }
-
-    public String getMode() {
-        return mode;
+        this.mMode = mode;
     }
 
     public void pushData() {
-        if (mode.equals(ClientPaths.MODE_PULL)) {
+        if (mMode.equals(ClientPaths.MODE_PULL)) {
             for (Object data : mSensorEventBuffer.getBufferAsArray()) {
                 SensorEventBuffer.SensorEventData event = (SensorEventBuffer.SensorEventData) data;
                 sendSensorData(
@@ -92,7 +83,7 @@ public class DeviceClient {
     }
 
     public void addSensorData(final String session, final int sensorType, final int accuracy, final long timestamp, final float[] values) {
-        switch(mode) {
+        switch(mMode) {
             case ClientPaths.MODE_PULL:
                 mSensorEventBuffer.addSensorData(session, sensorType, accuracy, timestamp, values);
                 break;

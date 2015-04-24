@@ -19,14 +19,8 @@ under the License.
 
 package sintef.android.controller.sensor;
 
-import android.nfc.Tag;
-import android.util.Log;
-
 import sintef.android.controller.common.Constants;
 
-/**
- * Created by samyboy89 on 03/02/15.
- */
 public class SensorSession {
 
     private final String mId;

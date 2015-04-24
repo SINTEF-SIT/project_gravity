@@ -26,9 +26,6 @@ import java.util.Map;
 import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
 
-/**
- * Created by samyboy89 on 05/02/15.
- */
 public class SensorAlgorithmPack {
 
     private HashMap<SensorSession, List<SensorData>> mSensorData = new HashMap<>();

@@ -37,23 +37,22 @@ import java.util.Arrays;
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
 import sintef.android.controller.EventTypes;
+import sintef.android.controller.WearDeviceClientMobile;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.RemoteSensorManager;
 import sintef.android.controller.sensor.SensorSession;
 
-public class WearDataReceiver extends WearableListenerService {
+public class WearConnectionMobile extends WearableListenerService {
 
-    private static final String TAG = "G:PHONE:RSS";
+    private static final String TAG = "G:PHONE:WCM";
 
-    private RemoteSensorManager mRemoteSensorManager;
+    private WearDeviceClientMobile mWearDeviceClientMobile;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mRemoteSensorManager = RemoteSensorManager.getInstance(this);
-        Wearable.MessageApi.addListener(mRemoteSensorManager.getWearableClient(), this);
-
+        mWearDeviceClientMobile = WearDeviceClientMobile.getInstance(this);
+        Wearable.MessageApi.addListener(mWearDeviceClientMobile.getWearableClient(), this);
     }
 
     @Override
@@ -108,6 +107,6 @@ public class WearDataReceiver extends WearableListenerService {
 
         if (Controller.DBG) Log.d(TAG, "Received sensor data " + session.getSensorType() + " = " + Arrays.toString(values));
 
-        mRemoteSensorManager.addSensorData(session, accuracy, timestamp, values);
+        mWearDeviceClientMobile.addSensorData(session, accuracy, timestamp, values);
     }
 }

@@ -19,9 +19,6 @@ under the License.
 
 package sintef.android.controller.sensor;
 
-/**
- * Created by samyboy89 on 03/02/15.
- */
 public enum SensorDevice {
     WATCH("watch"),
     PHONE("phone"),
@@ -29,7 +26,7 @@ public enum SensorDevice {
 
     private String data;
 
-    private SensorDevice(String data) {
+    SensorDevice(String data) {
         this.data = data;
     }
 

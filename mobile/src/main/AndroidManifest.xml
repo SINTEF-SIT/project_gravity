@@ -52,7 +52,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".WearDataReceiver">
+        <service android:name=".WearConnectionMobile">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
             </intent-filter>

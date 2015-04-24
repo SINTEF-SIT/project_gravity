@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-package sintef.android.controller.sensor;
+package sintef.android.controller;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -36,45 +36,36 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
-import sintef.android.controller.AlarmEvent;
-import sintef.android.controller.Controller;
-import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.ClientPaths;
+import sintef.android.controller.sensor.SensorData;
+import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.sensor.data.SensorDataObject;
 
-
-/**
- * Created by iver on 09.02.15.
- */
-
-public class RemoteSensorManager {
+public class WearDeviceClientMobile {
 
     private static final String TAG = "G:CONTROLLER:RSM";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
 
-    private static RemoteSensorManager instance;
-
+    private static WearDeviceClientMobile instance;
     private ExecutorService mExecutor;
     private GoogleApiClient mWearableClient;
-    private EventBus mEventBus;
 
-    public static synchronized RemoteSensorManager getInstance(Context context) {
+    public static synchronized WearDeviceClientMobile getInstance(Context context) {
         if (instance == null) {
-            instance = new RemoteSensorManager(context.getApplicationContext());
+            instance = new WearDeviceClientMobile(context.getApplicationContext());
         }
 
         return instance;
     }
 
-    private RemoteSensorManager(Context context) {
+    private WearDeviceClientMobile(Context context) {
         mWearableClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
                 .build();
 
         mExecutor = Executors.newCachedThreadPool();
-        mEventBus = EventBus.getDefault();
-        mEventBus.register(this);
+        EventBus.getDefault().register(this);
     }
 
     public GoogleApiClient getWearableClient() {
@@ -88,7 +79,7 @@ public class RemoteSensorManager {
                 break;
             case ALARM_STOPPED:
                 stopAlarm();
-                break;
+            break;
         }
     }
 
@@ -105,7 +96,7 @@ public class RemoteSensorManager {
         }
 
         if (sensorDataObject != null) {
-            mEventBus.post(new SensorData(sensorSession, sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
+            EventBus.getDefault().post(new SensorData(sensorSession, sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
         }
     }
 
@@ -119,15 +110,7 @@ public class RemoteSensorManager {
         return result.isSuccess();
     }
 
-    public void startMeasurement() {
-        sendMessage(ClientPaths.START_MEASUREMENT);
-    }
-
-    public void stopMeasurement() {
-        sendMessage(ClientPaths.STOP_MEASUREMENT);
-    }
-
-    public void setMode(final String mode) {
+    public void setMode(String mode) {
         sendMessage(mode);
     }
 
@@ -147,16 +130,16 @@ public class RemoteSensorManager {
         sendMessage(ClientPaths.ALARM_PROGRESS + progress);
     }
 
-    private void sendMessage(final String message) {
+    private void sendMessage(final String path) {
         mExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(message);
+                sendMessageInBackground(path);
             }
         });
     }
 
-    private void controlMeasurementInBackground(final String path) {
+    private void sendMessageInBackground(final String path) {
         if (validateConnection()) {
             List<Node> nodes = Wearable.NodeApi.getConnectedNodes(mWearableClient).await().getNodes();
 
@@ -167,7 +150,7 @@ public class RemoteSensorManager {
                 ).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
                     @Override
                     public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                        if (Controller.DBG) Log.d(TAG, "controlMeasurementInBackground(" + path + "): " + sendMessageResult.getStatus().isSuccess());
+                        if (Controller.DBG) Log.d(TAG, "sendMessageInBackground(" + path + "): " + sendMessageResult.getStatus().isSuccess());
                     }
                 });
             }

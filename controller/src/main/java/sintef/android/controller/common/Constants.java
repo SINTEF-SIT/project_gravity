@@ -27,9 +27,6 @@ import java.util.Map;
 import sintef.android.controller.algorithm.AlgorithmsToChoose;
 import sintef.android.controller.sensor.SensorLocation;
 
-/**
- * Created by iver on 06.02.15.
- */
 public class Constants {
     public static final String SESSION = "session";
     public static final String ACCURACY = "accuracy";
@@ -68,7 +65,6 @@ public class Constants {
     public static final int ALGORITHM_SEND_OVERLAPPING = 1000;
     public static final int ALGORITHM_SEND_AMOUNT = ALGORITHM_SEND_FREQUENCY + ALGORITHM_SEND_OVERLAPPING;
 
-
     public static final String WATCH_ALARM_ACTIVITY_RUN_ALARM = "run_alarm";
 
     public static final String PREFS_FIRST_START = "pref_first_start";
@@ -76,6 +72,6 @@ public class Constants {
     public static final String PREFS_NEXT_OF_KIN_TELEPHONE = "pref_next_of_kin_telephone";
 
     public static final String PREFS_ALGORITHM = "pref_algorithm";
-    public static final int PREFS_DEFAULT_ALGORITHM = AlgorithmsToChoose.All.getId();
+    public static final int PREFS_DEFAULT_ALGORITHM = AlgorithmsToChoose.ALL.getId();
 
 }

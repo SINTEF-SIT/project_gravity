@@ -34,19 +34,15 @@ import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.utils.PreferencesHelper;
 
-/**
- * Created by araneae on 09.04.15.
- */
-public class PatternRecognitionWatch implements AlgorithmInterface {
+public class PatternRecognitionWatch implements Algorithm {
 
     public static final String FALLINDEX_POST_IMPACT = "post_imp_thr";
     public static final String FALL_DURATION = "fall_dur_thr";
 
-    //TODO: get data to make the thresholds better.
-    public static final double default_thresholdStill = 20; //5
-    public static final double default_movementThreshold = 170;
+    public static final double DEFAULT_THRESHOLD_STILL = 20; //5
+    public static final double DEFAULT_MOVEMENT_THRESHOLD = 170;
 
-    private static final double atleastReadings = 10;
+    private static final double ATLEAST_READINGS = 10;
 
 
     //Calculate the acceleration.
@@ -106,7 +102,7 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
         /** RECORDING - fallIndex */
         if (PreferencesHelper.isRecording()) EventBus.getDefault().post(new RecordEventData(EventTypes.RECORDING_WATCH_FALL_INDEX, accelerationData.fallData));
 
-        if (accelerationData.getFallData() >= ThresholdWatch.getThresholdFall() && sensors.size()-accelerationData.getStartIndex() > atleastReadings){
+        if (accelerationData.getFallData() >= ThresholdWatch.getThresholdFall() && sensors.size()-accelerationData.getStartIndex() > ATLEAST_READINGS){
             afterFallData = stillPattern(sensors, accelerationData.getStartIndex());
 
             /** RECORDING - stillPattern */
@@ -165,10 +161,10 @@ public class PatternRecognitionWatch implements AlgorithmInterface {
     }
 
     public static double getThresholdStill() {
-        return PreferencesHelper.getFloat(FALLINDEX_POST_IMPACT, (float) default_thresholdStill);
+        return PreferencesHelper.getFloat(FALLINDEX_POST_IMPACT, (float) DEFAULT_THRESHOLD_STILL);
     }
 
     public static double getThresholdMovement() {
-        return PreferencesHelper.getFloat(FALL_DURATION, (float) default_movementThreshold);
+        return PreferencesHelper.getFloat(FALL_DURATION, (float) DEFAULT_MOVEMENT_THRESHOLD);
     }
 }

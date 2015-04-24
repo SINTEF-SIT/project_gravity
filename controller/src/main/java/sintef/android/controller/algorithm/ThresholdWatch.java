@@ -34,15 +34,11 @@ import sintef.android.controller.sensor.SensorSession;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
 import sintef.android.controller.utils.PreferencesHelper;
 
-/**
- * Created by araneae on 09.02.15.
- */
-public class ThresholdWatch implements AlgorithmInterface {
+public class ThresholdWatch implements Algorithm {
 
     public static final String FALLINDEX_IMPACT = "imp_thr";
 
-    //TODO: get data to make the thresholds better.
-    public static final double default_thresholdFall = 30; //20
+    public static final double DEFAULT_THRESHOLD_FALL = 30; //20
 
     //Calculate the acceleration.
     private static double fallIndex(List<LinearAccelerationData> sensors, int startList){
@@ -119,6 +115,6 @@ public class ThresholdWatch implements AlgorithmInterface {
     }
 
     public static double getThresholdFall() {
-        return PreferencesHelper.getFloat(FALLINDEX_IMPACT, (float) default_thresholdFall);
+        return PreferencesHelper.getFloat(FALLINDEX_IMPACT, (float) DEFAULT_THRESHOLD_FALL);
     }
 }

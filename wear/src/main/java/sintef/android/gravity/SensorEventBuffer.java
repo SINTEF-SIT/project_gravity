@@ -25,10 +25,6 @@ import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
 import sintef.android.controller.common.Constants;
 
-
-/**
- * Created by iver on 16.02.15.
- */
 public class SensorEventBuffer {
 
     private Buffer fifo;

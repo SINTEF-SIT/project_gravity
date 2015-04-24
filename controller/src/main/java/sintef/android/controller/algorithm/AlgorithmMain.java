@@ -24,19 +24,12 @@ import sintef.android.controller.EventTypes;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.utils.PreferencesHelper;
 
-//import static sintef.android.controller.algorithm.AlgorithmPhone.patternRecognition;
-
-//import org.apache.commons.collections.bag.SynchronizedSortedBag;
-
-/**
- * Created by samyboy89 on 05/02/15.
- */
 public class AlgorithmMain {
 
-    private static AlgorithmMain sAlgorithmMain;
+    private static AlgorithmMain instance;
 
     public static void initializeAlgorithmMaster() {
-        sAlgorithmMain = new AlgorithmMain();
+        instance = new AlgorithmMain();
     }
 
     private AlgorithmMain() {
@@ -50,7 +43,7 @@ public class AlgorithmMain {
         AlgorithmsToChoose algorithmChoice = AlgorithmsToChoose.getAlgorithm(algorithmId);
 
         long id = System.currentTimeMillis();
-        for (AlgorithmInterface algorithm : algorithmChoice.getClasses()) {
+        for (Algorithm algorithm : algorithmChoice.getClasses()) {
             isFall = algorithm.isFall(id, pack);
 
             if (!PreferencesHelper.isRecording()) if (!isFall) break;
@@ -61,8 +54,8 @@ public class AlgorithmMain {
         }
     }
 
-    public static AlgorithmMain getsAlgorithmMain() {
-        return sAlgorithmMain;
+    public static AlgorithmMain getInstance() {
+        return instance;
     }
 
 }

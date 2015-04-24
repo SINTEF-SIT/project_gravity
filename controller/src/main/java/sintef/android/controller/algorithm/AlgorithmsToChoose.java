@@ -19,18 +19,15 @@ under the License.
 
 package sintef.android.controller.algorithm;
 
-/**
- * Created by Andreas on 08.04.2015.
- */
 public enum AlgorithmsToChoose {
 
-    PhoneThreshold(new ThresholdPhone()),
-    PhonePatternRecognition(new PatternRecognitionPhone()),
+    PHONE_THRESHOLD(new ThresholdPhone()),
+    PHONE_PATTERN_RECOGNITION(new PatternRecognitionPhone()),
 
-    WatchThreshold(new ThresholdWatch()),
-    WatchPatternRecognition(new PatternRecognitionWatch()),
+    WATCH_THRESHOLD(new ThresholdWatch()),
+    WATCH_PATTERN_RECOGNITION(new PatternRecognitionWatch()),
 
-    All(new PatternRecognitionPhone(), new PatternRecognitionWatch());
+    ALL(new PatternRecognitionPhone(), new PatternRecognitionWatch());
 
     public static final int ID_PHONE_THRESHOLD = 0;
     public static final int ID_PHONE_PATTERN_RECOGNITION = 1;
@@ -39,21 +36,21 @@ public enum AlgorithmsToChoose {
     public static final int ID_WATCH_PATTERN_RECOGNITION = 3;
 
     static {
-        PhoneThreshold.mId = ID_PHONE_THRESHOLD;
-        PhonePatternRecognition.mId = ID_PHONE_PATTERN_RECOGNITION;
-        WatchThreshold.mId = ID_WATCH_THRESHOLD;
-        WatchPatternRecognition.mId = ID_WATCH_PATTERN_RECOGNITION;
+        PHONE_THRESHOLD.mId = ID_PHONE_THRESHOLD;
+        PHONE_PATTERN_RECOGNITION.mId = ID_PHONE_PATTERN_RECOGNITION;
+        WATCH_THRESHOLD.mId = ID_WATCH_THRESHOLD;
+        WATCH_PATTERN_RECOGNITION.mId = ID_WATCH_PATTERN_RECOGNITION;
     }
 
     private int mId = -1;
 
-    private AlgorithmInterface[] mAlgorithms;
+    private Algorithm[] mAlgorithms;
 
-    AlgorithmsToChoose(AlgorithmInterface... algorithms) {
+    AlgorithmsToChoose(Algorithm... algorithms) {
         mAlgorithms = algorithms;
     }
 
-    public AlgorithmInterface[] getClasses() {
+    public Algorithm[] getClasses() {
         return mAlgorithms;
     }
 
@@ -67,7 +64,7 @@ public enum AlgorithmsToChoose {
 
     public String getCorrectString() {
         String name = "";
-        for (AlgorithmInterface algorithm : mAlgorithms) {
+        for (Algorithm algorithm : mAlgorithms) {
             name += (algorithm.getClass().getSimpleName() + ", ");
         }
         if (!name.equals("")) {
@@ -79,15 +76,15 @@ public enum AlgorithmsToChoose {
     public static AlgorithmsToChoose getAlgorithm(int id) {
         switch (id) {
             case ID_PHONE_THRESHOLD:
-                return PhoneThreshold;
+                return PHONE_THRESHOLD;
             case ID_PHONE_PATTERN_RECOGNITION:
-                return PhonePatternRecognition;
+                return PHONE_PATTERN_RECOGNITION;
             case ID_WATCH_THRESHOLD:
-                return WatchThreshold;
+                return WATCH_THRESHOLD;
             case ID_WATCH_PATTERN_RECOGNITION:
-                return WatchPatternRecognition;
+                return WATCH_PATTERN_RECOGNITION;
             default:
-                return All;
+                return ALL;
         }
     }
 }

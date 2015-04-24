@@ -29,9 +29,6 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 
-/**
- * Created by bruce on 14-10-30.
- */
 public class DonutProgress extends View {
     private Paint finishedPaint;
     private Paint unfinishedPaint;
