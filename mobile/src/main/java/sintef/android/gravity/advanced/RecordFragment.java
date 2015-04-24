@@ -138,6 +138,9 @@ public class RecordFragment extends Fragment {
     }
 
     private void startRecording() {
+        PreferencesHelper.putBoolean(PreferencesHelper.FALL_DETECTION_ENABLED, false);
+        getActivity().invalidateOptionsMenu();
+
         PreferencesHelper.putBoolean(PreferencesHelper.RECORDING_ENABLED, true);
 
         mRecordEvents.clear();

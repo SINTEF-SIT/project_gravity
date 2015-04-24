@@ -74,6 +74,7 @@
     <string name="record_server_ip">Server IP</string>
     <string name="record_server_port">Server PORT</string>
     <string name="record_header">Record sensor data</string>
+    <string name="record_sub_header">Alarm will be deactivated when recording starts. You will need to reactivate it manually afterwards if needed.</string>
 
     <string name="watch_notification_title">Fall Alarm</string>
     <string name="watch_notification_text">Enabled</string>
