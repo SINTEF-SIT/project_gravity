@@ -38,30 +38,25 @@ import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorManager;
 import sintef.android.controller.sensor.SensorSession;
 
-/**
- * Created by samyboy89 on 03/02/15.
- */
 public class Controller {
+
+    private static String TAG = "G:CONTROLLER:C";
 
     public static boolean DBG = false;
     private static boolean DBG_RATE = false;
 
-    private static String TAG = "G:CONTROLLER:C";
-
     private static Controller sController;
-    private static EventBus sEventBus;
-    private Context mContext;
+    private static List<Map<SensorSession, List<SensorData>>> sDataStore = new ArrayList<>();
 
-    private static List<Map<SensorSession, List<SensorData>>> allData = new ArrayList<Map<SensorSession, List<SensorData>>>();
+    private static long sCurrentTime = System.currentTimeMillis();
+    private static int sFrequency = 0;
 
     public static void initializeController(Context context) {
         if (sController == null) sController = new Controller(context);
     }
 
     private Controller(Context context) {
-        mContext = context;
-        sEventBus = EventBus.getDefault();
-        sEventBus.register(this);
+        EventBus.getDefault().register(this);
 
         AlgorithmMain.initializeAlgorithmMaster();
         SensorManager.getInstance(context);
@@ -71,17 +66,17 @@ public class Controller {
             public void run() {
 
                 SensorAlgorithmPack pack;
-                allData.add(0, new HashMap<SensorSession, List<SensorData>>());
-                if (allData.size() > 2) {
-                    pack = SensorAlgorithmPack.processNewSensorData(allData.get(2), allData.get(1));
-                } else if (allData.size() > 1) {
-                    pack = SensorAlgorithmPack.processNewSensorData(allData.get(1), null);
+                sDataStore.add(0, new HashMap<SensorSession, List<SensorData>>());
+                if (sDataStore.size() > 2) {
+                    pack = SensorAlgorithmPack.processNewSensorData(sDataStore.get(2), sDataStore.get(1));
+                } else if (sDataStore.size() > 1) {
+                    pack = SensorAlgorithmPack.processNewSensorData(sDataStore.get(1), null);
                 } else {
                     return;
                 }
-                sEventBus.post(pack);
+                EventBus.getDefault().post(pack);
 
-                if (allData.size() > 2) allData.remove(2);
+                if (sDataStore.size() > 2) sDataStore.remove(2);
 
             }
         }, 0, Constants.ALGORITHM_SEND_FREQUENCY);
@@ -89,47 +84,28 @@ public class Controller {
 
     }
 
-    public static Controller getController() {
-        return sController;
-    }
-
-    public Context getContext() {
-        return mContext;
-    }
-
-     private static long time = System.currentTimeMillis();
-     private static int times_in_sek = 0;
-
     public synchronized void onEvent(SensorData data) {
-        if (allData.isEmpty()) allData.add(0, new HashMap<SensorSession, List<SensorData>>());
-        Map<SensorSession, List<SensorData>> sensorData = allData.get(0);
+        if (data == null || data.getSensorSession() == null) return;
 
-        if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION) times_in_sek += 1;
-        if (time + 1000 <= System.currentTimeMillis() ) {
-            if (DBG_RATE) Log.d(TAG, String.format("%d @ %d", times_in_sek, time));
+        if (sDataStore.isEmpty()) sDataStore.add(0, new HashMap<SensorSession, List<SensorData>>());
+        Map<SensorSession, List<SensorData>> sensorData = sDataStore.get(0);
 
-            if (times_in_sek < 10) {
+        if (data.getSensorSession().getSensorType() == Sensor.TYPE_LINEAR_ACCELERATION) sFrequency += 1;
+        if (sCurrentTime + 1000 <= System.currentTimeMillis() ) {
+            if (DBG_RATE) Log.d(TAG, String.format("%d @ %d", sFrequency, sCurrentTime));
+
+            if (sFrequency < 10) {
                 EventBus.getDefault().post(EventTypes.RESET_SENSOR_LISTENERS);
             }
 
-            time = System.currentTimeMillis();
-            times_in_sek = 0;
+            sCurrentTime = System.currentTimeMillis();
+            sFrequency = 0;
         }
 
-        if (data.getSensorSession() == null) return;
         if (!sensorData.containsKey(data.getSensorSession())) {
             sensorData.put(data.getSensorSession(), new ArrayList<SensorData>());
         }
 
         sensorData.get(data.getSensorSession()).add(data);
-    }
-
-    private void printHash(HashMap<SensorSession, List<SensorData>> sensor) {
-        for (SensorSession sensorSession : sensor.keySet()) {
-            System.out.println(sensorSession.getId());
-            for (SensorData data : sensor.get(sensorSession)) {
-                System.out.println("(Data) Value: " + data.getSensorData().getValues()[0] + " Time: " + data.getTimeCaptured());
-            }
-        }
     }
 }
