@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.WearDeviceClientMobile;
+import sintef.android.controller.DeviceClient;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 import sintef.android.controller.sensor.data.LinearAccelerationData;
@@ -41,7 +41,7 @@ public class SensorManager implements SensorEventListener {
 
     private android.hardware.SensorManager mSensorManager;
     private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
-    private WearDeviceClientMobile mWearDeviceClientMobile;
+    private DeviceClient mDeviceClient;
 
     private static SensorManager instance;
 
@@ -57,7 +57,7 @@ public class SensorManager implements SensorEventListener {
         EventBus.getDefault().register(this);
 
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        mWearDeviceClientMobile = WearDeviceClientMobile.getInstance(context);
+        mDeviceClient = DeviceClient.getInstance(context);
 
         addSensorToSystem("phone:magnetic_field", Sensor.TYPE_MAGNETIC_FIELD, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
         addSensorToSystem("phone:linear_acceleration", Sensor.TYPE_LINEAR_ACCELERATION, SensorDevice.PHONE, SensorLocation.RIGHT_PANT_POCKET);
@@ -73,7 +73,7 @@ public class SensorManager implements SensorEventListener {
     public void onEvent(EventTypes eventType) {
         switch (eventType) {
             case ONRESUME:
-                mWearDeviceClientMobile.setMode(ClientPaths.MODE_DEFAULT);
+                mDeviceClient.setMode(ClientPaths.MODE_DEFAULT);
             case RESET_SENSOR_LISTENERS:
                 mSensorManager.unregisterListener(this);
 

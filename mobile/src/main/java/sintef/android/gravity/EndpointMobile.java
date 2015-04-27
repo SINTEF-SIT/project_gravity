@@ -19,6 +19,7 @@ under the License.
 
 package sintef.android.gravity;
 
+import android.hardware.Sensor;
 import android.net.Uri;
 import android.util.Log;
 
@@ -33,26 +34,27 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
+import sintef.android.controller.DeviceClient;
 import sintef.android.controller.EventTypes;
-import sintef.android.controller.WearDeviceClientMobile;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.SensorData;
 import sintef.android.controller.sensor.SensorSession;
+import sintef.android.controller.sensor.data.LinearAccelerationData;
+import sintef.android.controller.sensor.data.SensorDataObject;
 
-public class WearConnectionMobile extends WearableListenerService {
+public class EndpointMobile extends WearableListenerService {
 
     private static final String TAG = "G:PHONE:WCM";
-
-    private WearDeviceClientMobile mWearDeviceClientMobile;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mWearDeviceClientMobile = WearDeviceClientMobile.getInstance(this);
-        Wearable.MessageApi.addListener(mWearDeviceClientMobile.getWearableClient(), this);
+        Wearable.MessageApi.addListener(DeviceClient.getInstance(this).getWearableClient(), this);
     }
 
     @Override
@@ -90,7 +92,7 @@ public class WearConnectionMobile extends WearableListenerService {
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
                 if (path.startsWith(Constants.DATA_MAP_PATH)) {
-                    unpackSensorData(
+                    unpackAndSendSensorData(
                             DataMapItem.fromDataItem(dataItem).getDataMap()
                     );
                 }
@@ -98,8 +100,7 @@ public class WearConnectionMobile extends WearableListenerService {
         }
     }
 
-    private void unpackSensorData(DataMap dataMap) {
-
+    private void unpackAndSendSensorData(DataMap dataMap) {
         SensorSession session = SensorSession.getSessionFromString(dataMap.getString(Constants.SESSION));
         int accuracy = dataMap.getInt(Constants.ACCURACY);
         long timestamp = dataMap.getLong(Constants.TIMESTAMP);
@@ -107,6 +108,15 @@ public class WearConnectionMobile extends WearableListenerService {
 
         if (Controller.DBG) Log.d(TAG, "Received sensor data " + session.getSensorType() + " = " + Arrays.toString(values));
 
-        mWearDeviceClientMobile.addSensorData(session, accuracy, timestamp, values);
+        SensorDataObject sensorDataObject = null;
+        switch(session.getSensorType()) {
+            case Sensor.TYPE_LINEAR_ACCELERATION:
+                sensorDataObject = new LinearAccelerationData(values.clone());
+                break;
+        }
+
+        if (sensorDataObject != null) {
+            EventBus.getDefault().post(new SensorData(session, sensorDataObject, TimeUnit.NANOSECONDS.toMillis(timestamp)));
+        }
     }
 }

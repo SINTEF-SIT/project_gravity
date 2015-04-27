@@ -30,7 +30,7 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
 import sintef.android.controller.Controller;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.WearDeviceClientMobile;
+import sintef.android.controller.DeviceClientMessaging;
 
 public class AlarmActivity extends Activity {
 
@@ -38,8 +38,8 @@ public class AlarmActivity extends Activity {
 
     private AlarmView mAlarmView;
 
-    private static Vibrator mVibrator;
-    private WearDeviceClientMobile mWearDeviceClientMobile;
+    private static Vibrator sVibrator;
+    private DeviceClientMessaging mDeviceClientMessaging;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +58,18 @@ public class AlarmActivity extends Activity {
         if (Controller.DBG) Log.d(TAG, "Initialising and staring alarm");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
+        sVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        sVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
 
         EventBus.getDefault().register(this);
-        mWearDeviceClientMobile = WearDeviceClientMobile.getInstance(this);
+        mDeviceClientMessaging = DeviceClientMessaging.getInstance(this);
 
         mAlarmView = new AlarmView(this, R.layout.show_alarm);
         mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
             @Override
             public void onStop() {
                 if (Controller.DBG) Log.d(TAG, "Stop alarm clicked");
-                mWearDeviceClientMobile.stopAlarm();
+                mDeviceClientMessaging.stopAlarm();
                 finish();
             }
         });
@@ -78,7 +78,7 @@ public class AlarmActivity extends Activity {
             @Override
             public void onAlarm() {
                 if (Controller.DBG) Log.d(TAG, "Alarm has gone off");
-                if (mVibrator != null) mVibrator.cancel();
+                if (sVibrator != null) sVibrator.cancel();
 
                 finish();
             }
@@ -92,7 +92,7 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mVibrator != null) mVibrator.cancel();
+        if (sVibrator != null) sVibrator.cancel();
         EventBus.getDefault().unregister(this);
         mAlarmView = null;
 
@@ -102,7 +102,7 @@ public class AlarmActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mVibrator != null) mVibrator.cancel();
+        if (sVibrator != null) sVibrator.cancel();
         EventBus.getDefault().unregister(this);
         mAlarmView = null;
 
@@ -114,5 +114,4 @@ public class AlarmActivity extends Activity {
 
         if (Controller.DBG) Log.d(TAG, "Progress: " + progress + " received");
     }
-
 }

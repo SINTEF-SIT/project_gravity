@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-package sintef.android.gravity;
+package sintef.android.controller.sensor;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -29,10 +29,8 @@ import android.util.Log;
 import java.util.HashMap;
 
 import sintef.android.controller.Controller;
+import sintef.android.controller.DeviceClient;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.sensor.SensorDevice;
-import sintef.android.controller.sensor.SensorLocation;
-import sintef.android.controller.sensor.SensorSession;
 
 public class SensorManagerWear implements SensorEventListener {
 
@@ -41,7 +39,7 @@ public class SensorManagerWear implements SensorEventListener {
 
     private HashMap<Integer, SensorSession> mSensorGroup = new HashMap<>();
     private SensorManager mSensorManager;
-    private WearDeviceClient mWearDeviceClient;
+    private DeviceClient mDeviceClient;
     private static SensorManagerWear instance;
 
     private static long sCurrentTime = System.currentTimeMillis();
@@ -58,12 +56,9 @@ public class SensorManagerWear implements SensorEventListener {
     private SensorManagerWear(Context context) {
         if (Controller.DBG) Log.w(TAG, "Started sensor service");
 
-        mWearDeviceClient = WearDeviceClient.getInstance(context);
+        mDeviceClient = DeviceClient.getInstance(context);
         mSensorManager = (android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        for (int key : Constants.SENSORS_WEAR.keySet()) {
-            addSensorToSystem("watch:" + Constants.SENSORS_WEAR.get(key), key, SensorDevice.WATCH, Constants.WEAR_SENSOR_LOCATION);
-        }
     }
 
     private void addSensorToSystem(String id, int type, SensorDevice device, SensorLocation location) {
@@ -72,9 +67,16 @@ public class SensorManagerWear implements SensorEventListener {
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
     }
 
+    public void startMeasurement() {
+        for (int key : Constants.SENSORS_WEAR.keySet()) {
+            addSensorToSystem("watch:" + Constants.SENSORS_WEAR.get(key), key, SensorDevice.WATCH, Constants.WEAR_SENSOR_LOCATION);
+        }
+    }
+
     public void stopMeasurement() {
-        if (mSensorManager != null)
+        if (mSensorManager != null) {
             mSensorManager.unregisterListener(this);
+        }
     }
 
     @Override
@@ -94,6 +96,6 @@ public class SensorManagerWear implements SensorEventListener {
             }
         }
 
-        mWearDeviceClient.addSensorData(mSensorGroup.get(event.sensor.getType()).getStringFromSession(), event.sensor.getType(), event.accuracy, event.timestamp, event.values);
+        mDeviceClient.addSensorData(mSensorGroup.get(event.sensor.getType()).getStringFromSession(), event.sensor.getType(), event.accuracy, event.timestamp, event.values);
     }
 }

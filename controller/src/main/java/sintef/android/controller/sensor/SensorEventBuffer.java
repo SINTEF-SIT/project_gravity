@@ -17,13 +17,11 @@ specific language governing permissions and limitations
 under the License.
 */
 
-package sintef.android.gravity;
+package sintef.android.controller.sensor;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.BufferUtils;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
-
-import sintef.android.controller.common.Constants;
 
 public class SensorEventBuffer {
 

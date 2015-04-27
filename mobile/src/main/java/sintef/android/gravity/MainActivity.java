@@ -46,10 +46,13 @@ import sintef.android.gravity.wizard.WizardMain;
 public class MainActivity extends ActionBarActivity {
 
     public static final String ADVANCED_MENU_AVAILABLE = "advanced_menu_available";
+    private static final int ADVANCED_MENU_CLICK_MAX = 7;
+
     private static final String TAG = "Main Activity";
 
+    private static Toast sToast;
+
     private int mClickCount = 0;
-    private static final int ADVANCED_MENU_CLICK_MAX = 7;
     private Handler mSevenClickResetHandler = new Handler();
     private Runnable mSevenClickResetRunnable = new Runnable() {
         @Override
@@ -58,12 +61,11 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    private static Toast sToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!Utils.isServiceRunning(this, MainService.class)) startDetector();
+        if (!Utils.isServiceRunning(this, AlarmService.class)) startDetector();
 
         EventBus.getDefault().register(this);
         SoundHelper.initializeSoundsHelper(this);
@@ -88,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
 
         boolean alarm_started = false;
         if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().containsKey(MainService.ALARM_STARTED)) alarm_started = true;
+            if (getIntent().getExtras().containsKey(AlarmService.ALARM_STARTED)) alarm_started = true;
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
@@ -140,7 +142,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void startDetector() {
-        startService(new Intent(this, MainService.class));
+        startService(new Intent(this, AlarmService.class));
     }
 
     private void openAdvancedActivity() {

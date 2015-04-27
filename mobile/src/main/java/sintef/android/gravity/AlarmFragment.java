@@ -60,7 +60,7 @@ public class AlarmFragment extends Fragment {
 
     private static Vibrator sVibrator;
     private static TelephonyManager sManager;
-    private static StatePhoneReceiver sPhoneStateListener;
+        private static StatePhoneReceiver sPhoneStateListener;
     private static boolean sCallFromApp = false; // To control the call has been made from the application
     private static boolean sCallFromOffHook = false; // To control the change to idle state is from the app call
 
@@ -69,7 +69,7 @@ public class AlarmFragment extends Fragment {
     public static AlarmFragment newInstance(boolean start_alarm) {
         AlarmFragment fragment = new AlarmFragment();
         Bundle bundle = new Bundle();
-        bundle.putBoolean(MainService.ALARM_STARTED, start_alarm);
+        bundle.putBoolean(AlarmService.ALARM_STARTED, start_alarm);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -118,7 +118,7 @@ public class AlarmFragment extends Fragment {
 
         EventBus.getDefault().register(this);
 
-        boolean start_alarm = getArguments().getBoolean(MainService.ALARM_STARTED);
+        boolean start_alarm = getArguments().getBoolean(AlarmService.ALARM_STARTED);
 
         if (start_alarm) mAlarmView.startAlarm();
     }

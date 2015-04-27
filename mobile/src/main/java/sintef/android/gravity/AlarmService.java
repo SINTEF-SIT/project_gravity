@@ -44,13 +44,13 @@ import sintef.android.controller.utils.SoundHelper;
 /**
  * Created by samyboy89 on 03/02/15.
  */
-public class MainService extends Service {
+public class AlarmService extends Service {
 
     private NotificationManager mNotificationManager;
     private Notification.Builder mNotificationBuilder;
     private PowerManager.WakeLock mWakeLock;
 
-    private TimerState mState = TimerState.PENDING;
+    private TimerState mTimerState = TimerState.PENDING;
 
     public static final String ALARM_STARTED = "alarm_started";
 
@@ -58,7 +58,7 @@ public class MainService extends Service {
 
     public static final int SCREEN_OFF_RECEIVER_DELAY = 500;
 
-    public BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mScreenStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) return;
@@ -89,9 +89,9 @@ public class MainService extends Service {
         PreferencesHelper.initializePreferences(this);
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, MainService.class.getName());
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, AlarmService.class.getName());
 
-        registerReceiver(mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        registerReceiver(mScreenStateReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -118,7 +118,7 @@ public class MainService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+        unregisterReceiver(mScreenStateReceiver);
 
         mWakeLock.release();
         stopForeground(true);
@@ -133,10 +133,10 @@ public class MainService extends Service {
     public synchronized void onEvent(EventTypes type) {
         switch (type) {
             case FALL_DETECTED:
-                if (!mState.equals(TimerState.PENDING)) return;
+                if (!mTimerState.equals(TimerState.PENDING)) return;
                 EventBus.getDefault().post(EventTypes.START_ALARM);
 
-                mState = TimerState.TIMER_RUNNING;
+                mTimerState = TimerState.RUNNING;
 
                 Intent start_app_intent = new Intent(this, MainActivity.class);
                 start_app_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -220,7 +220,7 @@ public class MainService extends Service {
                         .setSmallIcon(R.drawable.ic_stat_on);
                 mNotificationManager.notify(R.string.app_name, mNotificationBuilder.build());
 
-                mState = alarm ? TimerState.ALARM_SENT : TimerState.TIMER_CANCELLED;
+                mTimerState = alarm ? TimerState.ALARM : TimerState.CANCELLED;
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -234,9 +234,9 @@ public class MainService extends Service {
     }
 
     private void resetNotification() {
-        if (mState == TimerState.TIMER_RUNNING) return;
+        if (mTimerState == TimerState.RUNNING) return;
 
-        mState = TimerState.PENDING;
+        mTimerState = TimerState.PENDING;
 
         mNotificationBuilder = new Notification.Builder(getApplicationContext())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -249,6 +249,6 @@ public class MainService extends Service {
     }
 
     public enum TimerState {
-        PENDING, TIMER_RUNNING, TIMER_CANCELLED, ALARM_SENT,
+        PENDING, RUNNING, CANCELLED, ALARM,
     }
 }

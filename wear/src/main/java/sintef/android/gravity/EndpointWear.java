@@ -30,22 +30,25 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.Controller;
+import sintef.android.controller.DeviceClient;
+import sintef.android.controller.sensor.SensorManagerWear;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
 
-public class WearConnection extends WearableListenerService {
+public class EndpointWear extends WearableListenerService {
 
     private static final String TAG = "G:WEAR:MRS";
-    private WearDeviceClient mWearDeviceClient;
+    private DeviceClient mDeviceClient;
     private SensorManagerWear mSensorManagerWear;
 
     @Override
     public void onCreate() {
         super.onCreate();
         if (Controller.DBG) Log.w(TAG, "started mrs");
-        mWearDeviceClient = WearDeviceClient.getInstance(this);
-        mWearDeviceClient.setMode(ClientPaths.MODE_DEFAULT);
+        mDeviceClient = DeviceClient.getInstance(this);
+        mDeviceClient.setMode(ClientPaths.MODE_DEFAULT);
         mSensorManagerWear = SensorManagerWear.getInstance(this);
+        mSensorManagerWear.startMeasurement();
 
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(getString(R.string.watch_notification_title));
@@ -74,13 +77,13 @@ public class WearConnection extends WearableListenerService {
 
         switch("/" + message[1]) {
             case ClientPaths.MODE_PULL:
-                mWearDeviceClient.setMode(messageEvent.getPath());
+                mDeviceClient.setMode(messageEvent.getPath());
                 break;
             case ClientPaths.MODE_PUSH:
-                mWearDeviceClient.setMode(messageEvent.getPath());
+                mDeviceClient.setMode(messageEvent.getPath());
                 break;
             case ClientPaths.START_PUSH:
-                mWearDeviceClient.pushData();
+                mDeviceClient.pushData();
                 break;
             case ClientPaths.START_ALARM:
                 startAlarm(true);

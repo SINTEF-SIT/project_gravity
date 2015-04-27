@@ -47,8 +47,8 @@ public class AlarmView extends RelativeLayout {
     private AsyncTask<Void, Integer, Void> mCurrentAlarmTask;
     private int mCorrectIndex = -1;
 
-    private static OnStopListener mStopListener;
-    private static OnAlarmListener mAlarmListener;
+    private OnStopListener mStopListener;
+    private OnAlarmListener mAlarmListener;
 
     private int seconds = 60;
     private int resolution_multiplier = 4;
@@ -163,7 +163,7 @@ public class AlarmView extends RelativeLayout {
         mCorrectIndex = progress;
     }
 
-    public void stopAlarm() {
+    private void stopAlarm() {
         if (mCurrentAlarmTask != null) {
             mCurrentAlarmTask.cancel(true);
 

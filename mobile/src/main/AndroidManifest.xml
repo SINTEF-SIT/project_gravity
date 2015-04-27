@@ -44,7 +44,7 @@
             android:label="@string/wizard_activity"
             android:screenOrientation="sensorPortrait"/>
 
-        <service android:enabled="true" android:name=".MainService" />
+        <service android:enabled="true" android:name=".AlarmService" />
 
         <receiver android:name=".utils.BootReceiver">
             <intent-filter >
@@ -52,7 +52,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".WearConnectionMobile">
+        <service android:name=".EndpointMobile">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
             </intent-filter>

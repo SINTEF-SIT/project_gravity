@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 */
 
-package sintef.android.gravity;
+package sintef.android.controller;
 
 import android.content.Context;
 import android.util.Log;
@@ -26,45 +26,118 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import sintef.android.controller.Controller;
+import de.greenrobot.event.EventBus;
 import sintef.android.controller.common.ClientPaths;
 import sintef.android.controller.common.Constants;
+import sintef.android.controller.sensor.SensorEventBuffer;
 
-public class WearDeviceClient {
+public class DeviceClient {
 
     private static final String TAG = "G:WEAR:DC";
 
-    public static WearDeviceClient instance;
+    public static DeviceClient instance;
 
     private String mMode = ClientPaths.MODE_PUSH;
     private SensorEventBuffer mSensorEventBuffer;
     private GoogleApiClient mWearableClient;
     private ExecutorService mExecutor;
 
-
-    public static WearDeviceClient getInstance(Context context) {
+    public static DeviceClient getInstance(Context context) {
         if (instance == null) {
-            instance = new WearDeviceClient(context.getApplicationContext());
+            instance = new DeviceClient(context.getApplicationContext());
         }
         return instance;
     }
 
-    private WearDeviceClient(Context context) {
-        mWearableClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
+    private DeviceClient(Context context) {
+        mWearableClient = new GoogleApiClient.Builder(context)
+                .addApi(Wearable.API)
+                .build();
+
         mExecutor = Executors.newCachedThreadPool();
+
         mSensorEventBuffer = SensorEventBuffer.getInstance();
+
+        EventBus.getDefault().register(this);
+    }
+
+    public GoogleApiClient getWearableClient() {
+        return mWearableClient;
+    }
+
+    public void onEvent(EventTypes event) {
+        switch (event) {
+            case START_ALARM:
+                startAlarm();
+                break;
+            case ALARM_STOPPED:
+                stopAlarm();
+                break;
+        }
+    }
+
+    public void onEvent(AlarmEvent event) {
+        setAlarmProgress(event.progress);
     }
 
     public void setMode(String mode) {
         this.mMode = mode;
+    }
+
+    public void getBuffer() {
+        sendMessage(ClientPaths.START_PUSH);
+    }
+
+    public void startAlarm() {
+        sendMessage(ClientPaths.START_ALARM);
+    }
+
+    public void stopAlarm() {
+        sendMessage(ClientPaths.STOP_ALARM);
+    }
+
+    public void setAlarmProgress(int progress) {
+        sendMessage(ClientPaths.ALARM_PROGRESS + progress);
+    }
+
+    private void sendMessage(final String path) {
+        mExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                sendMessageInBackground(path);
+            }
+        });
+    }
+
+    private void sendMessageInBackground(final String path) {
+        if (validateConnection()) {
+            List<Node> nodes = Wearable.NodeApi.getConnectedNodes(mWearableClient).await().getNodes();
+
+            if (Controller.DBG) Log.d(TAG, "Sending to nodes: " + nodes.size());
+
+            for (Node node : nodes) {
+                Wearable.MessageApi.sendMessage(mWearableClient, node.getId(), path, null
+                ).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                    @Override
+                    public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                        if (Controller.DBG) Log.d(TAG, "sendMessageInBackground(" + path + "): " + sendMessageResult.getStatus().isSuccess());
+                    }
+                });
+            }
+        } else {
+            if (Controller.DBG) Log.w(TAG, "No connection possible");
+        }
     }
 
     public void pushData() {
@@ -119,9 +192,17 @@ public class WearDeviceClient {
         dataMap.getDataMap().putFloatArray(Constants.VALUES, values);
 
         PutDataRequest putDataRequest = dataMap.asPutDataRequest();
-        send(putDataRequest);
 
         if (Controller.DBG) Log.w(TAG, "Starting to send sensor data");
+
+        if (validateConnection()) {
+            Wearable.DataApi.putDataItem(mWearableClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    if (Controller.DBG) Log.v(TAG, "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
+                }
+            });
+        }
     }
 
     private boolean validateConnection() {
@@ -132,16 +213,5 @@ public class WearDeviceClient {
         ConnectionResult result = mWearableClient.blockingConnect(Constants.CLIENT_CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
 
         return result.isSuccess();
-    }
-
-    private synchronized void send(PutDataRequest putDataRequest) {
-        if (validateConnection()) {
-            Wearable.DataApi.putDataItem(mWearableClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                @Override
-                public void onResult(DataApi.DataItemResult dataItemResult) {
-                    if (Controller.DBG) Log.v(TAG, "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
-                }
-            });
-        }
     }
 }
