@@ -33,9 +33,6 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import sintef.android.gravity.R;
 
-/**
- * Created by samyboy89 on 26/02/15.
- */
 public class WizardNotification extends WizardTemplate {
 
     @InjectView(R.id.wizard_notification_explanation_text)      public TextView mExplanationText;
