@@ -30,7 +30,7 @@ import de.greenrobot.event.EventBus;
 import sintef.android.controller.AlarmView;
 import sintef.android.controller.Controller;
 import sintef.android.controller.common.Constants;
-import sintef.android.controller.DeviceClientMessaging;
+import sintef.android.controller.DeviceClient;
 
 public class AlarmActivity extends Activity {
 
@@ -39,7 +39,7 @@ public class AlarmActivity extends Activity {
     private AlarmView mAlarmView;
 
     private static Vibrator sVibrator;
-    private DeviceClientMessaging mDeviceClientMessaging;
+    private DeviceClient mDeviceClientMessaging;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class AlarmActivity extends Activity {
         sVibrator.vibrate(Constants.ALARM_VIBRATION_PATTERN_ON_WATCH, 0);
 
         EventBus.getDefault().register(this);
-        mDeviceClientMessaging = DeviceClientMessaging.getInstance(this);
+        mDeviceClientMessaging = DeviceClient.getInstance(this);
 
         mAlarmView = new AlarmView(this, R.layout.show_alarm);
         mAlarmView.setOnStopListener(new AlarmView.OnStopListener() {
