@@ -217,6 +217,7 @@ public class MainActivity extends ActionBarActivity {
                 sToast.show();
                 return true;
             case R.id.action_about:
+                startActivity(new Intent(this, About.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

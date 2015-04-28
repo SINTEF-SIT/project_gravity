@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:clipToPadding="false">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sintef_logo"
+            android:padding="8dp" />
+
+        <ImageView
+            android:layout_width="156dp"
+            android:layout_height="156dp"
+            android:src="@drawable/fall_alarm_logo"
+            android:padding="8dp" />
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_grey_500"
+            android:text="@string/about_header"
+            android:padding="8dp"/>
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_grey_500"
+            android:text="@string/about_project_description"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/about_link_github"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_grey_500"
+            android:text="@string/about_github_link"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/about_link_wiki"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_grey_500"
+            android:text="@string/about_wiki_link"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/about_link_libraries"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_grey_500"
+            android:text="@string/about_libraries_link"
+            android:padding="8dp"/>
+
+    </LinearLayout>
+
+</>

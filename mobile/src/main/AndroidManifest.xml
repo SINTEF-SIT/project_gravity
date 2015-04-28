@@ -40,6 +40,11 @@
             android:screenOrientation="sensorPortrait"/>
 
         <activity
+            android:name=".About"
+            android:label="@string/action_about"
+            android:screenOrientation="sensorPortrait"/>
+
+        <activity
             android:name=".wizard.WizardMain"
             android:label="@string/wizard_activity"
             android:screenOrientation="sensorPortrait"/>

@@ -83,4 +83,14 @@
     <string name="phone_notification_waiting">Waiting to send alarm…</string>
     <string name="phone_notification_sent">Alarm sent</string>
     <string name="phone_notification_cancelled">Alarm cancelled</string>
+
+    <string name="about_header">Project description</string>
+    <string name="about_project_description">The main theme of this project is to create an open source fall detection system using an Android phone and watch. 
+        We have made fall detection more reliable using Threshold and Pattern Recognition algorithms on both devices. 
+        Other goals include the use of multiple algorithms and refine the detection system. 
+        The application is developed mainly for Samsung Galaxy S3 with Android 4.3 and the LG G Watch R with Android 5.0.</string>
+    <string name="about_wiki_link">See the projects <a href="https://github.com/iverasp/project_gravity/wiki">wiki</a> for more information</string>
+    <string name="about_github_link">See the projects <a href="https://github.com/iverasp/project_gravity">GitHub repo</a></string>
+    <string name="about_libraries_link">See  <a href="https://github.com/iverasp/project_gravity/wiki/Chapter-7:-Libraries">libraries used</a></string>
+
 </resources>
