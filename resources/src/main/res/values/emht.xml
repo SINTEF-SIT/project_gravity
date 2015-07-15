@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- whitespace has to be the + sign -->
+    <string name="server_address">http://129.241.105.197:9000</string>
+    <string name="callee_phone_number">90080700</string>
+    <string name="callee_name">Berit+Nilsen</string>
+    <string name="callee_address">Munkegata+14</string>
+</resources>
