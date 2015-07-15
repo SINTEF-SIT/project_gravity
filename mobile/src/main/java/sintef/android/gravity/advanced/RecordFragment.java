@@ -19,10 +19,12 @@ under the License.
 
 package sintef.android.gravity.advanced;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,7 @@ import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
 import de.greenrobot.event.EventBus;
 import sintef.android.controller.RecordAlgorithmData;
 import sintef.android.controller.RecordEventData;
@@ -78,9 +81,17 @@ public class RecordFragment extends Fragment {
     private static final String DEFAULT_SERVER_IP = "projectgravity.no-ip.org";
     private static final String DEFAULT_SERVER_PORT = "8765";
 
+    private Activity mActivity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_record, container, false);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mActivity = activity;
     }
 
     @Override
@@ -262,23 +273,27 @@ public class RecordFragment extends Fragment {
                 try {
                     Socket socket = new Socket(ip, Integer.valueOf(port));
                     socket.setSoTimeout(10000);
-                    DataOutputStream DOS = new DataOutputStream(socket.getOutputStream());
+                    DataOutputStream DOS = null;
                     DOS.writeBytes(jsonData);
                     socket.close();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), "Sensor data sent to server " + ip + ":" + port, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    if (mActivity != null)
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "Sensor data sent to server " + ip + ":" + port, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    else Log.w("Record", "activity is null");
                 } catch (Exception e) {
                     e.printStackTrace();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), "Sensor data failed to send to " + ip + ":" + port , Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    if (mActivity != null)
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), "Sensor data failed to send to " + ip + ":" + port , Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    else Log.w("Record", "activity is null");
                 }
                 return null;
             }
