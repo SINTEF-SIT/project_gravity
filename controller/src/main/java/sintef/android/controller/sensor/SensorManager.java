@@ -78,7 +78,12 @@ public class SensorManager implements SensorEventListener {
                 mSensorManager.unregisterListener(this);
 
                 for (int type : mSensorGroup.keySet()) {
-                    mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(type), Constants.SENSOR_PULL_FREQ);
+                    mSensorManager.registerListener(
+                            this,
+                            mSensorManager.getDefaultSensor(type),
+                            Constants.SENSOR_PULL_FREQ,
+                            mSensorManager.SENSOR_DELAY_NORMAL
+                    );
                 }
                 break;
             case ONDESTROY:
